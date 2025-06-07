@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlinxSerialization)
+    alias(libs.plugins.googleServices)
 }
 
 android {
@@ -57,12 +58,14 @@ dependencies {
 
     // Hilt
     implementation(libs.hilt.android)
-    implementation(libs.androidx.ui.text.google.fonts)
+    implementation(libs.hilt.navigation.compose)
     ksp(libs.hilt.compiler)
+    // kapt(libs.hilt.compiler)
 
     // Room
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
+    // kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.room.runtime)
 
     // Retrofit
@@ -73,6 +76,9 @@ dependencies {
     // WorkManager
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.hilt.work)
+
+    // Type
+    implementation(libs.androidx.ui.text.google.fonts)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

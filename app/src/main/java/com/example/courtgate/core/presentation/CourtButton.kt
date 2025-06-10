@@ -15,7 +15,12 @@ fun CourtButton(
     isEnabled: Boolean = true,
     onClick: () -> Unit,
 ) {
-    Button(onClick = onClick, modifier = modifier, shape = RoundedCornerShape(8.dp)) {
+    Button(
+        onClick = onClick,
+        enabled = isEnabled,
+        modifier = modifier,
+        shape = RoundedCornerShape(8.dp)
+    ) {
         Text(text = text, style = MaterialTheme.typography.labelMedium)
     }
 }

@@ -1,4 +1,4 @@
-package com.example.courtgate.authentication.presentation.login.components
+package com.example.courtgate.authentication.presentation.signup.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,34 +21,41 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import com.example.courtgate.authentication.presentation.login.LoginEvent
-import com.example.courtgate.authentication.presentation.login.LoginState
+import com.example.courtgate.authentication.presentation.signup.SignUpEvent
+import com.example.courtgate.authentication.presentation.signup.SignUpState
+import com.example.courtgate.core.presentation.CourtButton
 import com.example.courtgate.core.presentation.CourtTextField
 import com.example.courtgate.core.presentation.PasswordTextField
-import com.example.courtgate.core.presentation.CourtButton
+import com.example.courtgate.ui.theme.bodyFontFamily
+import com.example.courtgate.ui.theme.displayFontFamily
 
 @Composable
-fun LoginForm(
-    state: LoginState,
-    onEvent: (LoginEvent) -> Unit,
-    navigateToSignUp: () -> Unit,
+fun SignUpForm(
+    navigateToSignIn: () -> Unit,
+    onEvent: (SignUpEvent) -> Unit,
+    state: SignUpState,
     modifier: Modifier = Modifier
 ) {
     val focusManager = LocalFocusManager.current
-    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Text(
-            text = "Log in with email",
+            text = "Create your account",
             style = MaterialTheme.typography.labelLarge
         )
         CourtTextField(
             value = state.email,
-            onValueChange = { onEvent(LoginEvent.EmailChange(it)) },
+            onValueChange = { onEvent(SignUpEvent.EmailChange(it)) },
             placeholder = "Email",
-            contentDescription = "Enter email",
+            contentDescription = "Enter Email",
+            modifier = Modifier,
+            errorMessage = state.emailError,
             leadingIcon = Icons.Default.Email,
+            isPassword = false,
+            isEnabled = !state.isLoading,
             keyboardOptions = KeyboardOptions(
                 autoCorrectEnabled = false,
                 keyboardType = KeyboardType.Email,
@@ -56,16 +63,16 @@ fun LoginForm(
             ),
             keyboardActions = KeyboardActions(onAny = {
                 focusManager.moveFocus(FocusDirection.Next)
-            }),
-            errorMessage = state.emailError,
-            isEnabled = !state.isLoading,
-            modifier = Modifier
+            })
         )
         Spacer(Modifier.padding(2.dp))
         PasswordTextField(
             value = state.password,
-            onValueChange = { onEvent(LoginEvent.PasswordChange(it)) },
-            contentDescription = "Enter password",
+            onValueChange = { onEvent(SignUpEvent.PasswordChange(it)) },
+            contentDescription = "Enter Password",
+            modifier = Modifier,
+            errorMessage = state.passwordError,
+            isEnabled = !state.isLoading,
             keyboardOptions = KeyboardOptions(
                 autoCorrectEnabled = false,
                 keyboardType = KeyboardType.Password,
@@ -73,39 +80,25 @@ fun LoginForm(
             ),
             keyboardActions = KeyboardActions(onAny = {
                 focusManager.clearFocus()
-                onEvent(LoginEvent.Login)
-            }),
-            errorMessage = state.passwordError,
-            isEnabled = !state.isLoading,
-            modifier = Modifier
+                onEvent(SignUpEvent.SignUp)
+            })
         )
-
         CourtButton(
-            text = "Login",
+            text = "Create account",
             modifier = Modifier.fillMaxWidth(),
             isEnabled = !state.isLoading
         ) {
-            onEvent(LoginEvent.Login)
+            onEvent(SignUpEvent.SignUp)
         }
-
-        Spacer(Modifier.padding(4.dp))
-
         TextButton(
-            onClick = {} //TODO: Terminar!!!!!!!!!!!
-        ) {
-            Text("Forgot Password?", textDecoration = TextDecoration.Underline)
-        }
-
-        TextButton(
-            onClick = { navigateToSignUp() }
+            onClick = { navigateToSignIn() }
         ) {
             Text(buildAnnotatedString {
-                append("Don’t have an account? ")
+                append("Already have an account? ")
                 withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                    append("Sign up")
+                    append("Sign in")
                 }
             })
         }
-
     }
 }

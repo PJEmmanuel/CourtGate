@@ -1,4 +1,4 @@
-package com.example.courtgate.authentication.presentation.login
+package com.example.courtgate.authentication.presentation.signup
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -11,25 +11,24 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(
+class SignUpViewModel @Inject constructor(
     private val authenticationRepository: AuthenticationRepository
 ) : ViewModel() {
-
-    var state by mutableStateOf(LoginState())
+    var state by mutableStateOf(SignUpState())
         private set
 
-    fun onEvent(event: LoginEvent) {
+    fun onEvent(event: SignUpEvent) {
         when (event) {
-            is LoginEvent.EmailChange -> state = state.copy(email = event.email)
-            LoginEvent.Login -> login()
-            is LoginEvent.PasswordChange -> state = state.copy(password = event.password)
-            LoginEvent.SignUp -> state = state.copy(signUp = true)
+            is SignUpEvent.EmailChange -> state = state.copy(email = event.email)
+            is SignUpEvent.PasswordChange -> state = state.copy(password = event.password)
+            SignUpEvent.SignIn -> state = state.copy(signIn = true)
+            SignUpEvent.SignUp -> signUp()
         }
     }
 
-    private fun login() {
+    private fun signUp() {
         viewModelScope.launch {
-            authenticationRepository.login(state.email, state.password).onSuccess {
+            authenticationRepository.signUp(state.email, state.password).onSuccess {
                 println()
             }.onFailure {
                 val error = it.message
@@ -37,5 +36,4 @@ class LoginViewModel @Inject constructor(
             }
         }
     }
-
 }

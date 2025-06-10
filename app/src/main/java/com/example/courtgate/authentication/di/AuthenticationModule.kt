@@ -1,7 +1,7 @@
 package com.example.courtgate.authentication.di
 
 import com.example.courtgate.authentication.data.AuthenticationRepositoryImpl
-import com.example.courtgate.authentication.domain.AutheticationRepository
+import com.example.courtgate.authentication.domain.AuthenticationRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,7 +14,7 @@ object AuthenticationModule {
 
     @Provides
     @Singleton
-    fun providesAuthenticationRepository(): AutheticationRepository {
+    fun providesAuthenticationRepository(): AuthenticationRepository {
         return AuthenticationRepositoryImpl()
     }
 }

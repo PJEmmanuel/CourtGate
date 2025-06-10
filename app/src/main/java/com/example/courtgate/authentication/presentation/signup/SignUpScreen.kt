@@ -1,4 +1,4 @@
-package com.example.courtgate.authentication.presentation.login
+package com.example.courtgate.authentication.presentation.signup
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,12 +18,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.courtgate.R
-import com.example.courtgate.authentication.presentation.login.components.LoginForm
+import com.example.courtgate.authentication.presentation.signup.components.SignUpForm
 
 @Composable
-fun LoginScreen(
-   navigateToSignUp: () -> Unit,
-    viewModel: LoginViewModel = hiltViewModel(),
+fun SignUpScreen(
+    navigateToSignIn: () -> Unit,
+    viewModel: SignUpViewModel = hiltViewModel(),
 ) {
     val state = viewModel.state
 
@@ -36,6 +38,8 @@ fun LoginScreen(
                 )
             )
     ) {
+
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -47,11 +51,11 @@ fun LoginScreen(
                 contentDescription = "LogoCourtGate",
                 modifier = Modifier,
             )
-            LoginForm(
-                state = state,
+
+            SignUpForm(
                 onEvent = viewModel::onEvent,
-                navigateToSignUp = navigateToSignUp,
-                modifier = Modifier
+                navigateToSignIn = navigateToSignIn,
+                state = state,
             )
         }
     }

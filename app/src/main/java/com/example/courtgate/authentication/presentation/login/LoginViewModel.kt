@@ -5,14 +5,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.courtgate.authentication.domain.AuthenticationRepository
+import com.example.courtgate.authentication.domain.usecase.LoginUseCases
+import com.example.courtgate.authentication.presentation.utils.PasswordErrorParser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val authenticationRepository: AuthenticationRepository
+    private val loginUseCases: LoginUseCases
 ) : ViewModel() {
 
     var state by mutableStateOf(LoginState())
@@ -28,14 +29,33 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun login() {
-        viewModelScope.launch {
-            authenticationRepository.login(state.email, state.password).onSuccess {
-                println()
-            }.onFailure {
-                val error = it.message
-                println(error)
+        state = state.copy(
+            emailError = null,
+            passwordError = null
+        )
+        if (!loginUseCases.validateEmailUseCase(state.email)) {
+            state = state.copy(emailError = "El email no es válido")
+        }
+
+        val passwordResult = loginUseCases.validatePasswordUseCase(state.password)
+        state = state.copy(passwordError = PasswordErrorParser.parserError(passwordResult))
+
+        if (state.emailError == null && state.passwordError == null) {
+            viewModelScope.launch {
+                loginUseCases.loginWithEmailUseCase(state.email, state.password).onSuccess {
+                    state = state.copy(isLoggedIn = true)
+                    //TODO: isLoading = true??????????
+
+                    println() //TODO: Quitar!!!!!!!!!!
+
+                }.onFailure {
+                    state = state.copy(emailError = it.message) //TODO puede ponerse un mensaje personalizado...
+
+                    val error = it.message //TODO: Quitar!!!!!!!!!!
+                    println(error) //TODO: Quitar!!!!!!!!!!
+
+                }
             }
         }
     }
-
 }

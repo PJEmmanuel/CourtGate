@@ -1,7 +1,13 @@
 package com.example.courtgate.authentication.di
 
 import com.example.courtgate.authentication.data.AuthenticationRepositoryImpl
-import com.example.courtgate.authentication.domain.AuthenticationRepository
+import com.example.courtgate.authentication.data.matcher.EmailMatcherImpl
+import com.example.courtgate.authentication.domain.matcher.EmailMatcher
+import com.example.courtgate.authentication.domain.repository.AuthenticationRepository
+import com.example.courtgate.authentication.domain.usecase.LoginUseCases
+import com.example.courtgate.authentication.domain.usecase.LoginWithEmailUseCase
+import com.example.courtgate.authentication.domain.usecase.ValidateEmailUseCase
+import com.example.courtgate.authentication.domain.usecase.ValidatePasswordUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,5 +22,26 @@ object AuthenticationModule {
     @Singleton
     fun providesAuthenticationRepository(): AuthenticationRepository {
         return AuthenticationRepositoryImpl()
+    }
+
+    @Provides
+    @Singleton
+    fun providesEmailMatcher(): EmailMatcher {
+        return EmailMatcherImpl()
+    }
+
+    @Provides
+    @Singleton
+    fun providesLoginUseCases(
+        repository: AuthenticationRepository,
+        emailMatcher: EmailMatcher
+    ): LoginUseCases {
+        return LoginUseCases(
+            validatePasswordUseCase = ValidatePasswordUseCase(),
+            validateEmailUseCase = ValidateEmailUseCase(
+                emailMatcher = emailMatcher
+            ),
+            loginWithEmailUseCase = LoginWithEmailUseCase(repository)
+        )
     }
 }

@@ -101,7 +101,12 @@ fun CourtTextField(
         shape = RoundedCornerShape(12.dp),
         visualTransformation = if (isPassword && hidePassword) PasswordVisualTransformation() else VisualTransformation.None,
         keyboardOptions = keyboardOptions,
-        keyboardActions = keyboardActions
+        keyboardActions = keyboardActions,
+        supportingText = {
+            if(errorMessage !=null){
+                Text(text = errorMessage)
+            }
+        }
     )
 
 }

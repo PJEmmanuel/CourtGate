@@ -25,6 +25,8 @@ fun LoginScreen(
 ) {
     val state = viewModel.state
 
+    //TODO estudiar si es más performante usar el LaunchEffect o UI de estados
+
     Box(
         modifier = Modifier
             .fillMaxSize()

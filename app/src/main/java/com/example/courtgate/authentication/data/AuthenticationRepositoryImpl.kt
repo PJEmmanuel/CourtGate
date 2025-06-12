@@ -1,6 +1,6 @@
 package com.example.courtgate.authentication.data
 
-import com.example.courtgate.authentication.domain.AuthenticationRepository
+import com.example.courtgate.authentication.domain.repository.AuthenticationRepository
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await

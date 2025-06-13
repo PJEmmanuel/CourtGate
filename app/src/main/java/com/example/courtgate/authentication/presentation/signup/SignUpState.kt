@@ -6,6 +6,6 @@ data class SignUpState(
     val password: String = "",
     val passwordError: String? = null,
     val isLoading: Boolean = false,// Para la pantalla de carga
-    val isSignUpIn: Boolean = false,
-    val signIn: Boolean = false
+    val isSignedUpIn: Boolean = false,
+    val LogIn: Boolean = false
 )

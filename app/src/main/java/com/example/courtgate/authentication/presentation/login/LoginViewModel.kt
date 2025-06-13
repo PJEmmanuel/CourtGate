@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.courtgate.authentication.domain.usecase.LoginUseCases
 import com.example.courtgate.authentication.presentation.utils.PasswordErrorParser
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -41,21 +42,18 @@ class LoginViewModel @Inject constructor(
         state = state.copy(passwordError = PasswordErrorParser.parserError(passwordResult))
 
         if (state.emailError == null && state.passwordError == null) {
+
+            state = state.copy(isLoading = true)
+
             viewModelScope.launch {
                 loginUseCases.loginWithEmailUseCase(state.email, state.password).onSuccess {
                     state = state.copy(isLoggedIn = true)
-                    //TODO: isLoading = true??????????
-
-                    println() //TODO: Quitar!!!!!!!!!!
-
                 }.onFailure {
-                    state = state.copy(emailError = it.message) //TODO puede ponerse un mensaje personalizado...
-
-                    val error = it.message //TODO: Quitar!!!!!!!!!!
-                    println(error) //TODO: Quitar!!!!!!!!!!
-
+                    state =
+                        state.copy(emailError = it.message) //TODO puede ponerse un mensaje personalizado...
                 }
             }
+            state = state.copy(isLoading = false)
         }
     }
 }

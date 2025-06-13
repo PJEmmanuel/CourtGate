@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -22,10 +23,17 @@ import com.example.courtgate.authentication.presentation.signup.components.SignU
 
 @Composable
 fun SignUpScreen(
+    navigateToHome: () -> Unit,
     navigateToSignIn: () -> Unit,
     viewModel: SignUpViewModel = hiltViewModel(),
 ) {
     val state = viewModel.state
+
+    LaunchedEffect(state.isSignedUpIn) {
+        if (state.isSignedUpIn) {
+            navigateToHome()
+        }
+    }
 
     Box(
         modifier = Modifier

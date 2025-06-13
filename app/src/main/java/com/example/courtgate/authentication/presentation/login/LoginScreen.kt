@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -20,12 +21,17 @@ import com.example.courtgate.authentication.presentation.login.components.LoginF
 
 @Composable
 fun LoginScreen(
-   navigateToSignUp: () -> Unit,
+    navigateToHome: () -> Unit,
+    navigateToSignUp: () -> Unit,
     viewModel: LoginViewModel = hiltViewModel(),
 ) {
     val state = viewModel.state
 
-    //TODO estudiar si es más performante usar el LaunchEffect o UI de estados
+    LaunchedEffect(state.isLoggedIn) {
+        if (state.isLoggedIn) {
+            navigateToHome()
+        }
+    }
 
     Box(
         modifier = Modifier

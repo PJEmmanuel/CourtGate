@@ -7,3 +7,6 @@ object Login
 
 @Serializable
 object SignUp
+
+@Serializable
+object Home

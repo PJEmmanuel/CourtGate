@@ -7,20 +7,32 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.navigation.compose.rememberNavController
 import com.example.courtgate.navigation.NavigationWrapper
+import com.example.courtgate.navigation.screens.Home
+import com.example.courtgate.navigation.screens.Login
 import com.example.courtgate.ui.theme.CourtGateTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private val viewmodel by viewModels<MainViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             CourtGateTheme {
                 val navController = rememberNavController()
-                NavigationWrapper(navController)
+                NavigationWrapper(navController, startDestination = getStartDestination())
 
             }
+        }
+    }
+    //TODO: Acabar cuando toque. Está puesto para poder ejecutar
+    fun getStartDestination() : Any{
+        if(viewmodel.isLoggedIn){
+            return Home
+        }
+        return if(!viewmodel.isLoggedIn){  } else {
+
         }
     }
 }

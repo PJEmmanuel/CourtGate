@@ -4,6 +4,7 @@ import com.example.courtgate.authentication.data.AuthenticationRepositoryImpl
 import com.example.courtgate.authentication.data.matcher.EmailMatcherImpl
 import com.example.courtgate.authentication.domain.matcher.EmailMatcher
 import com.example.courtgate.authentication.domain.repository.AuthenticationRepository
+import com.example.courtgate.authentication.domain.usecase.GetUserIdUseCase
 import com.example.courtgate.authentication.domain.usecase.LoginUseCases
 import com.example.courtgate.authentication.domain.usecase.LoginWithEmailUseCase
 import com.example.courtgate.authentication.domain.usecase.SignUpUseCases
@@ -60,5 +61,13 @@ object AuthenticationModule {
             ),
             signUpWhitEmailUseCase = SignUpWhitEmailUseCase(repository)
         )
+    }
+
+    @Provides
+    @Singleton
+    fun providesGetUserIdUseCase(
+        repository: AuthenticationRepository
+    ): GetUserIdUseCase {
+        return GetUserIdUseCase(repository)
     }
 }

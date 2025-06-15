@@ -12,9 +12,9 @@ import com.example.courtgate.navigation.screens.Login
 import com.example.courtgate.navigation.screens.SignUp
 
 @Composable
-fun NavigationWrapper(navController: NavHostController) {
+fun NavigationWrapper(navController: NavHostController, startDestination : Any) {
 
-    NavHost(navController = navController, startDestination = Login) {
+    NavHost(navController = navController, startDestination = startDestination) {
 
         composable<Login> {
             LoginScreen(

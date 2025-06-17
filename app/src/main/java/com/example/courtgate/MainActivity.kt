@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.courtgate.navigation.NavigationWrapper
 import com.example.courtgate.navigation.screens.Home
 import com.example.courtgate.navigation.screens.Login
+import com.example.courtgate.navigation.screens.SignUp
 import com.example.courtgate.ui.theme.CourtGateTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -31,8 +32,8 @@ class MainActivity : ComponentActivity() {
         if(viewmodel.isLoggedIn){
             return Home
         }
-        return if(!viewmodel.isLoggedIn){  } else {
-
+        return if(!viewmodel.isLoggedIn){ Login } else {
+            SignUp
         }
     }
 }

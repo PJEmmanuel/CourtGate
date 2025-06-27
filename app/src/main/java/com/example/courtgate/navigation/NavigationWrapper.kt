@@ -1,18 +1,20 @@
 package com.example.courtgate.navigation
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.courtgate.authentication.presentation.login.LoginScreen
 import com.example.courtgate.authentication.presentation.signup.SignUpScreen
+import com.example.courtgate.home.presentation.find.FindCourtScreen
+import com.example.courtgate.home.presentation.home.HomeScreen
+import com.example.courtgate.navigation.screens.FindCourt
 import com.example.courtgate.navigation.screens.Home
 import com.example.courtgate.navigation.screens.Login
 import com.example.courtgate.navigation.screens.SignUp
 
 @Composable
-fun NavigationWrapper(navController: NavHostController, startDestination : Any) {
+fun NavigationWrapper(navController: NavHostController, startDestination: Any) {
 
     NavHost(navController = navController, startDestination = startDestination) {
 
@@ -44,7 +46,13 @@ fun NavigationWrapper(navController: NavHostController, startDestination : Any) 
             )
         }
         composable<Home> {
-            Text("Homepage")
+            HomeScreen(
+                navigateToFindCourt = { navController.navigate(FindCourt) }
+            )
+        }
+
+        composable<FindCourt> {
+            FindCourtScreen()
         }
     }
 

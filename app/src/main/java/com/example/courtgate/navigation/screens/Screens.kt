@@ -10,3 +10,6 @@ object SignUp
 
 @Serializable
 object Home
+
+@Serializable
+object FindCourt

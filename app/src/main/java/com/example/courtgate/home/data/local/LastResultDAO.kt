@@ -5,14 +5,15 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.courtgate.home.data.local.entity.LastResultEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface LastResultDAO {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertLastResult(lastResultEntity: LastResultEntity)
+     fun insertLastResult(lastResultEntity: LastResultEntity)
 
     @Query("SELECT * FROM LAST_RESULT")
-    suspend fun getLastResult(): List<LastResultEntity>
+     fun getLastResult(): List<LastResultEntity>
 
 }

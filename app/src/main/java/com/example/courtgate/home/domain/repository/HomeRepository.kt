@@ -1,11 +1,9 @@
 package com.example.courtgate.home.domain.repository
 
-import com.example.courtgate.home.data.local.entity.LastResultEntity
 import com.example.courtgate.home.domain.models.LastResult
-import kotlinx.coroutines.flow.Flow
 
 interface HomeRepository {
 
-    fun insertLastResult(lastResult: LastResult)
-    fun getLastResult(): List<LastResult>
+    suspend fun insertLastResult(lastResult: LastResult)
+    suspend fun getLastResult(): List<LastResult>
 }

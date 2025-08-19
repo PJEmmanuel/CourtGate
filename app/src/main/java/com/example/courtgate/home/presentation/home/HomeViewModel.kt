@@ -1,7 +1,6 @@
 package com.example.courtgate.home.presentation.home
 
 import androidx.lifecycle.ViewModel
-import com.example.courtgate.home.domain.usecase.HomeUsesCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -9,9 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
-    private val homeUsesCases: HomeUsesCases
-) : ViewModel() {
+class HomeViewModel @Inject constructor() : ViewModel() {
 
     private val _state = MutableStateFlow<HomeState>(HomeState())
     val state: StateFlow<HomeState> = _state.asStateFlow()

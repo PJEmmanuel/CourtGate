@@ -7,6 +7,8 @@ reservas, eliminando procesos manuales y mejorando la experiencia de los usuario
 
 ## 🚧 Estado del proyecto
 
+! ! ! Hay que tener en cuenta que se ha subido el proyecto para que se vea como se estructura y se aplican principios SOLID y Clean arquitecture. De momento no voy a dar acceso a la BBDD.
+
 > 🚀 Proyecto en desarrollo activo  
 > 🎓 Enfocado en el aprendizaje y aplicación de buenas prácticas de arquitectura en Android con Kotlin.
 

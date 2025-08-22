@@ -5,4 +5,5 @@ data class CourtList(
     val color: String,
     val located: String,
     val price: Int,
+    val image: String
 )

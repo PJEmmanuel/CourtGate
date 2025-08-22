@@ -73,7 +73,7 @@ fun ShowCourtCard(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = court.price.toString(),
+                    text = "${court.price.toString()}€",
                     style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.secondary
                 )

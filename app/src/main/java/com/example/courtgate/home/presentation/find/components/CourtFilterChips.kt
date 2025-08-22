@@ -40,6 +40,8 @@ fun CourtFilterChips(
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        //TODO: Esto hay que sacarlo de aquí y ponerlo en la siguiente pantalla
+
         Text("Hora", style = MaterialTheme.typography.labelMedium)
         LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             val hours = listOf("08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00")

@@ -8,5 +8,5 @@ interface HomeRepository {
     fun insertLastResult(lastResult: LastResult)
     fun getLastResult(): List<LastResult>
 
-    suspend fun getAllCourtToShow(): List<CourtList>
+    suspend fun getAllCourtToShow(): Result<List<CourtList>>
 }

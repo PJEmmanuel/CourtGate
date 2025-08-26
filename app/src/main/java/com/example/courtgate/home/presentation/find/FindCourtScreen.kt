@@ -15,6 +15,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.courtgate.core.presentation.CourtTopBar
+import com.example.courtgate.core.presentation.ErrorScreen
+import com.example.courtgate.core.presentation.LoadingScreen
+import com.example.courtgate.core.presentation.NoConnectionScreen
 import com.example.courtgate.home.presentation.core.CourtNavigationBar
 import com.example.courtgate.home.presentation.core.NavigationBarOnClick
 import com.example.courtgate.home.presentation.find.components.CourtFilterChips
@@ -28,7 +31,7 @@ fun FindCourtScreen(
     onNavigate: (NavigationBarOnClick) -> Unit,
     viewModel: FindViewModel = hiltViewModel()
 ) {
-   //val state by viewModel.state.collectAsState()
+    val state by viewModel.state.collectAsState()
 
     Scaffold(
         topBar = {
@@ -55,25 +58,51 @@ fun FindCourtScreen(
 
                 FindTittle()
 
-                // Fechas 7 días vista
-                FindDateSelector(
-                    mainDate = state.mainDate,
-                    onDateClick = {},
-                )
+                when (state) {
+                    is UiState.Error -> ErrorScreen((state as UiState.Error).toString())
+                    UiState.Idle -> {
+                        // Fechas 7 días vista
+                        FindDateSelector(
+                            mainDate = ZonedDateTime.now(), //TODO Hay que poner esto en VM
+                            onDateClick = {},
+                        )
 
-                // Filtro (outdoor e indoor, hora)
-                CourtFilterChips(
-                    selectedType = state.selectedType,
-                    onTypeSelected = {},
-                    selectedHour = state.selectedHour,
-                    onHourSelected = {},
-                )
+                        // Filtro (outdoor e indoor, hora)
+                        CourtFilterChips(
+                            selectedType = null,
+                            onTypeSelected = {},
+                            selectedHour = null,
+                            onHourSelected = {},
+                        )
 
-                //Resultados de pistas
-                ShowCourt(
-                    courtList = state.courtList,
-                    onCourtClick = {}
-                )
+                        NoConnectionScreen {  } //TODO poner el botón de cargar la lista
+
+                    }
+                    UiState.Loading -> LoadingScreen()
+                    is UiState.Success -> {
+
+                        // Fechas 7 días vista
+                        FindDateSelector(
+                            mainDate = (state as UiState.Success<FindState>).data.mainDate,
+                            onDateClick = {},
+                        )
+
+                        // Filtro (outdoor e indoor, hora)
+                        CourtFilterChips(
+                            selectedType = (state as UiState.Success<FindState>).data.selectedType,
+                            onTypeSelected = {},
+                            selectedHour = (state as UiState.Success<FindState>).data.selectedHour,
+                            onHourSelected = {},
+                        )
+
+                        //Resultados de pistas
+                        ShowCourt(
+                            courtList = (state as UiState.Success<FindState>).data.courtList,
+                            onCourtClick = {}
+                        )
+
+                    }
+                }
             }
         }
     }

@@ -8,10 +8,17 @@ import com.example.courtgate.home.data.local.CourtDatabase
 import com.example.courtgate.home.data.local.LastResultDAO
 import com.example.courtgate.home.data.repository.HomeRepositoryImpl
 import com.example.courtgate.home.domain.repository.HomeRepository
+import com.example.courtgate.home.domain.usecase.FindUseCases
+import com.example.courtgate.home.domain.usecase.GetAllCourtToShowUseCase
+import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+@Module
+@InstallIn(SingletonComponent::class)
 object HomeModule {
 
     @Singleton
@@ -28,5 +35,15 @@ object HomeModule {
     @Provides
     fun provideHomeRepository(dao: LastResultDAO): HomeRepository {
         return HomeRepositoryImpl(dao)
+    }
+
+    @Singleton
+    @Provides
+    fun providesFindUseCases(
+        repository: HomeRepository,
+    ): FindUseCases {
+        return FindUseCases(
+            getAllCourtToShowUseCase = GetAllCourtToShowUseCase(repository)
+        )
     }
 }

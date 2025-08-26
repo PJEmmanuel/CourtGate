@@ -23,12 +23,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.courtgate.R
 import com.example.courtgate.core.presentation.CourtTopBar
 import com.example.courtgate.home.presentation.core.CourtNavigationBar
+import com.example.courtgate.home.presentation.core.NavigationBarOnClick
 import com.example.courtgate.home.presentation.home.components.LastResult
 import com.example.courtgate.home.presentation.home.components.TitleForm
 
 @Composable
 fun HomeScreen(
-    navigateToFindCourt : () -> Unit,
+    onNavigate: (NavigationBarOnClick) -> Unit,
+    navigateToFindCourt: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
@@ -45,7 +47,11 @@ fun HomeScreen(
                 },
             )
         },
-        bottomBar = { CourtNavigationBar() }
+        bottomBar = {
+            CourtNavigationBar(
+                onNavigate = onNavigate,
+            )
+        }
     ) {
 
         Box(
@@ -67,7 +73,7 @@ fun HomeScreen(
                 )
 
                 Button(
-                    onClick = {navigateToFindCourt()},
+                    onClick = { navigateToFindCourt() },
                     modifier = Modifier
                         .fillMaxWidth()
                         .aspectRatio(4f)

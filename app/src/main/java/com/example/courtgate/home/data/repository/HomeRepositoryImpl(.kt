@@ -2,7 +2,6 @@ package com.example.courtgate.home.data.repository
 
 import android.util.Log
 import com.example.courtgate.home.data.local.LastResultDAO
-import com.example.courtgate.home.data.local.entity.LastResultEntity
 import com.example.courtgate.home.data.mapper.toDomain
 import com.example.courtgate.home.data.mapper.toDomainList
 import com.example.courtgate.home.data.mapper.toEntity
@@ -28,7 +27,7 @@ class HomeRepositoryImpl(private val dao: LastResultDAO) : HomeRepository {
     //FindCourtScreen
     override suspend fun getAllCourtToShow(): List<CourtList> {
         return try {
-            val dtoList = Firebase.firestore.collection("courts")
+            val dtoList = Firebase.firestore.collection("courts")//TODO Hardcoded!!
                 .get()
                 .await().documents
                 .mapNotNull {

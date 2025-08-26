@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.courtgate.authentication.domain.usecase.LoginUseCases
 import com.example.courtgate.authentication.presentation.utils.PasswordErrorParser
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

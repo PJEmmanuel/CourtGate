@@ -28,7 +28,8 @@ fun FindCourtScreen(
     onNavigate: (NavigationBarOnClick) -> Unit,
     viewModel: FindViewModel = hiltViewModel()
 ) {
-    val state by viewModel.state.collectAsState()
+   //val state by viewModel.state.collectAsState()
+
     Scaffold(
         topBar = {
             CourtTopBar(
@@ -73,7 +74,6 @@ fun FindCourtScreen(
                     courtList = state.courtList,
                     onCourtClick = {}
                 )
-
             }
         }
     }

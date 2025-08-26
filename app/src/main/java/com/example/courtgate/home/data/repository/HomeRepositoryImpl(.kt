@@ -25,7 +25,22 @@ class HomeRepositoryImpl(private val dao: LastResultDAO) : HomeRepository {
     }
 
     //FindCourtScreen
-    override suspend fun getAllCourtToShow(): List<CourtList> {
+    /* override suspend fun getAllCourtToShow(): List<CourtList> {
+         return try {
+             val dtoList = Firebase.firestore.collection("courts")//TODO Hardcoded!!
+                 .get()
+                 .await().documents
+                 .mapNotNull {
+                     it.toObject(CourtListDTO::class.java)
+                 }
+             dtoList.toDomainList()
+         } catch (e: Exception) {
+             Log.e("HomeRepositoryImpl", "Error fetching courts from Firestore", e)
+             emptyList()
+         }
+     }*/
+
+    override suspend fun getAllCourtToShow(): Result<List<CourtList>> {
         return try {
             val dtoList = Firebase.firestore.collection("courts")//TODO Hardcoded!!
                 .get()
@@ -33,10 +48,10 @@ class HomeRepositoryImpl(private val dao: LastResultDAO) : HomeRepository {
                 .mapNotNull {
                     it.toObject(CourtListDTO::class.java)
                 }
-            dtoList.toDomainList()
+            Result.success(dtoList.toDomainList())
         } catch (e: Exception) {
             Log.e("HomeRepositoryImpl", "Error fetching courts from Firestore", e)
-            emptyList()
+            Result.failure(e)
         }
     }
 }

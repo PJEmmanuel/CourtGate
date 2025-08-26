@@ -1,8 +1,5 @@
 package com.example.courtgate.home.presentation.find
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.courtgate.home.domain.usecase.FindUseCases
@@ -18,11 +15,12 @@ class FindViewModel @Inject constructor(
     private val findUseCases: FindUseCases
 ) : ViewModel() {
 
-   /* private val _state = MutableStateFlow<FindState>(FindState())
-    val state: StateFlow<FindState> = _state.asStateFlow()*/
-    var state by mutableStateOf(FindState())
-    private set
+    private val _state = MutableStateFlow<UiState<FindState>>(UiState.Idle)
+    val state: StateFlow<UiState<FindState>> = _state.asStateFlow()
 
+    init {
+        fetchCourtList()
+    }
 
     fun selectedDate() {} // obtengo los datos de la fecha, hora..
 
@@ -32,10 +30,15 @@ class FindViewModel @Inject constructor(
 
     fun fetchCourtList() {
         viewModelScope.launch {
-            val getCourt = findUseCases.getAllCourtToShowUseCase
-            _state.value.courtList = getCourt
+            _state.value = UiState.Loading
+            val result = findUseCases.getAllCourtToShowUseCase.invoke()
+            _state.value = result.fold(
+                onSuccess = {UiState.Success(
+                    data = FindState(courtList = it)
+                ) },
+                onFailure = {UiState.Error(it.message.orEmpty())}
+            )
         }
-
     } // Obtengo los datos de todas las pistas del server
 
 }

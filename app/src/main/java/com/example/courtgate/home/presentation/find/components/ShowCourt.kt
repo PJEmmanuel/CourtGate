@@ -23,11 +23,10 @@ fun ShowCourt(
     )
     {
         items(count = courtList.size) {
-
             ShowCourtCard(
                 modifier = Modifier,
                 court = courtList[it],
-                onClick = { onCourtClick } //TODO mandar la pista selec...
+                onClick = { onCourtClick(courtList[it]) } //TODO mandar la pista selec...
             )
         }
     }

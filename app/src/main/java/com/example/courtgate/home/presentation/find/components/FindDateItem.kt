@@ -25,12 +25,13 @@ fun FindDateItem(
     modifier: Modifier,
     date: ZonedDateTime,
     onClick: () -> Unit,
+    isSelected: Boolean,
 ) {
     Card(
         shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(4.dp),
+        elevation = CardDefaults.cardElevation(if (isSelected) 2.dp else 0.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
+            containerColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
         ),
         modifier = modifier
             .width(60.dp)
@@ -47,19 +48,19 @@ fun FindDateItem(
             Text(
                 text = date.dayOfWeek.name.take(3),
                 style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.primary
+                color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = date.dayOfMonth.toString(),
                 style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface
+                color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
             )
         }
     }
 }
 
-@Preview
+/*@Preview
 @Composable
 fun PreviewFindDataItem() {
     FindDateItem(
@@ -67,4 +68,4 @@ fun PreviewFindDataItem() {
         date = ZonedDateTime.now(),
         onClick = {}
     )
-}
+}*/

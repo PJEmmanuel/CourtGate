@@ -41,7 +41,7 @@ fun ShowCourtCard(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
-        modifier = Modifier
+        modifier = modifier
             .padding(16.dp)
             .fillMaxWidth()
             .clickable { onClick() }

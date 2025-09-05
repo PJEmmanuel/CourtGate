@@ -4,59 +4,70 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.courtgate.home.domain.models.FilterOption
 
 @Composable
 fun CourtFilterChips(
+    filters: List<FilterOption>,
     selectedType: String?,
-    onTypeSelected: (String?) -> Unit,
+    onLocatedSelected: (String?) -> Unit,
     selectedHour: String?,
     onHourSelected: (String?) -> Unit
 ) {
+
+    //TODO hay que mirar el hardcode!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!SGJPDFBPÑDFMZPOO
     Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
         Text("Tipo de pista", style = MaterialTheme.typography.labelMedium)
+
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            FilterChip(label = "Todas", isSelected = selectedType == null) {
-                onTypeSelected(null)
+            filters.forEach { filter ->
+                FilterChip(
+                    located = filter.located,
+                    isSelected = filter.isSelected,
+                    onClick = { onLocatedSelected(filter.located) }
+                )
             }
-            FilterChip(label = "Indoor", isSelected = selectedType == "indoor") {
-                onTypeSelected("indoor")
-            }
-            FilterChip(label = "Outdoor", isSelected = selectedType == "outdoor") {
-                onTypeSelected("outdoor")
-            }
-        }
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        //TODO: Esto hay que sacarlo de aquí y ponerlo en la siguiente pantalla
-
-        Text("Hora", style = MaterialTheme.typography.labelMedium)
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            val hours = listOf("08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00")
-            items(hours.size) {
-                FilterChip(label = hours[it], isSelected = selectedHour == it.toString()) {
-                    onHourSelected(it.toString())
+            /*Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                FilterChip(label = "Todas", isSelected = selectedType == null) {
+                    onTypeSelected(null)
                 }
-            }
+                FilterChip(label = "Indoor", isSelected = selectedType == "Indoor") {
+                    onTypeSelected("Indoor")
+                }
+                FilterChip(label = "Outdoor", isSelected = selectedType == "Outdoor") {
+                    onTypeSelected("Outdoor")
+                }
+            }*/
+
+            /* Spacer(modifier = Modifier.height(8.dp))
+
+             //TODO: Esto hay que sacarlo de aquí y ponerlo en la siguiente pantalla
+
+             Text("Hora", style = MaterialTheme.typography.labelMedium)
+             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                 val hours = listOf("08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00")
+                 items(hours.size) {
+                     FilterChip(label = hours[it], isSelected = selectedHour == it.toString()) {
+                         onHourSelected(it.toString())
+                     }
+                 }
+             }*/
         }
     }
 }
 
 @Composable
 fun FilterChip(
-    label: String,
+    located: String,
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
@@ -69,29 +80,10 @@ fun FilterChip(
             .padding(4.dp)
     ) {
         Text(
-            text = label,
+            text = located,
             color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
             style = MaterialTheme.typography.labelLarge
         )
     }
 }
-
-/*@Preview
-@Composable
-fun Showfilter() {
-    FilterChip(
-        label = "08:00",
-        isSelected = true
-    ) { }
-}
-
-@Preview
-@Composable
-fun ShowfilterChips() {
-    CourtFilterChips(
-        selectedType = "Indoor",
-        onTypeSelected = {},
-        selectedHour = "10:30"
-    ) { }
-}*/

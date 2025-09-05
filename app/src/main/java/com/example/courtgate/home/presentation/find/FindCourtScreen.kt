@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.twotone.ArrowBack
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -48,11 +47,11 @@ fun FindCourtScreen(
             CourtNavigationBar(onNavigate = onNavigate)
         }
 
-    ) {
+    ) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues = it)
+                .padding(paddingValues = paddingValues)
         ) {
             Column() {
 
@@ -61,46 +60,48 @@ fun FindCourtScreen(
                 when (state) {
                     is UiState.Error -> ErrorScreen((state as UiState.Error).toString())
                     UiState.Idle -> {
-                        // Fechas 7 días vista
+                        NoConnectionScreen { } //TODO poner el botón de cargar la lista
+                    }
+
+                    UiState.Loading -> {
                         FindDateSelector(
-                            mainDate = ZonedDateTime.now(), //TODO Hay que poner esto en VM
-                            onDateClick = {},
+                            mainDate = ZonedDateTime.now(), //TODO Arreglar
+                            onDateClick = { },
+                            selectedDate = ZonedDateTime.now(),
                         )
 
                         // Filtro (outdoor e indoor, hora)
-                        CourtFilterChips(
-                            selectedType = null,
-                            onTypeSelected = {},
-                            selectedHour = null,
+                        /*CourtFilterChips(
+                            selectedType = "",
+                            onTypeSelected = { },
+                            selectedHour = "",
                             onHourSelected = {},
-                        )
-
-                        NoConnectionScreen {  } //TODO poner el botón de cargar la lista
-
+                        )*/
+                        LoadingScreen()
                     }
-                    UiState.Loading -> LoadingScreen()
-                    is UiState.Success -> {
 
+                    is UiState.Success -> { //TODO Elijo pista y recarga el VM entero y rehace la pantalla
                         // Fechas 7 días vista
                         FindDateSelector(
                             mainDate = (state as UiState.Success<FindState>).data.mainDate,
-                            onDateClick = {},
+                            onDateClick = { viewModel.selectedDate(it) },
+                            selectedDate = (state as UiState.Success<FindState>).data.selectedDate,
                         )
 
                         // Filtro (outdoor e indoor, hora)
                         CourtFilterChips(
-                            selectedType = (state as UiState.Success<FindState>).data.selectedType,
-                            onTypeSelected = {},
+                            selectedType = (state as UiState.Success<FindState>).data.selectedLocate,
+                            onLocatedSelected = { viewModel.selectedFilterCourt(it) },
                             selectedHour = (state as UiState.Success<FindState>).data.selectedHour,
+                            filters = (state as UiState.Success<FindState>).data.filterList,
                             onHourSelected = {},
                         )
 
                         //Resultados de pistas
                         ShowCourt(
-                            courtList = (state as UiState.Success<FindState>).data.courtList,
-                            onCourtClick = {}
+                            courtList = (state as UiState.Success<FindState>).data.filteredCourtList,
+                            onCourtClick = { viewModel.selectedCourt(it) }
                         )
-
                     }
                 }
             }

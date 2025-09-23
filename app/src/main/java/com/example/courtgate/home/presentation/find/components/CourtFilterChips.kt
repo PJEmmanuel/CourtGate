@@ -11,21 +11,20 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.courtgate.R
 import com.example.courtgate.home.domain.models.FilterOption
 
 @Composable
 fun CourtFilterChips(
     filters: List<FilterOption>,
-    selectedType: String?,
     onLocatedSelected: (String?) -> Unit,
     selectedHour: String?,
     onHourSelected: (String?) -> Unit
 ) {
-
-    //TODO hay que mirar el hardcode!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!SGJPDFBPÑDFMZPOO
     Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-        Text("Tipo de pista", style = MaterialTheme.typography.labelMedium)
+        Text(stringResource(R.string.filter_tittle), style = MaterialTheme.typography.labelMedium)
 
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             filters.forEach { filter ->

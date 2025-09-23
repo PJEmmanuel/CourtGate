@@ -25,25 +25,26 @@ class FindViewModel @Inject constructor(
 
 
     init {
-        fetchCourtList()
+        Log.i("checkINIT", _state.value.toString())
+        fetchCourtList(date = ZonedDateTime.now())
         Log.i("checkINIT", "Ha recargado el VM")
     }
 
-    //TODO revisar la actualizacion de datos
     fun selectedDate(selectedDate: ZonedDateTime) {
-        if (_state.value is UiState.Success) {
-            _state.value = UiState.Success(data = FindState(selectedDate = selectedDate))
+        _state.update { currentUiState ->
+            if (currentUiState is UiState.Success) {
+                val oldData = currentUiState.data
+                currentUiState.copy(data = oldData.copy(selectedDate = selectedDate))
+            } else currentUiState
         }
+        fetchCourtList(date = selectedDate)//TODO: Va justo en esta linea? es correcta la actualizacion aqui?
     }
 
-    //TODO revisar la actualizacion de datos
+    //TODO revisar la actualization de datos
     fun selectedCourt(selectedCourt: CourtList) {
-        if (_state.value is UiState.Success) {
-            _state.value = UiState.Success(data = FindState(selectedCourt = selectedCourt))
-        }
     }
 
-    //TODO una fun() que escupa la lista
+
     fun selectedFilterCourt(selectedLocate: String?) {
         _state.update { currentUiState ->
             if (currentUiState is UiState.Success) {
@@ -79,29 +80,67 @@ class FindViewModel @Inject constructor(
         }
         Log.i("checkINIT", "Filter $selectedLocate")
         Log.i("checkINIT", "Filter ${_state.value}")
-
-        /*if (_state.value is UiState.Success) {
-            _state.value = UiState.Success(data = FindState(selectedType = selectedType))
-
-            val filters = (_state.value as UiState.Success<FindState>).data.filterList
-            //  fetchCourtList(selectedType)
-            _state.value = UiState.Success(
-                data = FindState(
-                    filterList = onSelectedFilter(
-                        listFilter = filters,
-                        selectedType
-                    )
-                )
-            )
-            Log.i("checkINIT", "Filter $selectedType")
-            Log.i("checkINIT", "Filter ${_state.value}")
-        }*/
     }
 
-    private fun fetchCourtList() {
+    private fun fetchCourtList(date: ZonedDateTime) {
+        viewModelScope.launch {
+            when (_state.value) {
+                is UiState.Error -> {}
+                UiState.Idle -> {
+                    _state.value = UiState.Loading(
+                        data = FindState()
+                    )
+                    val result = findUseCases.getAllCourtToShowUseCase.invoke(date = date)
+                    _state.value = result.fold(
+                        onSuccess = {
+                            Log.i("checkINIT", "IdleWhen")
+                            UiState.Success(
+                                data = FindState(
+                                    mainCourtList = it,
+                                    filteredCourtList = it,
+                                    filterList = fetchFilter(it)
+                                )
+                            )
+                        },
+                        onFailure = { UiState.Error(it.message.orEmpty()) }
+                    )
+                }
+
+                is UiState.Loading -> {}
+                is UiState.Success -> {
+                    val prevData = (_state.value as? UiState.Success)?.data //TODO: Util????????????????
+                    _state.value = UiState.Loading(
+                        data = FindState(selectedDate = date)
+                    )
+                    val fetchData =
+                        findUseCases.getAllCourtToShowUseCase.invoke(date = date)
+                    _state.update {
+                        Log.i("checkINIT", "SuccessWhen")
+                        fetchData.fold(
+                            onSuccess = {
+                                UiState.Success(
+                                    data = FindState(
+                                        mainCourtList = it,
+                                        filteredCourtList = it,
+                                        filterList = fetchFilter(it),
+                                        selectedDate = date,
+                                    )
+                                )
+
+                            },
+                            onFailure = { UiState.Error(it.message.orEmpty()) }
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+
+    /*private fun fetchCourtList(date : ZonedDateTime) {
         viewModelScope.launch {
             _state.value = UiState.Loading
-            val result = findUseCases.getAllCourtToShowUseCase.invoke()
+            val result = findUseCases.getAllCourtToShowUseCase.invoke(date = date)
             _state.value = result.fold(
                 onSuccess = {
                     Log.i("checkINIT", "onSuccessSide")
@@ -116,9 +155,9 @@ class FindViewModel @Inject constructor(
                 onFailure = { UiState.Error(it.message.orEmpty()) }
             )
         }
-    }
+    }*/
 
-    // Mapea los tipos de pista directamente ACABADO
+    // Mapea los tipos de pista directamente
     private fun fetchFilter(mainList: List<CourtList>): List<FilterOption> {
         val options = mutableListOf<FilterOption>()
         // Mapear tipos del backend
@@ -126,7 +165,6 @@ class FindViewModel @Inject constructor(
             mainList.map { located ->
                 FilterOption(
                     located = located.located,
-                    name = located.name,
                     isSelected = false
                 )
             }
@@ -134,7 +172,9 @@ class FindViewModel @Inject constructor(
         return options
     }
 
-    // Activa el filtro elegido
+
+    /***** Filtros *****/
+// Activa el filtro elegido
     private fun onSelectedFilter(
         listFilter: List<FilterOption>,
         selectedLocate: String?
@@ -145,7 +185,6 @@ class FindViewModel @Inject constructor(
             listFilter.map {
                 FilterOption(
                     located = it.located,
-                    name = it.name,
                     isSelected = selectedLocate == it.located && !it.isSelected
                 )
             }

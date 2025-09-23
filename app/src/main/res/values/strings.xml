@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">CourtGate</string>
+    <string name="filter_tittle">Tipo de pista</string>
 </resources>

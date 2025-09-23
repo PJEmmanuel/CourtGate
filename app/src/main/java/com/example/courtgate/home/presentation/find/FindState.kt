@@ -6,7 +6,7 @@ import java.time.ZonedDateTime
 
 sealed class UiState<out T> {
     object Idle : UiState<Nothing>()
-    object Loading : UiState<Nothing>()
+    data class Loading<T>(val data: T) : UiState<T>()
     data class Success<T>(val data: T) : UiState<T>()
     data class Error(val message: String) : UiState<Nothing>()
 }

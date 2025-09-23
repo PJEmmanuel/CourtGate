@@ -63,11 +63,11 @@ fun FindCourtScreen(
                         NoConnectionScreen { } //TODO poner el botón de cargar la lista
                     }
 
-                    UiState.Loading -> {
+                    is UiState.Loading -> {
                         FindDateSelector(
-                            mainDate = ZonedDateTime.now(), //TODO Arreglar
+                            mainDate = (state as UiState.Loading<FindState>).data.mainDate,
                             onDateClick = { },
-                            selectedDate = ZonedDateTime.now(),
+                            selectedDate = (state as UiState.Loading<FindState>).data.selectedDate
                         )
 
                         // Filtro (outdoor e indoor, hora)
@@ -80,17 +80,20 @@ fun FindCourtScreen(
                         LoadingScreen()
                     }
 
-                    is UiState.Success -> { //TODO Elijo pista y recarga el VM entero y rehace la pantalla
+                    is UiState.Success -> {
                         // Fechas 7 días vista
                         FindDateSelector(
                             mainDate = (state as UiState.Success<FindState>).data.mainDate,
-                            onDateClick = { viewModel.selectedDate(it) },
+                            onDateClick =
+                            {
+                                viewModel.selectedDate(it)
+                               //viewModel.fetchCourtList(it)
+                            },
                             selectedDate = (state as UiState.Success<FindState>).data.selectedDate,
                         )
 
                         // Filtro (outdoor e indoor, hora)
                         CourtFilterChips(
-                            selectedType = (state as UiState.Success<FindState>).data.selectedLocate,
                             onLocatedSelected = { viewModel.selectedFilterCourt(it) },
                             selectedHour = (state as UiState.Success<FindState>).data.selectedHour,
                             filters = (state as UiState.Success<FindState>).data.filterList,

@@ -2,16 +2,23 @@ package com.example.courtgate.home.data.repository
 
 import android.util.Log
 import com.example.courtgate.home.data.local.LastResultDAO
+import com.example.courtgate.home.data.mapper.toBookingDomainList
 import com.example.courtgate.home.data.mapper.toDomain
 import com.example.courtgate.home.data.mapper.toDomainList
 import com.example.courtgate.home.data.mapper.toEntity
+import com.example.courtgate.home.data.remote.CourtBookingDTO
 import com.example.courtgate.home.data.remote.CourtListDTO
+import com.example.courtgate.home.domain.models.CourtBooking
 import com.example.courtgate.home.domain.models.CourtList
 import com.example.courtgate.home.domain.models.LastResult
 import com.example.courtgate.home.domain.repository.HomeRepository
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
+import java.time.Instant
+import java.time.ZonedDateTime
+import java.util.Date
 
 class HomeRepositoryImpl(private val dao: LastResultDAO) : HomeRepository {
 
@@ -46,11 +53,33 @@ class HomeRepositoryImpl(private val dao: LastResultDAO) : HomeRepository {
                 .get()
                 .await().documents
                 .mapNotNull {
+                    Log.i("getAll", it.toString())
                     it.toObject(CourtListDTO::class.java)
                 }
             Result.success(dtoList.toDomainList())
         } catch (e: Exception) {
             Log.e("HomeRepositoryImpl", "Error fetching courts from Firestore", e)
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getBookingsByDate(
+        startOfDay: Instant,
+        endOfDay: Instant
+    ): Result<List<CourtBooking>> {
+        return try {
+            val dtoBookingList = Firebase.firestore.collection("bookings")
+                .whereGreaterThanOrEqualTo("date", Timestamp(Date.from(startOfDay)))
+                .whereLessThan("date", Timestamp(Date.from(endOfDay)))
+                //.whereEqualTo("date", Timestamp(Date.from(startOfDay)))
+                //.whereGreaterThanOrEqualTo("date", Timestamp(Date.from(endOfDay)))
+                .get()
+                .await().documents
+                .mapNotNull {
+                    it.toObject(CourtBookingDTO::class.java)
+                }
+            Result.success(dtoBookingList.toBookingDomainList())
+        } catch (e: Exception) {
             Result.failure(e)
         }
     }

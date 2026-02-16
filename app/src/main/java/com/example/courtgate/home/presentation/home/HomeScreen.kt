@@ -21,6 +21,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.courtgate.R
+import com.example.courtgate.core.presentation.CourtButton
 import com.example.courtgate.core.presentation.CourtTopBar
 import com.example.courtgate.home.presentation.core.CourtNavigationBar
 import com.example.courtgate.home.presentation.core.NavigationBarOnClick
@@ -72,17 +73,15 @@ fun HomeScreen(
                     modifier = Modifier
                 )
 
-                Button(
+                CourtButton(
                     onClick = { navigateToFindCourt() },
                     modifier = Modifier
                         .fillMaxWidth()
                         .aspectRatio(4f)
                         .padding(16.dp),
-                    shape = ShapeDefaults.Small
-                ) {
-
-                    Text(text = "Find a Court", style = MaterialTheme.typography.labelMedium)
-                }
+                    shape = ShapeDefaults.Small,
+                    text = "Find a Court",
+                )
             }
         }
     }

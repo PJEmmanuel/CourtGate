@@ -11,5 +11,11 @@ interface HomeRepository {
     fun getLastResult(): List<LastResult>
 
     suspend fun getAllCourtToShow(): Result<List<CourtList>>
-    suspend fun getBookingsByDate( startOfDay:Instant, endOfDay:Instant): Result<List<CourtBooking>>
+    suspend fun getBookingsByDate(
+        startOfDay: Instant,
+        endOfDay: Instant
+    ): Result<List<CourtBooking>>
+
+    suspend fun getCourtSelectedByCode(code: String): Result<CourtList>
+    suspend fun getFreeHoursOnReservedCourts(code: String, startOfDay: Instant, endOfDay: Instant): Result<List<CourtBooking>>
 }

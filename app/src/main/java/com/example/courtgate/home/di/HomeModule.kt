@@ -8,8 +8,11 @@ import com.example.courtgate.home.data.local.CourtDatabase
 import com.example.courtgate.home.data.local.LastResultDAO
 import com.example.courtgate.home.data.repository.HomeRepositoryImpl
 import com.example.courtgate.home.domain.repository.HomeRepository
+import com.example.courtgate.home.domain.usecase.BookingUseCases
 import com.example.courtgate.home.domain.usecase.FindUseCases
 import com.example.courtgate.home.domain.usecase.GetAllCourtToShowUseCase
+import com.example.courtgate.home.domain.usecase.GetCourtSelectedByCode
+import com.example.courtgate.home.domain.usecase.GetFreeHoursOnReservedCourts
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -44,6 +47,15 @@ object HomeModule {
     ): FindUseCases {
         return FindUseCases(
             getAllCourtToShowUseCase = GetAllCourtToShowUseCase(repository)
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun providesBookingUseCases(repository: HomeRepository): BookingUseCases {
+        return BookingUseCases(
+            getCourtSelectedByCode = GetCourtSelectedByCode(repository),
+            getFreeHoursOnReservedCourts = GetFreeHoursOnReservedCourts(repository)
         )
     }
 }

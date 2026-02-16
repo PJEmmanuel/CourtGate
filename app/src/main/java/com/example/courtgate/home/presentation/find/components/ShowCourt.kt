@@ -1,5 +1,6 @@
 package com.example.courtgate.home.presentation.find.components
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding

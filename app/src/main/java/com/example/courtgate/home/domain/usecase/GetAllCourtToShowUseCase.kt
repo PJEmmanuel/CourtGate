@@ -8,8 +8,10 @@ import java.time.ZonedDateTime
 
 class GetAllCourtToShowUseCase(private val repository: HomeRepository) {
     suspend operator fun invoke(date: ZonedDateTime): Result<List<CourtList>> {
-        //val offeredHours = listOf("08:00", "09:30", "11:00", "12:30", "16:00", "17:30")
-        val offeredHours = listOf("16:00")
+        val offeredHours = listOf("08:00", "09:30", "11:00", "12:30", "16:00", "17:30")
+        //val offeredHours = listOf("16:00")
+
+        //TODO: Hacer una constant !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         val zone = ZoneId.of("Europe/Madrid")
         // convertir fecha → rango del día completo
@@ -19,8 +21,6 @@ class GetAllCourtToShowUseCase(private val repository: HomeRepository) {
         val allCourt = repository.getAllCourtToShow()
         val allBooking = repository.getBookingsByDate(startOfDay = startOfDay, endOfDay = endOfDay)
 
-        Log.i("getData", "Lista de reservas: $allBooking")
-        Log.i("getData", "Lista de Pistas: $allCourt")
         if (allCourt.isFailure || allBooking.isFailure) {
             return Result.failure(Exception("Error fetching data"))
         }
@@ -31,14 +31,13 @@ class GetAllCourtToShowUseCase(private val repository: HomeRepository) {
         val availableCourts = courts.filter { court ->
             val courtBookings = booking.filter { it.code == court.code }
             val reservedHours = courtBookings.map { it.hour }
-            Log.i("getData", "Lista de courtboo: $courtBookings")
-            Log.i("getData", "Lista de reserHour: $reservedHours")
+
 
             val freeHours = offeredHours.filter { it !in reservedHours }
-            Log.i("getData", "Lista de freehour: $freeHours")
+
             freeHours.isNotEmpty()
         }
-        Log.i("getData", "Lista de avaible: $availableCourts")
+
 
         return Result.success(availableCourts)
 

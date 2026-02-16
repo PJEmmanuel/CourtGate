@@ -4,11 +4,14 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import com.example.courtgate.authentication.presentation.login.LoginScreen
 import com.example.courtgate.authentication.presentation.signup.SignUpScreen
+import com.example.courtgate.home.presentation.booking.BookingScreen
 import com.example.courtgate.home.presentation.find.FindCourtScreen
 import com.example.courtgate.home.presentation.home.HomeScreen
 import com.example.courtgate.home.presentation.core.NavigationBarOnClick
+import com.example.courtgate.navigation.screens.Booking
 import com.example.courtgate.navigation.screens.FindCourt
 import com.example.courtgate.navigation.screens.Home
 import com.example.courtgate.navigation.screens.Login
@@ -109,7 +112,38 @@ fun NavigationWrapper(navController: NavHostController, startDestination: Any) {
                             // navController.navigate(Setting)
                         }
                     }
+                },
+                navigateToBookingScreen = { code, date ->
+                    navController.navigate(
+                        Booking(
+                            code = code,
+                            date = date
+                        )
+                    ) {
+                        popUpTo(FindCourt) { inclusive = false }
+                        launchSingleTop = true
+                    }
                 }
+            )
+        }
+
+        composable<Booking> {
+            val booking: Booking = it.toRoute()
+            BookingScreen(
+                code = booking.code,
+                date = booking.date,
+               // onNavigate = {},
+                navigateBackToFindCourt = {
+                    navController.navigate(FindCourt){
+                        popUpTo<FindCourt>{inclusive = true}
+                    }
+                }
+
+                /*navigateToFindCourt = {
+                    navController.navigate(Home) {
+                        popUpTo<Login> { inclusive = true }
+                    }
+                }*/
             )
         }
     }

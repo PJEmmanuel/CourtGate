@@ -19,7 +19,7 @@ import com.example.courtgate.core.presentation.LoadingScreen
 import com.example.courtgate.core.presentation.NoConnectionScreen
 import com.example.courtgate.home.presentation.core.CourtNavigationBar
 import com.example.courtgate.home.presentation.core.NavigationBarOnClick
-import com.example.courtgate.home.presentation.find.components.CourtFilterChips
+import com.example.courtgate.home.presentation.find.components.CourtFilter
 import com.example.courtgate.home.presentation.find.components.FindDateSelector
 import com.example.courtgate.home.presentation.find.components.FindTittle
 import com.example.courtgate.home.presentation.find.components.ShowCourt
@@ -27,6 +27,7 @@ import java.time.ZonedDateTime
 
 @Composable
 fun FindCourtScreen(
+    navigateToBookingScreen: (String, String) -> Unit,
     onNavigate: (NavigationBarOnClick) -> Unit,
     viewModel: FindViewModel = hiltViewModel()
 ) {
@@ -58,16 +59,16 @@ fun FindCourtScreen(
                 FindTittle()
 
                 when (state) {
-                    is UiState.Error -> ErrorScreen((state as UiState.Error).toString())
-                    UiState.Idle -> {
+                    is FindUiState.Error -> ErrorScreen((state as FindUiState.Error).toString())
+                    FindUiState.Idle -> {
                         NoConnectionScreen { } //TODO poner el botón de cargar la lista
                     }
 
-                    is UiState.Loading -> {
+                    is FindUiState.Loading -> {
                         FindDateSelector(
-                            mainDate = (state as UiState.Loading<FindState>).data.mainDate,
+                            mainDate = (state as FindUiState.Loading<FindState>).data.mainDate,
                             onDateClick = { },
-                            selectedDate = (state as UiState.Loading<FindState>).data.selectedDate
+                            selectedDate = (state as FindUiState.Loading<FindState>).data.selectedDate
                         )
 
                         // Filtro (outdoor e indoor, hora)
@@ -80,30 +81,35 @@ fun FindCourtScreen(
                         LoadingScreen()
                     }
 
-                    is UiState.Success -> {
+                    is FindUiState.Success -> {
                         // Fechas 7 días vista
                         FindDateSelector(
-                            mainDate = (state as UiState.Success<FindState>).data.mainDate,
+                            mainDate = (state as FindUiState.Success<FindState>).data.mainDate,
                             onDateClick =
                             {
                                 viewModel.selectedDate(it)
-                               //viewModel.fetchCourtList(it)
+                                //viewModel.fetchCourtList(it)
                             },
-                            selectedDate = (state as UiState.Success<FindState>).data.selectedDate,
+                            selectedDate = (state as FindUiState.Success<FindState>).data.selectedDate,
                         )
 
                         // Filtro (outdoor e indoor, hora)
-                        CourtFilterChips(
+                        CourtFilter(
                             onLocatedSelected = { viewModel.selectedFilterCourt(it) },
-                            selectedHour = (state as UiState.Success<FindState>).data.selectedHour,
-                            filters = (state as UiState.Success<FindState>).data.filterList,
+                            selectedHour = (state as FindUiState.Success<FindState>).data.selectedHour,
+                            filters = (state as FindUiState.Success<FindState>).data.filterList,
                             onHourSelected = {},
                         )
 
                         //Resultados de pistas
                         ShowCourt(
-                            courtList = (state as UiState.Success<FindState>).data.filteredCourtList,
-                            onCourtClick = { viewModel.selectedCourt(it) }
+                            courtList = (state as FindUiState.Success<FindState>).data.filteredCourtList,
+                            onCourtClick = {
+                                navigateToBookingScreen(
+                                    it.code,
+                                    (state as FindUiState.Success<FindState>).data.selectedDate.toString()
+                                )
+                            }
                         )
                     }
                 }

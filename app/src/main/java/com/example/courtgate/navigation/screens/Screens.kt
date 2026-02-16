@@ -13,3 +13,9 @@ object Home
 
 @Serializable
 object FindCourt
+
+@Serializable
+data class Booking(
+    val code: String,
+    val date: String
+)

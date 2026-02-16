@@ -1,17 +1,23 @@
 package com.example.courtgate.core.presentation
 
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun CourtButton(
+    isLoading: Boolean = false,
     text: String,
     modifier: Modifier = Modifier,
+    shape: Shape,
     isEnabled: Boolean = true,
     onClick: () -> Unit,
 ) {
@@ -19,8 +25,16 @@ fun CourtButton(
         onClick = onClick,
         enabled = isEnabled,
         modifier = modifier,
-        shape = RoundedCornerShape(8.dp)
+        shape = shape,
     ) {
-        Text(text = text, style = MaterialTheme.typography.labelMedium)
+        if (isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .size(20.dp),
+                color = MaterialTheme.colorScheme.onPrimary,
+                strokeWidth = 2.dp
+            )
+        } else Text(text = text, style = MaterialTheme.typography.labelMedium)
+
     }
 }

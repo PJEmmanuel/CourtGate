@@ -4,11 +4,11 @@ import com.example.courtgate.home.domain.models.CourtList
 import com.example.courtgate.home.domain.models.FilterOption
 import java.time.ZonedDateTime
 
-sealed class UiState<out T> {
-    object Idle : UiState<Nothing>()
-    data class Loading<T>(val data: T) : UiState<T>()
-    data class Success<T>(val data: T) : UiState<T>()
-    data class Error(val message: String) : UiState<Nothing>()
+sealed class FindUiState<out T> {
+    object Idle : FindUiState<Nothing>()
+    data class Loading<T>(val data: T) : FindUiState<T>()
+    data class Success<T>(val data: T) : FindUiState<T>()
+    data class Error(val message: String) : FindUiState<Nothing>()
 }
 
 data class FindState(

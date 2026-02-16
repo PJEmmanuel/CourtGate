@@ -20,8 +20,8 @@ class FindViewModel @Inject constructor(
     private val findUseCases: FindUseCases
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow<UiState<FindState>>(UiState.Idle)
-    val state: StateFlow<UiState<FindState>> = _state.asStateFlow()
+    private val _state = MutableStateFlow<FindUiState<FindState>>(FindUiState.Idle)
+    val state: StateFlow<FindUiState<FindState>> = _state.asStateFlow()
 
 
     init {
@@ -31,8 +31,9 @@ class FindViewModel @Inject constructor(
     }
 
     fun selectedDate(selectedDate: ZonedDateTime) {
+        Log.i("dateFindVM", selectedDate.toString())
         _state.update { currentUiState ->
-            if (currentUiState is UiState.Success) {
+            if (currentUiState is FindUiState.Success) {
                 val oldData = currentUiState.data
                 currentUiState.copy(data = oldData.copy(selectedDate = selectedDate))
             } else currentUiState
@@ -47,7 +48,7 @@ class FindViewModel @Inject constructor(
 
     fun selectedFilterCourt(selectedLocate: String?) {
         _state.update { currentUiState ->
-            if (currentUiState is UiState.Success) {
+            if (currentUiState is FindUiState.Success) {
 
                 val oldData = currentUiState.data
 
@@ -78,23 +79,20 @@ class FindViewModel @Inject constructor(
                 currentUiState
             }
         }
-        Log.i("checkINIT", "Filter $selectedLocate")
-        Log.i("checkINIT", "Filter ${_state.value}")
     }
 
     private fun fetchCourtList(date: ZonedDateTime) {
         viewModelScope.launch {
             when (_state.value) {
-                is UiState.Error -> {}
-                UiState.Idle -> {
-                    _state.value = UiState.Loading(
+                is FindUiState.Error -> {}
+                FindUiState.Idle -> {
+                    _state.value = FindUiState.Loading(
                         data = FindState()
                     )
                     val result = findUseCases.getAllCourtToShowUseCase.invoke(date = date)
                     _state.value = result.fold(
                         onSuccess = {
-                            Log.i("checkINIT", "IdleWhen")
-                            UiState.Success(
+                            FindUiState.Success(
                                 data = FindState(
                                     mainCourtList = it,
                                     filteredCourtList = it,
@@ -102,14 +100,14 @@ class FindViewModel @Inject constructor(
                                 )
                             )
                         },
-                        onFailure = { UiState.Error(it.message.orEmpty()) }
+                        onFailure = { FindUiState.Error(it.message.orEmpty()) }
                     )
                 }
 
-                is UiState.Loading -> {}
-                is UiState.Success -> {
-                    val prevData = (_state.value as? UiState.Success)?.data //TODO: Util????????????????
-                    _state.value = UiState.Loading(
+                is FindUiState.Loading -> {}
+                is FindUiState.Success -> {
+                    val prevData = (_state.value as? FindUiState.Success)?.data //TODO: Util????????????????
+                    _state.value = FindUiState.Loading(
                         data = FindState(selectedDate = date)
                     )
                     val fetchData =
@@ -118,7 +116,7 @@ class FindViewModel @Inject constructor(
                         Log.i("checkINIT", "SuccessWhen")
                         fetchData.fold(
                             onSuccess = {
-                                UiState.Success(
+                                FindUiState.Success(
                                     data = FindState(
                                         mainCourtList = it,
                                         filteredCourtList = it,
@@ -128,7 +126,7 @@ class FindViewModel @Inject constructor(
                                 )
 
                             },
-                            onFailure = { UiState.Error(it.message.orEmpty()) }
+                            onFailure = { FindUiState.Error(it.message.orEmpty()) }
                         )
                     }
                 }

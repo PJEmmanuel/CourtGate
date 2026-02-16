@@ -1,23 +1,21 @@
 package com.example.courtgate.home.presentation.find.components
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.courtgate.R
+import com.example.courtgate.core.presentation.CourtFilterChips
 import com.example.courtgate.home.domain.models.FilterOption
 
 @Composable
-fun CourtFilterChips(
+fun CourtFilter(
     filters: List<FilterOption>,
     onLocatedSelected: (String?) -> Unit,
     selectedHour: String?,
@@ -28,8 +26,8 @@ fun CourtFilterChips(
 
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             filters.forEach { filter ->
-                FilterChip(
-                    located = filter.located,
+                CourtFilterChips(
+                    label = filter.located,
                     isSelected = filter.isSelected,
                     onClick = { onLocatedSelected(filter.located) }
                 )
@@ -61,28 +59,5 @@ fun CourtFilterChips(
                  }
              }*/
         }
-    }
-}
-
-@Composable
-fun FilterChip(
-    located: String,
-    isSelected: Boolean,
-    onClick: () -> Unit
-) {
-    Surface(
-        shape = RoundedCornerShape(12.dp),
-        color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
-        tonalElevation = if (isSelected) 2.dp else 0.dp,
-        modifier = Modifier
-            .clickable { onClick() }
-            .padding(4.dp)
-    ) {
-        Text(
-            text = located,
-            color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-            style = MaterialTheme.typography.labelLarge
-        )
     }
 }

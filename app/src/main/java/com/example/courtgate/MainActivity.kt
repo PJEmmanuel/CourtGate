@@ -6,10 +6,10 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.navigation.compose.rememberNavController
-import com.example.courtgate.navigation.NavigationWrapper
-import com.example.courtgate.navigation.screens.Home
-import com.example.courtgate.navigation.screens.Login
-import com.example.courtgate.navigation.screens.SignUp
+import com.example.courtgate.ui.navigation.NavigationWrapper
+import com.example.courtgate.ui.navigation.screens.Home
+import com.example.courtgate.ui.navigation.screens.Login
+import com.example.courtgate.ui.navigation.screens.SignUp
 import com.example.courtgate.ui.theme.CourtGateTheme
 import dagger.hilt.android.AndroidEntryPoint
 

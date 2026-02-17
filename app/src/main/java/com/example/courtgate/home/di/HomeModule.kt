@@ -1,18 +1,16 @@
 package com.example.courtgate.home.di
 
 import android.content.Context
-import androidx.room.Dao
 import androidx.room.Room
-import androidx.room.RoomDatabase
 import com.example.courtgate.home.data.local.CourtDatabase
 import com.example.courtgate.home.data.local.LastResultDAO
 import com.example.courtgate.home.data.repository.HomeRepositoryImpl
 import com.example.courtgate.home.domain.repository.HomeRepository
-import com.example.courtgate.home.domain.usecase.BookingUseCases
-import com.example.courtgate.home.domain.usecase.FindUseCases
-import com.example.courtgate.home.domain.usecase.GetAllCourtToShowUseCase
-import com.example.courtgate.home.domain.usecase.GetCourtSelectedByCode
-import com.example.courtgate.home.domain.usecase.GetFreeHoursOnReservedCourts
+import com.example.courtgate.usecases.booking.BookingUseCases
+import com.example.courtgate.usecases.find.FindUseCases
+import com.example.courtgate.usecases.find.GetAllCourtToShowUseCase
+import com.example.courtgate.usecases.booking.GetCourtSelectedByCode
+import com.example.courtgate.usecases.booking.GetFreeHoursOnReservedCourts
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

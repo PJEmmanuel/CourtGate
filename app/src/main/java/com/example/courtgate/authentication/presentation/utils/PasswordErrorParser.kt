@@ -1,6 +1,6 @@
 package com.example.courtgate.authentication.presentation.utils
 
-import com.example.courtgate.authentication.domain.usecase.PasswordResult
+import com.example.courtgate.usecases.authentication.PasswordResult
 
 object PasswordErrorParser {
     fun parserError(error: PasswordResult): String? {

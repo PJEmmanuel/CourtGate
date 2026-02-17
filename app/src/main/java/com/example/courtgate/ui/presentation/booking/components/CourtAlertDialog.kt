@@ -16,7 +16,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.courtgate.home.domain.models.CourtList
+import com.example.courtgate.domain.models.CourtList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

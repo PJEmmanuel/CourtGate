@@ -3,8 +3,8 @@ package com.example.courtgate.ui.presentation.find
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.courtgate.home.domain.models.CourtList
-import com.example.courtgate.home.domain.models.FilterOption
+import com.example.courtgate.domain.models.CourtList
+import com.example.courtgate.domain.models.FilterOption
 import com.example.courtgate.usecases.find.FindUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

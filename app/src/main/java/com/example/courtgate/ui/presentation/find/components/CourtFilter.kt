@@ -12,7 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.courtgate.R
 import com.example.courtgate.ui.presentation.core.CourtFilterChips
-import com.example.courtgate.home.domain.models.FilterOption
+import com.example.courtgate.domain.models.FilterOption
 
 @Composable
 fun CourtFilter(

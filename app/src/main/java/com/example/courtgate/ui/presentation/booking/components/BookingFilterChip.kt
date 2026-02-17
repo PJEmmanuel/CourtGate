@@ -5,7 +5,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import com.example.courtgate.ui.presentation.core.CourtFilterChips
-import com.example.courtgate.home.domain.models.FreeHoursOfCourt
+import com.example.courtgate.domain.models.FreeHoursOfCourt
 
 @Composable
 fun BookingFilterChip(

@@ -1,7 +1,7 @@
 package com.example.courtgate.usecases.find
 
-import com.example.courtgate.home.domain.models.CourtList
-import com.example.courtgate.home.domain.repository.HomeRepository
+import com.example.courtgate.domain.models.CourtList
+import com.example.courtgate.data.HomeRepository
 import java.time.ZoneId
 import java.time.ZonedDateTime
 

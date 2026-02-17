@@ -1,7 +1,7 @@
 package com.example.courtgate.ui.presentation.booking
 
-import com.example.courtgate.home.domain.models.CourtList
-import com.example.courtgate.home.domain.models.FreeHoursOfCourt
+import com.example.courtgate.domain.models.CourtList
+import com.example.courtgate.domain.models.FreeHoursOfCourt
 
 sealed class BookingUiState<out T> {
     object Idle : BookingUiState<Nothing>()

@@ -1,7 +1,7 @@
 package com.example.courtgate.ui.presentation.find
 
-import com.example.courtgate.home.domain.models.CourtList
-import com.example.courtgate.home.domain.models.FilterOption
+import com.example.courtgate.domain.models.CourtList
+import com.example.courtgate.domain.models.FilterOption
 import java.time.ZonedDateTime
 
 sealed class FindUiState<out T> {

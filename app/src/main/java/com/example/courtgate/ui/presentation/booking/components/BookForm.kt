@@ -26,8 +26,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.courtgate.ui.presentation.core.CourtButton
-import com.example.courtgate.home.domain.models.CourtList
-import com.example.courtgate.home.domain.models.FreeHoursOfCourt
+import com.example.courtgate.domain.models.CourtList
+import com.example.courtgate.domain.models.FreeHoursOfCourt
 
 @Composable
 fun BookForm(

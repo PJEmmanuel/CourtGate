@@ -7,7 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.courtgate.home.domain.models.CourtList
+import com.example.courtgate.domain.models.CourtList
 
 @Composable
 fun ShowCourt(

@@ -1,9 +1,8 @@
 package com.example.courtgate.di
 
-import com.example.courtgate.core.matcher.EmailMatcherImpl
 import com.example.courtgate.core.matcher.EmailMatcher
+import com.example.courtgate.core.matcher.EmailMatcherImpl
 import com.example.courtgate.data.AuthenticationRepository
-import com.example.courtgate.data.AuthenticationRepositoryImpl
 import com.example.courtgate.usecases.authentication.GetUserIdUseCase
 import com.example.courtgate.usecases.authentication.LoginUseCases
 import com.example.courtgate.usecases.authentication.LoginWithEmailUseCase
@@ -21,11 +20,11 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AuthenticationModule {
 
-    @Provides
+    /*@Provides
     @Singleton
     fun providesAuthenticationRepository(): AuthenticationRepository {
         return AuthenticationRepositoryImpl()
-    }
+    }*/
 
     @Provides
     @Singleton

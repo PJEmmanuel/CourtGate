@@ -52,7 +52,7 @@ class LoginViewModel @Inject constructor(
                         state.copy(emailError = it.message) //TODO puede ponerse un mensaje personalizado...
                 }
             }
-            state = state.copy(isLoading = false)
+            state = state.copy(isLoading = false)//TODO esto no va aquí? runs right after launch {}, not after the async operation completes (race condition)
         }
     }
 }

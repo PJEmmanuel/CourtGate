@@ -3,7 +3,6 @@ package com.example.courtgate.di
 import android.content.Context
 import androidx.room.Room
 import com.example.courtgate.data.HomeRepository
-import com.example.courtgate.data.HomeRepositoryImpl
 import com.example.courtgate.framework.database.CourtDatabase
 import com.example.courtgate.framework.database.LastResultDAO
 import com.example.courtgate.usecases.booking.BookingUseCases
@@ -35,7 +34,7 @@ object HomeModule {
     @Singleton
     @Provides
     fun provideHomeRepository(dao: LastResultDAO): HomeRepository {
-        return HomeRepositoryImpl(dao)
+        return HomeRepository(dao)
     }
 
     @Singleton

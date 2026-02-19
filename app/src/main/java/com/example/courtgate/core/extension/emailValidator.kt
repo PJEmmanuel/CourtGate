@@ -2,10 +2,11 @@ package com.example.courtgate.core.extension
 
 import android.util.Patterns
 
-fun String.emailValidator(): String {
+fun String.emailValidator(): String? {
+    if (this.isEmpty()) return null
     return if (!Patterns.EMAIL_ADDRESS.matcher(this).matches()) {
         "El email no es válido"
-    } else ""
+    } else null
 }
 
 /*

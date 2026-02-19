@@ -1,6 +1,7 @@
 package com.example.courtgate.core.extension
 
-fun String.passValidator(): String {
+fun String.passValidator(): String? {
+    if (this.isEmpty()) return null
     if (this.length < 8) {
         return "La contraseña tiene que tener al menos 8 caracteres"
     }
@@ -16,7 +17,7 @@ fun String.passValidator(): String {
     if (!this.any { it.isDigit() }) {
         return "La contraseña tiene que tener al menos 1 numero"
     }
-    return ""
+    return null
 }
 
 /*class ValidatePasswordUseCase {

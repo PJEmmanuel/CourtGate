@@ -1,5 +1,6 @@
 package com.example.courtgate.framework.remote
 
+
 import com.example.courtgate.data.datasources.AuthDataSource
 import com.example.courtgate.domain.models.User
 import com.google.firebase.auth.FirebaseAuth
@@ -11,14 +12,14 @@ class FirebaseAuthDataSource @Inject constructor(
 ) : AuthDataSource {
     override suspend fun signUp(email: String, password: String): Result<User>{
         return try {
-           val result = auth.createUserWithEmailAndPassword(email, password).await()
-            val fireUser = result?.user.let { user ->
-             User(
-                 uid = user?.uid ?: "",
-                 email = user?.email ?: ""
-             )
-            }
-           Result.success(fireUser)
+            val result = auth.createUserWithEmailAndPassword(email, password).await()
+            val fireUser = result?.user?.let { user ->
+                User(
+                    uid = user.uid,
+                    email = user.email ?: ""
+                )
+            } ?: return Result.failure(Exception("Sign up failed: user is null"))
+            Result.success(fireUser)
 
         } catch (e: Exception) {
             Result.failure(e)
@@ -26,14 +27,14 @@ class FirebaseAuthDataSource @Inject constructor(
     }
 
     override suspend fun login(email: String, password: String): Result<User>{
-         return try {
+        return try {
             val result = auth.signInWithEmailAndPassword(email, password).await()
-            val fireUser = result?.user.let { user ->
+            val fireUser = result?.user?.let { user ->
                 User(
-                    uid = user?.uid ?: "",
-                    email = user?.email ?: ""
+                    uid = user.uid,
+                    email = user.email ?: ""
                 )
-            }
+            } ?: return Result.failure(Exception("Login failed: user is null"))
             Result.success(fireUser)
 
         } catch (e: Exception) {

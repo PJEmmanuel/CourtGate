@@ -1,12 +1,25 @@
 package com.example.courtgate.data
 
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.tasks.await
+import com.example.courtgate.data.datasources.AuthDataSource
+import com.example.courtgate.domain.models.User
 import javax.inject.Inject
 
-class AuthenticationRepository @Inject constructor() {
-    suspend fun login(email: String, password: String): Result<Unit> {
+class AuthenticationRepository @Inject constructor(
+    private val authDataSource: AuthDataSource
+) {
+    suspend fun signUp(email: String, password: String): Result<User> {
+        return authDataSource.signUp(email, password)
+    }
+
+    suspend fun login(email: String, password: String): Result<User> {
+        return authDataSource.login(email, password)
+    }
+
+    fun getUserId(): String? {
+        return authDataSource.getUserId()
+    }
+
+    /*suspend fun login(email: String, password: String): Result<Unit> {
         return try {
             Firebase.auth.signInWithEmailAndPassword(email, password).await()
             Result.success(Unit)
@@ -26,5 +39,5 @@ class AuthenticationRepository @Inject constructor() {
 
     fun getUserId(): String? {
         return Firebase.auth.currentUser?.uid
-    }
+    }*/
 }

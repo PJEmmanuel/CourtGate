@@ -1,15 +1,11 @@
 package com.example.courtgate.di
 
-import com.example.courtgate.core.matcher.EmailMatcher
-import com.example.courtgate.core.matcher.EmailMatcherImpl
 import com.example.courtgate.data.AuthenticationRepository
+import com.example.courtgate.data.datasources.AuthDataSource
+import com.example.courtgate.framework.remote.FirebaseAuthDataSource
 import com.example.courtgate.usecases.authentication.GetUserIdUseCase
-import com.example.courtgate.usecases.authentication.LoginUseCases
-import com.example.courtgate.usecases.authentication.LoginWithEmailUseCase
-import com.example.courtgate.usecases.authentication.SignUpUseCases
-import com.example.courtgate.usecases.authentication.SignUpWhitEmailUseCase
-import com.example.courtgate.usecases.authentication.ValidateEmailUseCase
-import com.example.courtgate.usecases.authentication.ValidatePasswordUseCase
+import com.google.firebase.auth.FirebaseAuth
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,19 +16,18 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AuthenticationModule {
 
-    /*@Provides
-    @Singleton
-    fun providesAuthenticationRepository(): AuthenticationRepository {
-        return AuthenticationRepositoryImpl()
-    }*/
-
     @Provides
+    @Singleton
+    fun providesFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
+
+
+    /*@Provides
     @Singleton
     fun providesEmailMatcher(): EmailMatcher {
         return EmailMatcherImpl()
-    }
+    }*/
 
-    @Provides
+    /*@Provides
     @Singleton
     fun providesLoginUseCases(
         repository: AuthenticationRepository,
@@ -45,9 +40,9 @@ object AuthenticationModule {
             ),
             loginWithEmailUseCase = LoginWithEmailUseCase(repository)
         )
-    }
+    }*/
 
-    @Provides
+  /*  @Provides
     @Singleton
     fun providesSignUpUseCases(
         repository: AuthenticationRepository,
@@ -60,7 +55,7 @@ object AuthenticationModule {
             ),
             signUpWhitEmailUseCase = SignUpWhitEmailUseCase(repository)
         )
-    }
+    }*/
 
     @Provides
     @Singleton
@@ -69,4 +64,11 @@ object AuthenticationModule {
     ): GetUserIdUseCase {
         return GetUserIdUseCase(repository)
     }
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class ModuleDataSource {
+    @Binds
+    abstract fun bindAuthDS(authDS: FirebaseAuthDataSource): AuthDataSource
 }

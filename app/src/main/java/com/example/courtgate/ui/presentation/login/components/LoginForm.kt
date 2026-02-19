@@ -35,10 +35,12 @@ import com.example.courtgate.ui.presentation.core.CourtButton
 
 @Composable
 fun LoginForm(
-    state: LoginState,
-    onEvent: (LoginEvent) -> Unit,
+    modifier: Modifier = Modifier,
     navigateToSignUp: () -> Unit,
-    modifier: Modifier = Modifier
+    state: LoginState,
+    onEmailChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
+    fetchLogin: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -46,13 +48,13 @@ fun LoginForm(
 
         Column(modifier = Modifier, horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text = "Log in with email",
+                text = "Log in with email",//TODO harscoded
                 style = MaterialTheme.typography.labelLarge
             )
             CourtTextField(
                 value = state.email,
-                onValueChange = { onEvent(LoginEvent.EmailChange(it)) },
-                placeholder = "Email",
+                onValueChange = { onEmailChange(it) },
+                placeholder = "Email",//TODO harscoded
                 contentDescription = "Enter email",
                 leadingIcon = Icons.Default.Email,
                 keyboardOptions = KeyboardOptions(
@@ -70,8 +72,8 @@ fun LoginForm(
             Spacer(Modifier.padding(2.dp))
             PasswordTextField(
                 value = state.password,
-                onValueChange = { onEvent(LoginEvent.PasswordChange(it)) },
-                contentDescription = "Enter password",
+                onValueChange = { onPasswordChange(it) },
+                contentDescription = "Enter password",//TODO harscoded
                 keyboardOptions = KeyboardOptions(
                     autoCorrectEnabled = false,
                     keyboardType = KeyboardType.Password,
@@ -79,7 +81,7 @@ fun LoginForm(
                 ),
                 keyboardActions = KeyboardActions(onAny = {
                     focusManager.clearFocus()
-                    onEvent(LoginEvent.Login)
+                    fetchLogin()
                 }),
                 errorMessage = state.passwordError,
                 isEnabled = !state.isLoading,
@@ -87,34 +89,34 @@ fun LoginForm(
             )
 
             CourtButton(
-                text = "Login",
+                text = "Login",//TODO harscoded
                 modifier = Modifier.fillMaxWidth(),
                 isEnabled = !state.isLoading,
                 shape = ShapeDefaults.Small
             ) {
-                onEvent(LoginEvent.Login)
+                fetchLogin()
             }
 
             Spacer(Modifier.padding(4.dp))
 
             TextButton(
-                onClick = {} //TODO: Terminar!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                onClick = {} //TODO: Terminar boton Forgot pass
             ) {
-                Text("Forgot Password?", textDecoration = TextDecoration.Underline)
+                Text("Forgot Password?", textDecoration = TextDecoration.Underline)//TODO harscoded
             }
 
             TextButton(
                 onClick = { navigateToSignUp() }
             ) {
                 Text(buildAnnotatedString {
-                    append("Don’t have an account? ")
+                    append("Don’t have an account? ")//TODO harscoded
                     withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
                         append("Sign up")
                     }
                 })
             }
         }
-        if (state.isLoading) {
+        if (state.isLoading) { //TODO: Mirar como imprementar cicurlar en boton!
             CircularProgressIndicator()
         }
     }

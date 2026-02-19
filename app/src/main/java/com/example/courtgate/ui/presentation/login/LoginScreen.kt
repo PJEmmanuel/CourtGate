@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -25,10 +26,10 @@ fun LoginScreen(
     navigateToSignUp: () -> Unit,
     viewModel: LoginViewModel = hiltViewModel(),
 ) {
-    val state = viewModel.state
+    val state = viewModel.state.collectAsState()
 
-    LaunchedEffect(state.isLoggedIn) {
-        if (state.isLoggedIn) {
+    LaunchedEffect(state.value.isLoggedIn) {
+        if (state.value.isLoggedIn) {
             navigateToHome()
         }
     }
@@ -56,10 +57,12 @@ fun LoginScreen(
                 modifier = Modifier,
             )
             LoginForm(
-                state = state,
-                onEvent = viewModel::onEvent,
+                modifier = Modifier,
                 navigateToSignUp = navigateToSignUp,
-                modifier = Modifier
+                onEmailChange = { viewModel.onEmailChange(it) },
+                onPasswordChange = { viewModel.onPasswordChange(it) },
+                fetchLogin = { viewModel.login() },
+                state = state.value
             )
         }
     }

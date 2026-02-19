@@ -1,22 +1,52 @@
 package com.example.courtgate.ui.presentation.login
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.courtgate.usecases.authentication.LoginUseCases
-import com.example.courtgate.core.utils.PasswordErrorParser
+import com.example.courtgate.core.extension.emailValidator
+import com.example.courtgate.core.extension.passValidator
+import com.example.courtgate.usecases.authentication.LoginWithEmailUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val loginUseCases: LoginUseCases
+    private val loginWithEmailUseCase: LoginWithEmailUseCase
 ) : ViewModel() {
 
-    var state by mutableStateOf(LoginState())
+    private val _state = MutableStateFlow<LoginState>(LoginState())
+    val state: StateFlow<LoginState> = _state.asStateFlow()
+
+    fun login() {
+        viewModelScope.launch {
+            loginWithEmailUseCase.invoke(
+                email = _state.value.email, password = _state.value.password
+            ).onSuccess {
+                _state.update { it.copy(isLoggedIn = true) }
+            }.onFailure { throwable ->
+                _state.update { it.copy(emailError = throwable.message) }
+            }
+        }
+    }
+
+    fun onEmailChange(email: String) {
+        _state.update {
+            it.copy(email = email, emailError = email.emailValidator())
+        }
+    }
+
+    fun onPasswordChange(password: String) {
+        _state.update {
+            it.copy(password = password, passwordError = password.passValidator())
+        }
+    }
+}
+
+    /*var state by mutableStateOf(LoginState())
         private set
 
     fun onEvent(event: LoginEvent) {
@@ -49,10 +79,10 @@ class LoginViewModel @Inject constructor(
                     state = state.copy(isLoggedIn = true)
                 }.onFailure {
                     state =
-                        state.copy(emailError = it.message) //TODO puede ponerse un mensaje personalizado...
+                        state.copy(emailError = it.message)
                 }
             }
-            state = state.copy(isLoading = false)//TODO esto no va aquí? runs right after launch {}, not after the async operation completes (race condition)
+            state =
+                state.copy(isLoading = false)//TODO esto no va aquí? runs right after launch {}, not after the async operation completes (race condition)
         }
-    }
-}
+    }*/

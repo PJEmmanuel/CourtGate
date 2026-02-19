@@ -3,8 +3,6 @@ package com.example.courtgate.framework.remote
 import com.example.courtgate.data.datasources.AuthDataSource
 import com.example.courtgate.domain.models.User
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 

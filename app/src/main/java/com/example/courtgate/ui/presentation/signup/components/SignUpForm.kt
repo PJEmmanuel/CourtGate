@@ -24,7 +24,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import com.example.courtgate.ui.presentation.signup.SignUpEvent
 import com.example.courtgate.ui.presentation.signup.SignUpState
 import com.example.courtgate.ui.presentation.core.CourtButton
 import com.example.courtgate.ui.presentation.core.CourtTextField
@@ -32,10 +31,12 @@ import com.example.courtgate.ui.presentation.core.PasswordTextField
 
 @Composable
 fun SignUpForm(
+    modifier: Modifier = Modifier,
     navigateToSignIn: () -> Unit,
-    onEvent: (SignUpEvent) -> Unit,
+    onEmailChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
+    fetchSignUp: () -> Unit,
     state: SignUpState,
-    modifier: Modifier = Modifier
 ) {
     val focusManager = LocalFocusManager.current
     Column(
@@ -47,9 +48,9 @@ fun SignUpForm(
         )
         CourtTextField(
             value = state.email,
-            onValueChange = { onEvent(SignUpEvent.EmailChange(it)) },
-            placeholder = "Email",
-            contentDescription = "Enter Email",
+            onValueChange = { onEmailChange(it) },
+            placeholder = "Email",//TODO: HardCode
+            contentDescription = "Enter Email",//TODO: HardCode
             modifier = Modifier,
             errorMessage = state.emailError,
             leadingIcon = Icons.Default.Email,
@@ -67,8 +68,8 @@ fun SignUpForm(
         Spacer(Modifier.padding(2.dp))
         PasswordTextField(
             value = state.password,
-            onValueChange = { onEvent(SignUpEvent.PasswordChange(it)) },
-            contentDescription = "Enter Password",
+            onValueChange = { onPasswordChange(it) },
+            contentDescription = "Enter Password",//TODO: HardCode
             modifier = Modifier,
             errorMessage = state.passwordError,
             isEnabled = !state.isLoading,
@@ -79,24 +80,24 @@ fun SignUpForm(
             ),
             keyboardActions = KeyboardActions(onAny = {
                 focusManager.clearFocus()
-                onEvent(SignUpEvent.SignUp)
+                fetchSignUp()
             })
         )
         CourtButton(
-            text = "Create account",
+            text = "Create account",//TODO: HardCode
             modifier = Modifier.fillMaxWidth(),
             isEnabled = !state.isLoading,
             shape = ShapeDefaults.Small
         ) {
-            onEvent(SignUpEvent.SignUp)
+            fetchSignUp()
         }
         TextButton(
             onClick = { navigateToSignIn() }
         ) {
             Text(buildAnnotatedString {
-                append("Already have an account? ")
+                append("Already have an account? ") //TODO: HardCode
                 withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                    append("Sign in")
+                    append("Sign in")//TODO: HardCode
                 }
             })
         }

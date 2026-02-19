@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -25,10 +26,10 @@ fun SignUpScreen(
     navigateToSignIn: () -> Unit,
     viewModel: SignUpViewModel = hiltViewModel(),
 ) {
-    val state = viewModel.state
+    val state = viewModel.state.collectAsState()
 
-    LaunchedEffect(state.isSignedUpIn) {
-        if (state.isSignedUpIn) {
+    LaunchedEffect(state.value.isSignedUpIn) {
+        if (state.value.isSignedUpIn) {
             navigateToHome()
         }
     }
@@ -59,9 +60,11 @@ fun SignUpScreen(
             )
 
             SignUpForm(
-                onEvent = viewModel::onEvent,
                 navigateToSignIn = navigateToSignIn,
-                state = state,
+                onEmailChange = { viewModel.onEmailChange(it) },
+                onPasswordChange = { viewModel.onPasswordChange(it) },
+                fetchSignUp = { viewModel.signUp() },
+                state = state.value,
             )
         }
     }

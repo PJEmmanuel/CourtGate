@@ -12,17 +12,17 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun CourtButton(
+    modifier: Modifier = Modifier,
     isLoading: Boolean = false,
     text: String,
-    modifier: Modifier = Modifier,
     shape: Shape,
     isEnabled: Boolean = true,
     onClick: () -> Unit,
 ) {
     Button(
+        modifier = modifier,
         onClick = onClick,
         enabled = isEnabled,
-        modifier = modifier,
         shape = shape,
     ) {
         if (isLoading) {
@@ -33,6 +33,5 @@ fun CourtButton(
                 strokeWidth = 2.dp
             )
         } else Text(text = text, style = MaterialTheme.typography.labelMedium)
-
     }
 }

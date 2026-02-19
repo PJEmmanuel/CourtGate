@@ -23,6 +23,7 @@ class LoginViewModel @Inject constructor(
 
     fun login() {
         viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
             loginWithEmailUseCase.invoke(
                 email = _state.value.email, password = _state.value.password
             ).onSuccess {
@@ -30,6 +31,7 @@ class LoginViewModel @Inject constructor(
             }.onFailure { throwable ->
                 _state.update { it.copy(emailError = throwable.message) }
             }
+            _state.update { it.copy(isLoading = false) }
         }
     }
 

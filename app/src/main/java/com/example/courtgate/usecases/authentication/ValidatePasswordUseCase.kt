@@ -1,3 +1,4 @@
+/*
 package com.example.courtgate.usecases.authentication
 
 class ValidatePasswordUseCase {
@@ -27,4 +28,4 @@ enum class PasswordResult {
     INVALID_UPPERCASE,
     INVALID_DIGITS,
     INVALID_LENGTH
-}
+}*/

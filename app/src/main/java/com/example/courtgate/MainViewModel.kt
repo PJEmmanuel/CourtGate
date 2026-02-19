@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val getUserIdUseCase: GetUserIdUseCase,
+    getUserIdUseCase: GetUserIdUseCase,
 ) : ViewModel() {
 
     var isLoggedIn by mutableStateOf(getUserIdUseCase() != null)

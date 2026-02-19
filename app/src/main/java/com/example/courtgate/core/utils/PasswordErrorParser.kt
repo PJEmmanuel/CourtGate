@@ -1,3 +1,4 @@
+/*
 package com.example.courtgate.core.utils
 
 import com.example.courtgate.usecases.authentication.PasswordResult
@@ -12,4 +13,4 @@ object PasswordErrorParser {
             PasswordResult.INVALID_LENGTH -> "La contraseña tiene que tener al menos 8 caracteres"
         }
     }
-}
+}*/

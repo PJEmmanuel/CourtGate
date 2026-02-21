@@ -5,7 +5,10 @@ data class SignUpState(
     val emailError: String? = null,
     val password: String = "",
     val passwordError: String? = null,
-    val isLoading: Boolean = false,// Sin uso
-    val isSignedUpIn: Boolean = false,//De momento es un trigger
-    val logIn: Boolean = false // Sin uso
-)
+    val isLoading: Boolean = false,
+    val isSignedUpIn: Boolean = false,
+    val isSubmitEnabled: Boolean = false
+) {
+    val isFormValid: Boolean
+        get() = emailError == null && passwordError == null
+}

@@ -83,10 +83,11 @@ fun SignUpForm(
                 fetchSignUp()
             })
         )
+
         CourtButton(
             text = "Create account",//TODO: HardCode
             modifier = Modifier.fillMaxWidth(),
-            isEnabled = !state.isLoading,
+            isEnabled = state.isSubmitEnabled,
             shape = ShapeDefaults.Small
         ) {
             fetchSignUp()

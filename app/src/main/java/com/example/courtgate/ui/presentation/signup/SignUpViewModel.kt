@@ -23,7 +23,7 @@ class SignUpViewModel @Inject constructor(
 
     fun signUp() {
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
+            _state.update { it.copy(isLoading = true, isSubmitEnabled = false) }
             signUpUseCase.invoke(
                 email = _state.value.email, password = _state.value.password
             ).onSuccess {
@@ -31,69 +31,21 @@ class SignUpViewModel @Inject constructor(
             }.onFailure { throwable ->
                 _state.update { it.copy(emailError = throwable.message) }
             }
-            _state.update { it.copy(isLoading = false) }
+            _state.update { it.copy(isLoading = false, isSubmitEnabled = it.isFormValid) }
         }
     }
 
     fun onEmailChange(email: String) {
         _state.update {
-            it.copy(email = email, emailError = email.emailValidator())
+            val updated = it.copy(email = email, emailError = email.emailValidator())
+            updated.copy(isSubmitEnabled = updated.isFormValid)
         }
     }
 
     fun onPasswordChange(password: String) {
         _state.update {
-            it.copy(password = password, passwordError = password.passValidator())
+            val updated = it.copy(password = password, passwordError = password.passValidator())
+            updated.copy(isSubmitEnabled = updated.isFormValid)
         }
     }
 }
-
-
-/*var state by mutableStateOf(SignUpState())
-    private set
-
-fun onEvent(event: SignUpEvent) {
-    when (event) {
-        is SignUpEvent.EmailChange -> state = state.copy(email = event.email)
-        is SignUpEvent.PasswordChange -> state = state.copy(password = event.password)
-        SignUpEvent.LogIn -> state = state.copy(LogIn = true)
-        SignUpEvent.SignUp -> signUp()
-    }
-}
-
-private fun signUp() {
-    state = state.copy(
-        emailError = null,
-        passwordError = null
-    )
-    if (!signUpUseCases.validateEmailUseCase(state.email)) {
-        state = state.copy(
-            emailError = "El email no es valido"
-        )
-    }
-    val passwordResult = signUpUseCases.validatePasswordUseCase(state.password)
-    state = state.copy(
-        passwordError = PasswordErrorParser.parserError(passwordResult)
-    )
-
-    if (state.emailError == null && state.passwordError == null) {
-        state = state.copy(
-            isLoading = true
-        )
-        viewModelScope.launch {
-            signUpUseCases.signUpWhitEmailUseCase(state.email, state.password).onSuccess {
-                state = state.copy(
-                    isSignedUpIn = true
-                )
-            }.onFailure {
-                state = state.copy(
-                    emailError = it.message
-                )
-            }
-            state = state.copy(
-                isLoading = false
-            )
-        }
-    }
-}*/
-

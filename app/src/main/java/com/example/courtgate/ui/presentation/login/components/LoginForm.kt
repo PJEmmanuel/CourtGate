@@ -27,7 +27,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import com.example.courtgate.ui.presentation.login.LoginEvent
 import com.example.courtgate.ui.presentation.login.LoginState
 import com.example.courtgate.ui.presentation.core.CourtTextField
 import com.example.courtgate.ui.presentation.core.PasswordTextField
@@ -88,10 +87,11 @@ fun LoginForm(
                 modifier = Modifier
             )
 
+
             CourtButton(
                 text = "Login",//TODO harscoded
                 modifier = Modifier.fillMaxWidth(),
-                isEnabled = !state.isLoading,
+                isEnabled = state.isSubmitEnabled,
                 shape = ShapeDefaults.Small
             ) {
                 fetchLogin()

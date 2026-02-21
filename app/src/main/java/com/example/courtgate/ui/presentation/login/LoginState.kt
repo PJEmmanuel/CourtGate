@@ -5,7 +5,10 @@ data class LoginState(
     val emailError: String? = null,
     val password: String = "",
     val passwordError: String? = null,
-    val signUp : Boolean = false, //No se usa
-    val isLoggedIn: Boolean = false, // Para pasar a pantalla home
-    val isLoading: Boolean = false //No se usa
-)
+    val isLoading: Boolean = false,
+    val isLoggedIn: Boolean = false,
+    val isSubmitEnabled: Boolean = false
+) {
+    val isFormValid: Boolean
+        get() = emailError == null && passwordError == null
+}

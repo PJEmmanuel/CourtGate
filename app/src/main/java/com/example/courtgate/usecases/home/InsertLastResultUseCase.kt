@@ -1,10 +1,11 @@
 package com.example.courtgate.usecases.home
 
-import com.example.courtgate.data.HomeRepository
+import com.example.courtgate.data.MatchRepository
 import com.example.courtgate.domain.models.LastResult
+import javax.inject.Inject
 
-class InsertLastResultUseCase(private val homeRepository: HomeRepository) {
-    operator fun invoke(lastResult: LastResult) {
-        return homeRepository.insertLastResult(lastResult)
+class InsertLastResultUseCase @Inject constructor(private val matchRepository: MatchRepository) {
+    suspend operator fun invoke(lastResult: LastResult) {
+        return matchRepository.insertLastResult(lastResult)
     }
 }

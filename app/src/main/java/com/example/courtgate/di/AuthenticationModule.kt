@@ -2,7 +2,9 @@ package com.example.courtgate.di
 
 import com.example.courtgate.data.AuthenticationRepository
 import com.example.courtgate.data.datasources.AuthDataSource
-import com.example.courtgate.framework.remote.FirebaseAuthDataSource
+import com.example.courtgate.data.datasources.LocalDataSource
+import com.example.courtgate.framework.FirebaseAuthDataSource
+import com.example.courtgate.framework.MatchRoomDataSource
 import com.example.courtgate.usecases.authentication.IsUserLoggedInUseCase
 import com.google.firebase.auth.FirebaseAuth
 import dagger.Binds
@@ -20,43 +22,6 @@ object AuthenticationModule {
     @Singleton
     fun providesFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
 
-
-    /*@Provides
-    @Singleton
-    fun providesEmailMatcher(): EmailMatcher {
-        return EmailMatcherImpl()
-    }*/
-
-    /*@Provides
-    @Singleton
-    fun providesLoginUseCases(
-        repository: AuthenticationRepository,
-        emailMatcher: EmailMatcher
-    ): LoginUseCases {
-        return LoginUseCases(
-            validatePasswordUseCase = ValidatePasswordUseCase(),
-            validateEmailUseCase = ValidateEmailUseCase(
-                emailMatcher = emailMatcher
-            ),
-            loginWithEmailUseCase = LoginWithEmailUseCase(repository)
-        )
-    }*/
-
-  /*  @Provides
-    @Singleton
-    fun providesSignUpUseCases(
-        repository: AuthenticationRepository,
-        emailMatcher: EmailMatcher
-    ): SignUpUseCases {
-        return SignUpUseCases(
-            validatePasswordUseCase = ValidatePasswordUseCase(),
-            validateEmailUseCase = ValidateEmailUseCase(
-                emailMatcher = emailMatcher
-            ),
-            signUpWhitEmailUseCase = SignUpWhitEmailUseCase(repository)
-        )
-    }*/
-
     @Provides
     @Singleton
     fun providesGetUserIdUseCase(
@@ -71,4 +36,7 @@ object AuthenticationModule {
 abstract class ModuleDataSource {
     @Binds
     abstract fun bindAuthDS(authDS: FirebaseAuthDataSource): AuthDataSource
+
+    @Binds
+    abstract fun bindLocalDS(localDS: MatchRoomDataSource): LocalDataSource
 }

@@ -1,16 +1,14 @@
 package com.example.courtgate.data
 
 import android.util.Log
-import com.example.courtgate.framework.database.LastResultDAO
 import com.example.courtgate.core.mapper.toBookingDomainList
 import com.example.courtgate.core.mapper.toDomain
 import com.example.courtgate.core.mapper.toDomainList
-import com.example.courtgate.core.mapper.toEntity
-import com.example.courtgate.framework.remote.CourtBookingDTO
-import com.example.courtgate.framework.remote.CourtListDTO
 import com.example.courtgate.domain.models.CourtBooking
 import com.example.courtgate.domain.models.CourtList
-import com.example.courtgate.domain.models.LastResult
+import com.example.courtgate.framework.database.LastResultDAO
+import com.example.courtgate.framework.remote.CourtBookingDTO
+import com.example.courtgate.framework.remote.CourtListDTO
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -21,14 +19,14 @@ import javax.inject.Inject
 
 class HomeRepository @Inject constructor (private val dao: LastResultDAO) {
 
-    //HomeScreen
+    /*//HomeScreen
     fun insertLastResult(lastResult: LastResult) {
         return dao.insertLastResult(lastResult.toEntity())
     }
 
     fun getLastResult(): List<LastResult> {
         return dao.getLastResult().map { it.toDomain() }
-    }
+    }*/
 
     //FindCourtScreen
     /* override suspend fun getAllCourtToShow(): List<CourtList> {

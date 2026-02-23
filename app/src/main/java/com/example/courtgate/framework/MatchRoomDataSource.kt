@@ -4,19 +4,28 @@ import com.example.courtgate.data.datasources.LocalDataSource
 import com.example.courtgate.domain.models.LastResult
 import com.example.courtgate.framework.database.LastResultDAO
 import com.example.courtgate.framework.database.LastResultEntity
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.transform
 import javax.inject.Inject
 
 class MatchRoomDataSource @Inject constructor(
     private val dao: LastResultDAO
 ) : LocalDataSource {
 
+    override val getLastResult = dao.getLastResult().map { lastResultList ->
+        lastResultList.map { it.toDomain() }
+    }
+
+
+
     override suspend fun insertLastResult(lastResult: LastResult) {
         return dao.insertLastResult(lastResult.toEntity())
     }
 
-    override suspend fun getLastResult(): List<LastResult> {
+    /*override suspend fun getLastResult(): List<LastResult> {
         return dao.getLastResult().map { it.toDomain() }
-    }
+    }*/
 
 }
 

@@ -31,12 +31,12 @@ object HomeModule {
         ).build().LastResultDAO()
     }
 
-    @Singleton
     @Provides
-    fun provideHomeRepository(dao: LastResultDAO): HomeRepository {
-        return HomeRepository(dao)
+    fun provideLastResult(courtDataBase: CourtDatabase): LastResultDAO {
+        return courtDataBase.LastResultDAO()
     }
 
+    //fuera
     @Singleton
     @Provides
     fun providesFindUseCases(
@@ -47,6 +47,7 @@ object HomeModule {
         )
     }
 
+    //fuera
     @Singleton
     @Provides
     fun providesBookingUseCases(repository: HomeRepository): BookingUseCases {

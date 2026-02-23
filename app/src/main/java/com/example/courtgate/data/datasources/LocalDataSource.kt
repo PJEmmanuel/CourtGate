@@ -1,9 +1,10 @@
 package com.example.courtgate.data.datasources
 
 import com.example.courtgate.domain.models.LastResult
+import kotlinx.coroutines.flow.Flow
 
 interface LocalDataSource {
 
-    suspend fun getLastResult(): List<LastResult>
+    val getLastResult: Flow<List<LastResult>>
     suspend fun insertLastResult(lastResult: LastResult)
 }

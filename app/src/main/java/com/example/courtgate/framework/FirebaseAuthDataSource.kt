@@ -1,5 +1,4 @@
-package com.example.courtgate.framework.remote
-
+package com.example.courtgate.framework
 
 import com.example.courtgate.data.datasources.AuthDataSource
 import com.example.courtgate.domain.models.User

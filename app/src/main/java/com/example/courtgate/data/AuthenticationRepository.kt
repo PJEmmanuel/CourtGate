@@ -2,6 +2,7 @@ package com.example.courtgate.data
 
 import com.example.courtgate.data.datasources.AuthDataSource
 import com.example.courtgate.domain.models.User
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class AuthenticationRepository @Inject constructor(
@@ -18,6 +19,8 @@ class AuthenticationRepository @Inject constructor(
     fun getUserId(): String? {
         return authDataSource.getUserId()
     }
+
+    fun observeAuthState(): Flow<Boolean> = authDataSource.observeAuthState()
 
     /*suspend fun login(email: String, password: String): Result<Unit> {
         return try {

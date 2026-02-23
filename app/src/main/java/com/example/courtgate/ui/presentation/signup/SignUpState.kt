@@ -10,5 +10,5 @@ data class SignUpState(
     val isSubmitEnabled: Boolean = false
 ) {
     val isFormValid: Boolean
-        get() = emailError == null && passwordError == null
+        get() = email.isNotEmpty() && password.isNotEmpty() && emailError == null && passwordError == null
 }

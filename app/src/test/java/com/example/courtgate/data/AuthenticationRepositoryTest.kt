@@ -3,7 +3,6 @@ package com.example.courtgate.data
 import com.example.courtgate.data.datasources.AuthDataSource
 import com.example.courtgate.domain.models.User
 import kotlinx.coroutines.test.runTest
-import okhttp3.internal.userAgent
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -11,9 +10,7 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.any
-import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import kotlin.Unit
 
 @RunWith(MockitoJUnitRunner::class)
 class AuthenticationRepositoryTest {

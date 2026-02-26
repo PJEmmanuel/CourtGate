@@ -1,0 +1,87 @@
+package com.example.courtgate.data
+
+import com.example.courtgate.data.datasources.AuthDataSource
+import com.example.courtgate.domain.models.User
+import kotlinx.coroutines.test.runTest
+import okhttp3.internal.userAgent
+import org.junit.Assert.assertEquals
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.any
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
+import kotlin.Unit
+
+@RunWith(MockitoJUnitRunner::class)
+class AuthenticationRepositoryTest {
+
+    @Mock
+    lateinit var authDataSource: AuthDataSource
+
+    private lateinit var repository: AuthenticationRepository
+
+    private val email = "asd@ASD.com"
+    private val pass = "asdASD123"
+
+    @Before
+    fun setUp() {
+        repository = AuthenticationRepository(
+            authDataSource = authDataSource
+        )
+    }
+
+    @Test
+    fun `signUp is correct, then Result return User `(): Unit = runTest {
+        val uid = "asd123"
+        whenever(authDataSource.signUp(email, pass))
+            .thenReturn(Result.success(User(uid, email)))
+
+        val repository = repository.signUp(email, pass)
+
+        assertEquals(Result.success(User(uid, email)), repository)
+        assertEquals(true, repository.isSuccess)
+    }
+
+    @Test
+    fun `signUp is failure, then Result return exception`(): Unit = runTest {
+        val errorMessage = "Fail"
+        val error = Exception(errorMessage)
+        whenever(authDataSource.signUp(any(), any()))
+            .thenReturn(Result.failure(Exception(errorMessage)))
+
+        val repository = repository.signUp(email, pass)
+
+        assertEquals(error.message, repository.exceptionOrNull()?.message)
+        assertEquals(true, repository.isFailure)
+
+    }
+
+    @Test
+    fun `login is success, then Result return success`(): Unit = runTest {
+        val uid = "asd123"
+        whenever(authDataSource.login(email, pass))
+            .thenReturn(Result.success(User(uid, email)))
+
+        val repository = repository.login(email, pass)
+
+        assertEquals(Result.success(User(uid, email)), repository)
+        assertEquals(true, repository.isSuccess)
+    }
+
+    @Test
+    fun `login is failure, then Result return exception`(): Unit = runTest {
+        val errorMessage = "Fail"
+        val error = Exception(errorMessage)
+        whenever(authDataSource.login(any(), any()))
+            .thenReturn(Result.failure(Exception(errorMessage)))
+
+        val repository = repository.login(email, pass)
+
+        assertEquals(error.message, repository.exceptionOrNull()?.message)
+        assertEquals(true, repository.isFailure)
+
+    }
+}

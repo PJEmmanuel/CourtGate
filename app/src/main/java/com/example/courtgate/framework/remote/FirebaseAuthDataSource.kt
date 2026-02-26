@@ -13,7 +13,7 @@ import javax.inject.Inject
 class FirebaseAuthDataSource @Inject constructor(
     private val auth: FirebaseAuth
 ) : AuthDataSource {
-    override suspend fun signUp(email: String, password: String): Result<User>{
+    override suspend fun signUp(email: String, password: String): Result<User> {
         return try {
             val result = auth.createUserWithEmailAndPassword(email, password).await()
             val fireUser = result?.user?.let { user ->
@@ -29,7 +29,7 @@ class FirebaseAuthDataSource @Inject constructor(
         }
     }
 
-    override suspend fun login(email: String, password: String): Result<User>{
+    override suspend fun login(email: String, password: String): Result<User> {
         return try {
             val result = auth.signInWithEmailAndPassword(email, password).await()
             val fireUser = result?.user?.let { user ->
@@ -45,9 +45,8 @@ class FirebaseAuthDataSource @Inject constructor(
         }
     }
 
-    override fun getUserId(): String? {
-        return auth.currentUser?.uid
-    }
+    override fun isUserLoggedIn(): Boolean = auth.currentUser != null
+
 
     override fun observeAuthState(): Flow<Boolean> = callbackFlow {
         val listener = FirebaseAuth.AuthStateListener { firebaseAuth ->

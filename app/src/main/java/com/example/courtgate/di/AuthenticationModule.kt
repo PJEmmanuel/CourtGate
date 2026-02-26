@@ -3,7 +3,7 @@ package com.example.courtgate.di
 import com.example.courtgate.data.AuthenticationRepository
 import com.example.courtgate.data.datasources.AuthDataSource
 import com.example.courtgate.framework.remote.FirebaseAuthDataSource
-import com.example.courtgate.usecases.authentication.GetUserIdUseCase
+import com.example.courtgate.usecases.authentication.IsUserLoggedInUseCase
 import com.google.firebase.auth.FirebaseAuth
 import dagger.Binds
 import dagger.Module
@@ -61,8 +61,8 @@ object AuthenticationModule {
     @Singleton
     fun providesGetUserIdUseCase(
         repository: AuthenticationRepository
-    ): GetUserIdUseCase {
-        return GetUserIdUseCase(repository)
+    ): IsUserLoggedInUseCase {
+        return IsUserLoggedInUseCase(repository)
     }
 }
 

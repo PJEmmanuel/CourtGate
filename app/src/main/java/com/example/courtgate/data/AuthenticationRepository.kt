@@ -16,31 +16,10 @@ class AuthenticationRepository @Inject constructor(
         return authDataSource.login(email, password)
     }
 
-    fun getUserId(): String? {
-        return authDataSource.getUserId()
+    fun isUserLoggedIn(): Boolean {
+        return authDataSource.isUserLoggedIn()
     }
 
     fun observeAuthState(): Flow<Boolean> = authDataSource.observeAuthState()
 
-    /*suspend fun login(email: String, password: String): Result<Unit> {
-        return try {
-            Firebase.auth.signInWithEmailAndPassword(email, password).await()
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-
-    suspend fun signUp(email: String, password: String): Result<Unit> {
-        return try {
-            Firebase.auth.createUserWithEmailAndPassword(email, password).await()
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-
-    fun getUserId(): String? {
-        return Firebase.auth.currentUser?.uid
-    }*/
 }

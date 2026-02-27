@@ -43,7 +43,7 @@ class SignUpViewModelTest {
     }
 
     @Test
-    fun `InitialState with default values`() {
+    fun `initialState with default values`() {
         val result = vm.state.value
 
         assertEquals("", result.email)
@@ -94,7 +94,7 @@ class SignUpViewModelTest {
 
     @Test
     fun `check correct password format when password is good`() {
-        vm.onEmailChange(correctPass)
+        vm.onPasswordChange(correctPass)
 
         assertNull(vm.state.value.passwordError)
     }
@@ -111,6 +111,45 @@ class SignUpViewModelTest {
 
         assertNull(vm.state.value.passwordError)
 
+    }
+
+    @Test
+    fun `signUp success, then isSignedUpIn is true`(): Unit = runTest {
+        whenever(signUpUseCase.invoke(correctEmail, correctPass))
+            .thenReturn(Result.success(User(uid, correctEmail)))
+
+        vm.onEmailChange(correctEmail)
+        vm.onPasswordChange(correctPass)
+
+        vm.signUp()
+        runCurrent()
+
+        assertEquals(true, vm.state.value.isSignedUpIn)
+        assertEquals(false, vm.state.value.isLoading)
+    }
+
+    @Test
+    fun `signUp failure, then emailError is set`(): Unit = runTest {
+        val errorMessage = "Email already in use"
+        whenever(signUpUseCase.invoke(correctEmail, correctPass))
+            .thenReturn(Result.failure(Exception(errorMessage)))
+
+        vm.onEmailChange(correctEmail)
+        vm.onPasswordChange(correctPass)
+
+        vm.signUp()
+        runCurrent()
+
+        assertEquals(errorMessage, vm.state.value.emailError)
+        assertEquals(false, vm.state.value.isLoading)
+    }
+
+    @Test
+    fun `isSubmitEnabled is true when email and password are valid`() {
+        vm.onEmailChange(correctEmail)
+        vm.onPasswordChange(correctPass)
+
+        assertEquals(true, vm.state.value.isSubmitEnabled)
     }
 
     @Test

@@ -2,14 +2,17 @@ package com.example.courtgate.data
 
 import com.example.courtgate.data.datasources.AuthDataSource
 import com.example.courtgate.domain.models.User
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
 
 @RunWith(MockitoJUnitRunner::class)
@@ -31,7 +34,7 @@ class AuthenticationRepositoryTest {
     }
 
     @Test
-    fun `signUp is correct, then Result return User `(): Unit = runTest {
+    fun `signUp is correct, then Result return User`(): Unit = runTest {
         val uid = "asd123"
         whenever(authDataSource.signUp(email, pass))
             .thenReturn(Result.success(User(uid, email)))
@@ -46,7 +49,7 @@ class AuthenticationRepositoryTest {
     fun `signUp is failure, then Result return exception`(): Unit = runTest {
         val errorMessage = "Fail"
         val error = Exception(errorMessage)
-        whenever(authDataSource.signUp(any(), any()))
+        whenever(authDataSource.signUp(email, pass))
             .thenReturn(Result.failure(Exception(errorMessage)))
 
         val repository = repository.signUp(email, pass)
@@ -72,7 +75,7 @@ class AuthenticationRepositoryTest {
     fun `login is failure, then Result return exception`(): Unit = runTest {
         val errorMessage = "Fail"
         val error = Exception(errorMessage)
-        whenever(authDataSource.login(any(), any()))
+        whenever(authDataSource.login(email, pass))
             .thenReturn(Result.failure(Exception(errorMessage)))
 
         val repository = repository.login(email, pass)
@@ -80,5 +83,41 @@ class AuthenticationRepositoryTest {
         assertEquals(error.message, repository.exceptionOrNull()?.message)
         assertEquals(true, repository.isFailure)
 
+    }
+
+    @Test
+    fun `get true when user is logged in`() {
+        whenever(authDataSource.isUserLoggedIn()).thenReturn(true)
+
+        val repository = repository.isUserLoggedIn()
+
+        assertTrue(repository)
+    }
+
+    @Test
+    fun `get false when user is not logged in`() {
+        whenever(authDataSource.isUserLoggedIn()).thenReturn(false)
+
+        val repository = repository.isUserLoggedIn()
+
+        assertFalse(repository)
+    }
+
+    @Test
+    fun `get true while user is logged in`(): Unit = runTest {
+        whenever(authDataSource.observeAuthState()).thenReturn(flow { emit(true) })
+
+        val repository = repository.observeAuthState().first()
+
+        assertTrue(repository)
+    }
+
+    @Test
+    fun `get false while user is not logged in or logged out`(): Unit = runTest {
+        whenever(authDataSource.observeAuthState()).thenReturn(flow { emit(false) })
+
+        val repository = repository.observeAuthState().first()
+
+        assertFalse(repository)
     }
 }

@@ -94,11 +94,11 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
-    implementation(libs.mockito.kotlin)
-    implementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.mockito.core)
     testImplementation(libs.kotlinx.coroutines.test)
-    implementation(libs.junit)
-    implementation(libs.turbine)
+    testImplementation(libs.junit)
+    testImplementation(libs.turbine)
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

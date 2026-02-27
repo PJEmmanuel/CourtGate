@@ -2,9 +2,7 @@ package com.example.courtgate.ui.presentation.login
 
 import com.example.courtgate.core.CoroutinesTestRule
 import com.example.courtgate.domain.models.User
-import com.example.courtgate.ui.presentation.signup.SignUpViewModel
 import com.example.courtgate.usecases.authentication.LoginWithEmailUseCase
-import com.example.courtgate.usecases.authentication.SignUpWhitEmailUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
@@ -96,7 +94,7 @@ class LoginViewModelTest {
 
     @Test
     fun `check correct password format when password is good`() {
-        vm.onEmailChange(correctPass)
+        vm.onPasswordChange(correctPass)
 
         assertNull(vm.state.value.passwordError)
     }
@@ -113,6 +111,45 @@ class LoginViewModelTest {
 
         assertNull(vm.state.value.passwordError)
 
+    }
+
+    @Test
+    fun `login success, then isLoggedIn is true`(): Unit = runTest {
+        whenever(loginWithEmailUseCase.invoke(correctEmail, correctPass))
+            .thenReturn(Result.success(User(uid, correctEmail)))
+
+        vm.onEmailChange(correctEmail)
+        vm.onPasswordChange(correctPass)
+
+        vm.login()
+        runCurrent()
+
+        assertEquals(true, vm.state.value.isLoggedIn)
+        assertEquals(false, vm.state.value.isLoading)
+    }
+
+    @Test
+    fun `login failure, then emailError is set`(): Unit = runTest {
+        val errorMessage = "Invalid credentials"
+        whenever(loginWithEmailUseCase.invoke(correctEmail, correctPass))
+            .thenReturn(Result.failure(Exception(errorMessage)))
+
+        vm.onEmailChange(correctEmail)
+        vm.onPasswordChange(correctPass)
+
+        vm.login()
+        runCurrent()
+
+        assertEquals(errorMessage, vm.state.value.emailError)
+        assertEquals(false, vm.state.value.isLoading)
+    }
+
+    @Test
+    fun `isSubmitEnabled is true when email and password are valid`() {
+        vm.onEmailChange(correctEmail)
+        vm.onPasswordChange(correctPass)
+
+        assertEquals(true, vm.state.value.isSubmitEnabled)
     }
 
     @Test

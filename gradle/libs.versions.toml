@@ -27,6 +27,7 @@ services = "4.4.2"
 mockitoKotlin = "6.2.3"
 mockitoCore = "5.21.0"
 coroutines = "1.10.2"
+turbine = "1.2.1"
 
 
 [libraries]
@@ -72,6 +73,8 @@ mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore
 
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref ="coroutines" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
+
+turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

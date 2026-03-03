@@ -17,12 +17,12 @@ fun TitleForm(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
         CourtTittle(
-            text = "Welcome Back To",
+            text = "Welcome Back To",//TODO: hard code
             style = MaterialTheme.typography.headlineLarge
         )
         Spacer(modifier = Modifier.padding(8.dp))
         CourtTittle(
-            text = "Padel Sport Club",
+            text = "Padel Sport Club",//TODO: hard code
             style = MaterialTheme.typography.titleMedium
         )
     }

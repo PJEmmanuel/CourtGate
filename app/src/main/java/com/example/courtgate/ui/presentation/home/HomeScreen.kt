@@ -11,18 +11,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.courtgate.R
+import com.example.courtgate.ResultCourt
 import com.example.courtgate.ui.presentation.core.CourtButton
-import com.example.courtgate.ui.presentation.core.CourtTopBar
 import com.example.courtgate.ui.presentation.core.CourtNavigationBar
+import com.example.courtgate.ui.presentation.core.CourtTopBar
+import com.example.courtgate.ui.presentation.core.ErrorScreen
+import com.example.courtgate.ui.presentation.core.LoadingScreen
 import com.example.courtgate.ui.presentation.core.NavigationBarOnClick
-import com.example.courtgate.ui.presentation.home.components.LastResult
+import com.example.courtgate.ui.presentation.home.components.LastResultSection
 import com.example.courtgate.ui.presentation.home.components.TitleForm
 
 @Composable
@@ -31,18 +34,19 @@ fun HomeScreen(
     navigateToFindCourt: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-    val state by viewModel.state.collectAsState()
+
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
             CourtTopBar(
                 navIcon =
-                {
-                    Image(
-                        painter = painterResource(R.drawable.court_gate_icon),
-                        contentDescription = "LogoCourtGate"
-                    )
-                },
+                    {
+                        Image(
+                            painter = painterResource(R.drawable.court_gate_icon),
+                            contentDescription = "LogoCourtGate"
+                        )
+                    },
             )
         },
         bottomBar = {
@@ -65,10 +69,14 @@ fun HomeScreen(
                 verticalArrangement = Arrangement.Bottom
             ) {
 
-                LastResult(
-                    lastMatchResult = state.lastMatchResult,
-                    modifier = Modifier
-                )
+                //TODO: Optimizable con scaffold custom
+                when (val s = state) {
+                    is ResultCourt.Error -> ErrorScreen(s.exception)
+                    ResultCourt.Loading -> LoadingScreen()
+                    is ResultCourt.Success -> LastResultSection(
+                        lastMatchResult = s.data,
+                    )
+                }
 
                 CourtButton(
                     onClick = { navigateToFindCourt() },
@@ -77,7 +85,7 @@ fun HomeScreen(
                         .aspectRatio(4f)
                         .padding(16.dp),
                     shape = ShapeDefaults.Small,
-                    text = "Find a Court",
+                    text = "Find a Court", //TODO: hard code
                 )
             }
         }

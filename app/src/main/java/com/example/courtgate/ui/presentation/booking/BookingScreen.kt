@@ -74,7 +74,9 @@ fun BookingScreen(
         ) {
             when (state) {
                 is BookingUiState.Error -> {
-                    ErrorScreen((state as BookingUiState.Error).toString())
+                    ErrorScreen(
+                        error = Throwable("provisional") //TODO: revisar 
+                    )
                 }
 
                 BookingUiState.Idle -> {

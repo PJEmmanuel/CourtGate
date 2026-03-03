@@ -58,7 +58,8 @@ fun FindCourtScreen(
                 FindTittle()
 
                 when (state) {
-                    is FindUiState.Error -> ErrorScreen((state as FindUiState.Error).toString())
+                    is FindUiState.Error -> ErrorScreen( error = Throwable("provisional") //TODO: revisar
+                    )
                     FindUiState.Idle -> {
                         NoConnectionScreen { } //TODO poner el botón de cargar la lista
                     }

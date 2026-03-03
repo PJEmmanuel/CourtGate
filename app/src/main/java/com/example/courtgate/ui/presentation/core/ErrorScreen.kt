@@ -14,14 +14,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ErrorScreen(message: String) {
+fun ErrorScreen(error: Throwable) {
     Box(
         modifier = Modifier
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = "Ocurrió un error: $message", color = Color.Red)
+            Text(text = "Ocurrió un error: ${error.localizedMessage}", color = Color.Red)
             Spacer(modifier = Modifier.height(8.dp))
             Button(onClick = { /* retry logic here */ }) {
                 Text("Reintentar")

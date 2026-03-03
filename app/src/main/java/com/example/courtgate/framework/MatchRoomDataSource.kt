@@ -14,19 +14,12 @@ class MatchRoomDataSource @Inject constructor(
 ) : LocalDataSource {
 
     override val getLastResult = dao.getLastResult().map { lastResultList ->
-        lastResultList.map { it.toDomain() }
+        lastResultList.map { it?.toDomain() }
     }
-
-
 
     override suspend fun insertLastResult(lastResult: LastResult) {
         return dao.insertLastResult(lastResult.toEntity())
     }
-
-    /*override suspend fun getLastResult(): List<LastResult> {
-        return dao.getLastResult().map { it.toDomain() }
-    }*/
-
 }
 
 private fun LastResultEntity.toDomain(): LastResult {
@@ -34,7 +27,7 @@ private fun LastResultEntity.toDomain(): LastResult {
         id = id,
         player1Set1 = this.player1Set1,
         player2Set1 = this.player2Set1,
-        player1Set2 = this.player1Set1,
+        player1Set2 = this.player1Set2,
         player2Set2 = this.player2Set2,
         player1Set3 = this.player1Set3,
         player2Set3 = this.player2Set3
@@ -46,7 +39,7 @@ private fun LastResult.toEntity(): LastResultEntity {
         id = id,
         player1Set1 = this.player1Set1,
         player2Set1 = this.player2Set1,
-        player1Set2 = this.player1Set1,
+        player1Set2 = this.player1Set2,
         player2Set2 = this.player2Set2,
         player1Set3 = this.player1Set3,
         player2Set3 = this.player2Set3

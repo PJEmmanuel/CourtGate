@@ -8,11 +8,10 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface LastResultDAO {
-
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertLastResult(lastResultEntity: LastResultEntity)
 
     @Query("SELECT * FROM LAST_RESULT")
-    fun getLastResult(): Flow<List<LastResultEntity>>
+    fun getLastResult(): Flow<List<LastResultEntity?>>
 
 }

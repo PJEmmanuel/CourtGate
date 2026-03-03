@@ -17,7 +17,7 @@ import java.time.Instant
 import java.util.Date
 import javax.inject.Inject
 
-class HomeRepository @Inject constructor (private val dao: LastResultDAO) {
+class HomeRepository @Inject constructor () {
 
     /*//HomeScreen
     fun insertLastResult(lastResult: LastResult) {

@@ -23,12 +23,12 @@ object HomeModule {
 
     @Singleton
     @Provides
-    fun providesLastResultDAO(@ApplicationContext context: Context): LastResultDAO {
+    fun providesDatabase(@ApplicationContext context: Context): CourtDatabase {
         return Room.databaseBuilder(
             context = context,
             CourtDatabase::class.java,
             "court_db"
-        ).build().LastResultDAO()
+        ).build()
     }
 
     @Provides

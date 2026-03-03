@@ -5,6 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface LocalDataSource {
 
-    val getLastResult: Flow<List<LastResult>>
+    val getLastResult: Flow<List<LastResult?>>
     suspend fun insertLastResult(lastResult: LastResult)
 }

@@ -20,6 +20,16 @@ class MatchRoomDataSource @Inject constructor(
     override suspend fun insertLastResult(lastResult: LastResult) {
         return dao.insertLastResult(lastResult.toEntity())
     }
+
+    override suspend fun deleteLastResult(lastResult: LastResult) {
+        return dao.deleteLastResult(lastResult.toEntity())
+    }
+
+    override suspend fun editLastResult(lastResult: LastResult) {
+        return dao.editLastResult(lastResult.toEntity())
+    }
+
+
 }
 
 private fun LastResultEntity.toDomain(): LastResult {

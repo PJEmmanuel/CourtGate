@@ -7,4 +7,6 @@ interface LocalDataSource {
 
     val getLastResult: Flow<List<LastResult?>>
     suspend fun insertLastResult(lastResult: LastResult)
+    suspend fun deleteLastResult(lastResult: LastResult)
+    suspend fun editLastResult(lastResult: LastResult)
 }

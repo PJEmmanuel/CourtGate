@@ -19,4 +19,14 @@ class MatchRepository @Inject constructor(
             lastResult = lastResult
         )
     }
+
+    //TODO: se usará más tarde en la pantalla Match
+    suspend fun deleteLastResult(lastResult: LastResult) {
+        return localDataSource.deleteLastResult(lastResult)
+    }
+
+    //TODO: se usará más tarde en la pantalla Match
+    suspend fun editLastResult(lastResult: LastResult) {
+        return localDataSource.editLastResult(lastResult)
+    }
 }

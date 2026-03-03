@@ -1,9 +1,11 @@
 package com.example.courtgate.framework.database
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -13,5 +15,11 @@ interface LastResultDAO {
 
     @Query("SELECT * FROM LAST_RESULT")
     fun getLastResult(): Flow<List<LastResultEntity?>>
+
+    @Delete()
+    suspend fun deleteLastResult(lastResultEntity: LastResultEntity)
+
+    @Update
+    suspend fun  editLastResult(lastResultEntity: LastResultEntity)
 
 }

@@ -19,7 +19,7 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
 
     val state: StateFlow<ResultCourt<List<LastResult>>> = getLastResultUseCase.invoke()
-        .map<List<LastResult?>, ResultCourt<List<LastResult>>> { ResultCourt.Success(it.filterNotNull()) }
+        .map<List<LastResult>, ResultCourt<List<LastResult>>> { ResultCourt.Success(it) }
         .catch { emit(ResultCourt.Error(it)) }
         .stateIn(
             scope = viewModelScope,

@@ -12,7 +12,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.kotlin.argThat
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
@@ -49,6 +48,16 @@ class MatchRepositoryTest {
         val result = repository.lastResult.first()
 
         assertEquals(lastResult, result)
+    }
+
+    @Test
+    fun `If database emits nulls, they are filtered out`(): Unit = runTest {
+        val expected = listOf(lastResult1)
+        whenever(localDataSource.getLastResult).thenReturn(flowOf(listOf(lastResult1, null)))
+
+        val result = repository.lastResult.first()
+
+        assertEquals(expected, result)
     }
 
     @Test

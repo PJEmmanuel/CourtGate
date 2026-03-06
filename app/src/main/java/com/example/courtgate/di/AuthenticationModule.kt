@@ -2,8 +2,10 @@ package com.example.courtgate.di
 
 import com.example.courtgate.data.AuthenticationRepository
 import com.example.courtgate.data.datasources.AuthDataSource
+import com.example.courtgate.data.datasources.CourtRemoteDataSource
 import com.example.courtgate.data.datasources.LocalDataSource
 import com.example.courtgate.framework.FirebaseAuthDataSource
+import com.example.courtgate.framework.FirebaseFirestoreDataSource
 import com.example.courtgate.framework.MatchRoomDataSource
 import com.example.courtgate.usecases.authentication.IsUserLoggedInUseCase
 import com.google.firebase.auth.FirebaseAuth
@@ -39,4 +41,7 @@ abstract class ModuleDataSource {
 
     @Binds
     abstract fun bindLocalDS(localDS: MatchRoomDataSource): LocalDataSource
+
+    @Binds
+    abstract fun bindCourtRemoteDS(remoteDS: FirebaseFirestoreDataSource): CourtRemoteDataSource
 }

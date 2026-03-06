@@ -39,17 +39,6 @@ object HomeModule {
     //fuera
     @Singleton
     @Provides
-    fun providesFindUseCases(
-        repository: HomeRepository,
-    ): FindUseCases {
-        return FindUseCases(
-            getAllCourtToShowUseCase = GetAllCourtToShowUseCase(repository)
-        )
-    }
-
-    //fuera
-    @Singleton
-    @Provides
     fun providesBookingUseCases(repository: HomeRepository): BookingUseCases {
         return BookingUseCases(
             getCourtSelectedByCode = GetCourtSelectedByCode(repository),

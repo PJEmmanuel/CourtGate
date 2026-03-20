@@ -14,7 +14,7 @@ interface LastResultDAO {
     suspend fun insertLastResult(lastResultEntity: LastResultEntity)
 
     @Query("SELECT * FROM LAST_RESULT")
-    fun getLastResult(): Flow<List<LastResultEntity?>>
+    fun getLastResult(): Flow<List<LastResultEntity>>
 
     @Delete()
     suspend fun deleteLastResult(lastResultEntity: LastResultEntity)

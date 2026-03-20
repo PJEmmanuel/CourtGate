@@ -1,44 +1,33 @@
 package com.example.courtgate.usecases.find
 
-import com.example.courtgate.data.HomeRepository
-import com.example.courtgate.domain.models.CourtList
+import com.example.courtgate.data.ManageCourtRepository
+import com.example.courtgate.domain.models.Court
+import kotlinx.coroutines.flow.Flow
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import javax.inject.Inject
 
-class GetAllCourtToShowUseCase(private val repository: HomeRepository) {
-    suspend operator fun invoke(date: ZonedDateTime): Result<List<CourtList>> {
-        val offeredHours = listOf("08:00", "09:30", "11:00", "12:30", "16:00", "17:30")
-        //val offeredHours = listOf("16:00")
+class GetAllCourtToShowUseCase @Inject constructor(private val repository: ManageCourtRepository) {
+    operator fun invoke(located: String?, date: ZonedDateTime): Flow<List<Court>> {
 
-        //TODO: Hacer una constant !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //TODO: revisar ZoneId
+        val defaultZone = ZoneId.of("Europe/Madrid")
 
-        val zone = ZoneId.of("Europe/Madrid")
-        // convertir fecha → rango del día completo
-        val startOfDay = date.toLocalDate().atStartOfDay(zone).toInstant()
-        val endOfDay = date.toLocalDate().plusDays(1).atStartOfDay(zone).toInstant()
+        val selectedDay = date.toLocalDate().atStartOfDay(defaultZone).toInstant().toEpochMilli()
+        val endSelectedDay =
+            date.toLocalDate().plusDays(1).atStartOfDay(defaultZone).toInstant().toEpochMilli()
 
-        val allCourt = repository.getAllCourtToShow()
-        val allBooking = repository.getBookingsByDate(startOfDay = startOfDay, endOfDay = endOfDay)
+        val today = ZonedDateTime.now(defaultZone)
+        val currentDayStart = today.toLocalDate().atStartOfDay(defaultZone).toInstant()
+        val endSevenDaysFromNow =
+            today.toLocalDate().plusDays(7).atTime(23, 59, 59).atZone(defaultZone).toInstant()
 
-        if (allCourt.isFailure || allBooking.isFailure) {
-            return Result.failure(Exception("Error fetching data"))
-        }
-
-        val courts = allCourt.getOrThrow()
-        val booking = allBooking.getOrThrow()
-
-        val availableCourts = courts.filter { court ->
-            val courtBookings = booking.filter { it.code == court.code }
-            val reservedHours = courtBookings.map { it.hour }
-
-
-            val freeHours = offeredHours.filter { it !in reservedHours }
-
-            freeHours.isNotEmpty()
-        }
-
-
-        return Result.success(availableCourts)
-
+        return repository.getAllCourtToShow(
+            located = located,
+            selectedDay = selectedDay,
+            endSelectedDay = endSelectedDay,
+            currentDayStart = currentDayStart,
+            endSevenDaysFromNow = endSevenDaysFromNow
+        )
     }
 }

@@ -1,22 +1,25 @@
+/*
 package com.example.courtgate.usecases.booking
 
 import android.util.Log
-import com.example.courtgate.data.HomeRepository
+import com.example.courtgate.data.ManageCourtRepository
 import com.example.courtgate.domain.models.FreeHoursOfCourt
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
-class GetFreeHoursOnReservedCourts(private val repository: HomeRepository) {
+class GetFreeHoursOnReservedCourts(private val repository: ManageCourtRepository) {
 
     suspend operator fun invoke(code: String, date: String): Result<List<FreeHoursOfCourt>> {
 
         val offeredHours = listOf("08:00", "09:30", "11:00", "12:30", "16:00", "17:30") //TODO poner una CONST CORE
 
-        /*val zone = ZoneId.of("Europe/Madrid")
+        */
+/*val zone = ZoneId.of("Europe/Madrid")
         val localDate = ZonedDateTime.parse(date).withZoneSameInstant(zone).toLocalDate()
 
         val startOfDay = localDate.atStartOfDay(zone).toInstant()
-        val endOfDay = localDate.plusDays(1).atStartOfDay(zone).toInstant()*/
+        val endOfDay = localDate.plusDays(1).atStartOfDay(zone).toInstant()*//*
+
 
         //TODO: 1 Comprobar que el date que se trae de Find, está con la hora correcta, ya que
         // quizás sobre el ajuste.
@@ -54,4 +57,4 @@ class GetFreeHoursOnReservedCourts(private val repository: HomeRepository) {
             }
         }
     }
-}
+}*/

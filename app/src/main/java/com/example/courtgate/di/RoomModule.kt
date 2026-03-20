@@ -2,14 +2,9 @@ package com.example.courtgate.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.courtgate.data.HomeRepository
 import com.example.courtgate.framework.database.CourtDatabase
 import com.example.courtgate.framework.database.LastResultDAO
-import com.example.courtgate.usecases.booking.BookingUseCases
-import com.example.courtgate.usecases.booking.GetCourtSelectedByCode
-import com.example.courtgate.usecases.booking.GetFreeHoursOnReservedCourts
-import com.example.courtgate.usecases.find.FindUseCases
-import com.example.courtgate.usecases.find.GetAllCourtToShowUseCase
+import com.example.courtgate.framework.database.ManageCourtDAO
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,7 +14,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object HomeModule {
+object RoomModule {
 
     @Singleton
     @Provides
@@ -28,7 +23,9 @@ object HomeModule {
             context = context,
             CourtDatabase::class.java,
             "court_db"
-        ).build()
+        )
+            .fallbackToDestructiveMigration() //TODO Fallback activo
+            .build()
     }
 
     @Provides
@@ -36,13 +33,8 @@ object HomeModule {
         return courtDataBase.LastResultDAO()
     }
 
-    //fuera
-    @Singleton
     @Provides
-    fun providesBookingUseCases(repository: HomeRepository): BookingUseCases {
-        return BookingUseCases(
-            getCourtSelectedByCode = GetCourtSelectedByCode(repository),
-            getFreeHoursOnReservedCourts = GetFreeHoursOnReservedCourts(repository)
-        )
+    fun providesCourt(courtDatabase: CourtDatabase): ManageCourtDAO{
+        return courtDatabase.ManageCourtDAO()
     }
 }

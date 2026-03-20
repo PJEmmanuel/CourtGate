@@ -1,0 +1,133 @@
+package com.example.courtgate.framework
+
+import com.example.courtgate.data.datasources.CourtLocalDataSource
+import com.example.courtgate.domain.models.Court
+import com.example.courtgate.domain.models.CourtBooking
+import com.example.courtgate.domain.models.FilterOption
+import com.example.courtgate.framework.database.BookingEntity
+import com.example.courtgate.framework.database.CourtEntity
+import com.example.courtgate.framework.database.ManageCourtDAO
+import com.example.courtgate.framework.database.ScheduleEntity
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import java.time.Instant
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import javax.inject.Inject
+
+class ManageCourtRoomDataSource @Inject constructor(
+    private val manageCourtDAO: ManageCourtDAO
+) : CourtLocalDataSource {
+
+    override suspend fun saveAllCourt(courts: List<Court>) {
+        val courtEntity = courts.map { it.toCourEntity() }
+        manageCourtDAO.insertAllCourt(courtEntity)
+    }
+
+    override suspend fun saveRegularHours(schedule: List<String>) {
+        val scheduleEntity = schedule.map { it.toScheduleEntity() }
+        manageCourtDAO.insertRegularHours(scheduleEntity)
+    }
+
+    override suspend fun saveAllBookings(bookings: List<CourtBooking>) {
+        val entities = bookings.map { it.toBookingEntity() }
+        manageCourtDAO.insertAllBookings(entities)
+    }
+
+    override suspend fun getCourtsCount() = manageCourtDAO.getCourtCount()
+    override suspend fun getScheduleCount() = manageCourtDAO.getScheduleCount()
+
+    override suspend fun syncBookingsForDay(
+        selectedDay: Long,
+        endSelectedDay: Long,
+        bookings: List<CourtBooking>
+    ) {
+        val bookingsEntity = bookings.map { it.toBookingEntity() }
+        manageCourtDAO.syncBookingsForDay(
+            selectedDay = selectedDay,
+            endSelectedDay = endSelectedDay,
+            bookings = bookingsEntity
+        )
+    }
+
+    override fun getAvailableCourts(
+        locatedFilter: String?,
+        selectedDay: Long,
+        endSelectedDay: Long
+    ): Flow<List<Court>> {
+        val courts = manageCourtDAO.getAvailableCourts(
+            locatedFilter = locatedFilter,
+            selectedDay = selectedDay,
+            endSelectedDay = endSelectedDay
+        )
+        return courts.map { listCourtEntity ->
+            listCourtEntity.map { it.toCourtDomain() }
+        }
+    }
+
+    //TODO: y si no hay filtros?
+    override suspend fun getDistinctLocatedTypes(): List<FilterOption> {
+        return manageCourtDAO.getDistinctLocatedTypes().map {
+            it.toFilterOption()
+        }
+    }
+}
+
+private fun String.toFilterOption(): FilterOption {
+    return FilterOption(
+        located = this,
+        isSelected = false
+    )
+}
+
+private fun Court.toCourEntity(): CourtEntity {
+    return CourtEntity(
+        id = this.id.orEmpty(),
+        code = this.code.orEmpty(),
+        name = this.name.orEmpty(),
+        color = this.color.orEmpty(),
+        image = this.image.orEmpty(),
+        located = this.located.orEmpty(),
+        price = this.price
+    )
+}
+
+private fun CourtEntity.toCourtDomain(): Court {
+    return Court(
+        id = this.id,
+        code = this.code,
+        name = this.name,
+        color = this.color,
+        image = this.image,
+        located = this.located,
+        price = this.price
+    )
+}
+
+//TODO revisar hardCode
+private fun String.toScheduleEntity() = ScheduleEntity(
+    id = this,
+    defaultHours = this
+)
+
+// Clave compuesta determinista: la lógica de negocio garantiza que no puede haber
+// dos reservas para el mismo código, hora y timestamp.
+private fun CourtBooking.toBookingEntity(): BookingEntity {
+    val epochMs = this.date.toInstant().toEpochMilli()
+    return BookingEntity(
+        id = "${this.code}_${epochMs}_${this.hour}",
+        code = this.code,
+        date = epochMs,
+        hour = this.hour,
+        userId = this.userId
+    )
+}
+
+//TODO: Sirve?
+private fun ZonedDateTime.toLong(): Long {
+    return this.toInstant().toEpochMilli()
+}
+//TODO: Sirve?
+fun Long.toZonedDateTime(zoneId: ZoneId = ZoneId.systemDefault()): ZonedDateTime {
+    return ZonedDateTime.ofInstant(Instant.ofEpochMilli(this), zoneId)
+}

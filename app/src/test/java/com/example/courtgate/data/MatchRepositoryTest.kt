@@ -1,7 +1,7 @@
 package com.example.courtgate.data
 
 import com.example.courtgate.core.lastResultTest
-import com.example.courtgate.data.datasources.LocalDataSource
+import com.example.courtgate.data.datasources.ResultLocalDataSource
 import com.example.courtgate.domain.models.LastResult
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
@@ -19,7 +19,7 @@ import org.mockito.kotlin.whenever
 class MatchRepositoryTest {
 
     @Mock
-    lateinit var localDataSource: LocalDataSource
+    lateinit var resultLocalDataSource: ResultLocalDataSource
 
     private lateinit var repository: MatchRepository
 
@@ -27,13 +27,13 @@ class MatchRepositoryTest {
 
     @Before
     fun setUp() {
-        repository = MatchRepository(localDataSource)
+        repository = MatchRepository(resultLocalDataSource)
     }
 
     @Test
     fun `If room not empty, get lastResult`(): Unit = runTest {
         val listLastResult = listOf(lastResult1)
-        whenever(localDataSource.getLastResult).thenReturn(flowOf(listLastResult))
+        whenever(resultLocalDataSource.getLastResult).thenReturn(flowOf(listLastResult))
 
         val result = repository.lastResult.first()
 
@@ -43,7 +43,7 @@ class MatchRepositoryTest {
     @Test
     fun `If database empty, get empty lastResult`(): Unit = runTest {
         val lastResult = emptyList<LastResult>()
-        whenever(localDataSource.getLastResult).thenReturn(flowOf(lastResult))
+        whenever(resultLocalDataSource.getLastResult).thenReturn(flowOf(lastResult))
 
         val result = repository.lastResult.first()
 
@@ -53,7 +53,7 @@ class MatchRepositoryTest {
     @Test
     fun `If database emits nulls, they are filtered out`(): Unit = runTest {
         val expected = listOf(lastResult1)
-        whenever(localDataSource.getLastResult).thenReturn(flowOf(listOf(lastResult1, null)))
+        whenever(resultLocalDataSource.getLastResult).thenReturn(flowOf(listOf(lastResult1, null)))
 
         val result = repository.lastResult.first()
 
@@ -64,7 +64,7 @@ class MatchRepositoryTest {
     fun `Insert lastResult in database`(): Unit = runTest {
         repository.insertLastResult(lastResult1)
 
-        verify(localDataSource).insertLastResult(lastResult1)
+        verify(resultLocalDataSource).insertLastResult(lastResult1)
     }
 
 
@@ -72,13 +72,13 @@ class MatchRepositoryTest {
     fun `Delete a result of database`():Unit = runTest {
         repository.deleteLastResult(lastResult1)
 
-        verify(localDataSource).deleteLastResult(lastResult1)
+        verify(resultLocalDataSource).deleteLastResult(lastResult1)
     }
 
     @Test
     fun `Edit a result of database`():Unit=runTest {
         repository.editLastResult(lastResult1)
 
-        verify(localDataSource).editLastResult(lastResult1)
+        verify(resultLocalDataSource).editLastResult(lastResult1)
     }
 }

@@ -1,17 +1,15 @@
 package com.example.courtgate.framework
 
-import com.example.courtgate.data.datasources.LocalDataSource
+import com.example.courtgate.data.datasources.ResultLocalDataSource
 import com.example.courtgate.domain.models.LastResult
 import com.example.courtgate.framework.database.LastResultDAO
 import com.example.courtgate.framework.database.LastResultEntity
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.transform
 import javax.inject.Inject
 
-class MatchRoomDataSource @Inject constructor(
+class MatchRoomDataSourceResult @Inject constructor(
     private val dao: LastResultDAO
-) : LocalDataSource {
+) : ResultLocalDataSource {
 
     override val getLastResult = dao.getLastResult().map { lastResultList ->
         lastResultList.map { it?.toDomain() }
@@ -20,6 +18,20 @@ class MatchRoomDataSource @Inject constructor(
     override suspend fun insertLastResult(lastResult: LastResult) {
         return dao.insertLastResult(lastResult.toEntity())
     }
+
+    /*Step 4 — Implement Pattern B in MatchRoomDataSourceResult
+Each write operation gets the same try/catch pattern:
+
+override suspend fun insertLastResult(lastResult: LastResult): ResultCourt<Unit> {
+    return try {
+        dao.insertLastResult(lastResult.toEntity())
+        ResultCourt.Success(Unit)
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        ResultCourt.Error(e)
+    }
+}
+// same pattern for delete and edit*/
 
     override suspend fun deleteLastResult(lastResult: LastResult) {
         return dao.deleteLastResult(lastResult.toEntity())

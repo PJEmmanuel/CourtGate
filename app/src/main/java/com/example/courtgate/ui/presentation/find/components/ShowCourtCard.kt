@@ -20,16 +20,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.courtgate.R
-import com.example.courtgate.domain.models.CourtList
-import com.example.courtgate.ui.theme.CourtGateTheme
+import com.example.courtgate.domain.models.Court
 
 @Composable
 fun ShowCourtCard(
     modifier: Modifier,
-    court: CourtList,
+    court: Court,
     onClick: () -> Unit
 ) {
     Card(
@@ -85,14 +83,5 @@ fun ShowCourtCard(
                     .clip(RoundedCornerShape(12.dp))
             )
         }
-    }
-}
-
-
-@Preview
-@Composable
-fun PreviewshowCourtCard() {
-    CourtGateTheme {
-       // ShowCourtCard()
     }
 }

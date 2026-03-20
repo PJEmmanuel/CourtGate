@@ -13,10 +13,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.courtgate.ResultCourt
 import com.example.courtgate.ui.presentation.core.CourtTopBar
 import com.example.courtgate.ui.presentation.core.ErrorScreen
 import com.example.courtgate.ui.presentation.core.LoadingScreen
-import com.example.courtgate.ui.presentation.core.NoConnectionScreen
 import com.example.courtgate.ui.presentation.core.CourtNavigationBar
 import com.example.courtgate.ui.presentation.core.NavigationBarOnClick
 import com.example.courtgate.ui.presentation.find.components.CourtFilter
@@ -31,6 +31,10 @@ fun FindCourtScreen(
     viewModel: FindViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
+    val findStateScreen = rememberFindStateScreen(
+        state = state,
+        onSelectedDate = { viewModel.onSelectedDate(it) }
+    )
 
     Scaffold(
         topBar = {
@@ -56,8 +60,34 @@ fun FindCourtScreen(
             Column() {
 
                 FindTittle()
+                FindDateSelector(
+                    dateRange = findStateScreen.datesRange,
+                    selectedDate = findStateScreen.selectedDate,
+                    onDateClick = { findStateScreen.onSelectedDate(it) }
+                )
 
-                when (state) {
+                when (val s = state) {
+                    is ResultCourt.Error -> ErrorScreen(s.exception)
+                    ResultCourt.Loading -> LoadingScreen()
+                    is ResultCourt.Success -> {
+                        CourtFilter(
+                            onLocatedSelected = { viewModel.onFilter(it) },
+                            filters = s.data.filterList,
+                        )
+                        //Resultados de pistas
+                        ShowCourt(
+                            courts = s.data.courts,
+                            onCourtClick = {
+                                navigateToBookingScreen(
+                                    it.code,
+                                    s.data.selectedDate.toString()
+                                )
+                            },
+                        )
+                    }
+                }
+
+                /*when (state) {
                     is FindUiState.Error -> ErrorScreen( error = Throwable("provisional") //TODO: revisar
                     )
                     FindUiState.Idle -> {
@@ -72,12 +102,12 @@ fun FindCourtScreen(
                         )
 
                         // Filtro (outdoor e indoor, hora)
-                        /*CourtFilterChips(
+                        *//*CourtFilterChips(
                             selectedType = "",
                             onTypeSelected = { },
                             selectedHour = "",
                             onHourSelected = {},
-                        )*/
+                        )*//*
                         LoadingScreen()
                     }
 
@@ -103,7 +133,7 @@ fun FindCourtScreen(
 
                         //Resultados de pistas
                         ShowCourt(
-                            courtList = (state as FindUiState.Success<FindState>).data.filteredCourtList,
+                            court = (state as FindUiState.Success<FindState>).data.filteredCourt,
                             onCourtClick = {
                                 navigateToBookingScreen(
                                     it.code,
@@ -112,7 +142,7 @@ fun FindCourtScreen(
                             }
                         )
                     }
-                }
+                }*/
             }
         }
     }

@@ -3,211 +3,96 @@ package com.example.courtgate.ui.presentation.find
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.courtgate.domain.models.CourtList
+import com.example.courtgate.ResultCourt
 import com.example.courtgate.domain.models.FilterOption
-import com.example.courtgate.usecases.find.FindUseCases
+import com.example.courtgate.usecases.find.GetAllCourtToShowUseCase
+import com.example.courtgate.usecases.find.GetFilterOptionUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
 import javax.inject.Inject
 
 @HiltViewModel
 class FindViewModel @Inject constructor(
-    private val findUseCases: FindUseCases
+    private val getAllCourtToShowUseCase: GetAllCourtToShowUseCase,
+    private val getFilterOptionUseCase: GetFilterOptionUseCase
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow<FindUiState<FindState>>(FindUiState.Idle)
-    val state: StateFlow<FindUiState<FindState>> = _state.asStateFlow()
+    //Inputs
+    private val selectedFilter = MutableStateFlow<String?>(null)
+    private val selectedDate = MutableStateFlow(ZonedDateTime.now())
 
+    // Carga desde Room
+    private val filterOptions = MutableStateFlow<List<FilterOption>>(emptyList())
 
     init {
-        Log.i("checkINIT", _state.value.toString())
-        fetchCourtList(date = ZonedDateTime.now())
-        Log.i("checkINIT", "Ha recargado el VM")
+        loadFilterOptions()
     }
 
-    fun selectedDate(selectedDate: ZonedDateTime) {
-        Log.i("dateFindVM", selectedDate.toString())
-        _state.update { currentUiState ->
-            if (currentUiState is FindUiState.Success) {
-                val oldData = currentUiState.data
-                currentUiState.copy(data = oldData.copy(selectedDate = selectedDate))
-            } else currentUiState
-        }
-        fetchCourtList(date = selectedDate)//TODO: Va justo en esta linea? es correcta la actualizacion aqui?
-    }
-
-    //TODO revisar la actualization de datos
-    fun selectedCourt(selectedCourt: CourtList) {
-    }
-
-
-    fun selectedFilterCourt(selectedLocate: String?) {
-        _state.update { currentUiState ->
-            if (currentUiState is FindUiState.Success) {
-
-                val oldData = currentUiState.data
-
-                //Para filtro seleccionado
-                val updatedFilters = onSelectedFilter(
-                    listFilter = oldData.filterList,
-                    selectedLocate = selectedLocate,
-                )
-                // Para cambiar el valor cuando se quita el filtro
-                val updateSelectedLocate = checkSelectedLocate(
-                    currentSelectedLocate = selectedLocate,
-                    oldSelectedLocate = oldData.selectedLocate
-                )
-                // Para lista filtrada
-                val updateCourtList = filteredListCourt(
-                    mainList = oldData.mainCourtList,
-                    selectedLocate = updateSelectedLocate
-                )
-
-                currentUiState.copy(
-                    data = oldData.copy(
-                        filteredCourtList = updateCourtList,
-                        selectedLocate = updateSelectedLocate,
-                        filterList = updatedFilters
-                    )
-                )
-            } else {
-                currentUiState
-            }
-        }
-    }
-
-    private fun fetchCourtList(date: ZonedDateTime) {
+    private fun loadFilterOptions() {
         viewModelScope.launch {
-            when (_state.value) {
-                is FindUiState.Error -> {}
-                FindUiState.Idle -> {
-                    _state.value = FindUiState.Loading(
-                        data = FindState()
-                    )
-                    val result = findUseCases.getAllCourtToShowUseCase.invoke(date = date)
-                    _state.value = result.fold(
-                        onSuccess = {
-                            FindUiState.Success(
-                                data = FindState(
-                                    mainCourtList = it,
-                                    filteredCourtList = it,
-                                    filterList = fetchFilter(it)
-                                )
-                            )
-                        },
-                        onFailure = { FindUiState.Error(it.message.orEmpty()) }
-                    )
-                }
+            val filters = getFilterOptionUseCase()
+            filterOptions.value = filters
+            Log.i("CourtVM", "filtros: $filters")
 
-                is FindUiState.Loading -> {}
-                is FindUiState.Success -> {
-                    val prevData = (_state.value as? FindUiState.Success)?.data //TODO: Util????????????????
-                    _state.value = FindUiState.Loading(
-                        data = FindState(selectedDate = date)
-                    )
-                    val fetchData =
-                        findUseCases.getAllCourtToShowUseCase.invoke(date = date)
-                    _state.update {
-                        Log.i("checkINIT", "SuccessWhen")
-                        fetchData.fold(
-                            onSuccess = {
-                                FindUiState.Success(
-                                    data = FindState(
-                                        mainCourtList = it,
-                                        filteredCourtList = it,
-                                        filterList = fetchFilter(it),
-                                        selectedDate = date,
-                                    )
-                                )
-
-                            },
-                            onFailure = { FindUiState.Error(it.message.orEmpty()) }
-                        )
-                    }
-                }
-            }
         }
     }
+    /*El combine debe incluir los filtros para que cuando onFilter cambie la lista de FilterOption
+    (su isSelected), la UI reaccione.*/
 
-
-    /*private fun fetchCourtList(date : ZonedDateTime) {
-        viewModelScope.launch {
-            _state.value = UiState.Loading
-            val result = findUseCases.getAllCourtToShowUseCase.invoke(date = date)
-            _state.value = result.fold(
-                onSuccess = {
-                    Log.i("checkINIT", "onSuccessSide")
-                    UiState.Success(
-                        data = FindState(
-                            mainCourtList = it,
-                            filteredCourtList = it,
-                            filterList = fetchFilter(it)
+    //Stream principal
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val state: StateFlow<ResultCourt<FindState>> =
+        combine(selectedFilter, selectedDate, filterOptions) { filter, date, options ->
+            FindParams(filter, date, options)
+        }.flatMapLatest { params ->
+            getAllCourtToShowUseCase(params.filter, params.date)
+                .catch { ResultCourt.Error(it)
+                    Log.e("CourtVM", "ErrorVM: $it")
+                }
+                .map { listCourt ->
+                    Log.i("CourtVM", "Courts: $listCourt")
+                    ResultCourt.Success(
+                        FindState(
+                            courts = listCourt,
+                            filterList = params.options,
+                            selectedDate = params.date,
                         )
                     )
-                },
-                onFailure = { UiState.Error(it.message.orEmpty()) }
-            )
-        }
-    }*/
-
-    // Mapea los tipos de pista directamente
-    private fun fetchFilter(mainList: List<CourtList>): List<FilterOption> {
-        val options = mutableListOf<FilterOption>()
-        // Mapear tipos del backend
-        options.addAll(
-            mainList.map { located ->
-                FilterOption(
-                    located = located.located,
-                    isSelected = false
-                )
-            }
+                }
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = ResultCourt.Loading
         )
-        return options
-    }
 
+    //TODO: optimizable?
+    fun onFilter(filter: String?) {
+        val isAlreadySelected = selectedFilter.value == filter
+        val newFilterValue = if (isAlreadySelected) null else filter
+        selectedFilter.value = newFilterValue
 
-    /***** Filtros *****/
-// Activa el filtro elegido
-    private fun onSelectedFilter(
-        listFilter: List<FilterOption>,
-        selectedLocate: String?
-    ): List<FilterOption> {
-        val options = mutableListOf<FilterOption>()
-        // Mapear tipos del backend
-        options.addAll(
-            listFilter.map {
-                FilterOption(
-                    located = it.located,
-                    isSelected = selectedLocate == it.located && !it.isSelected
-                )
-            }
-        )
-        return options
-    }
-
-    // Actualiza la lista filtrada
-    private fun filteredListCourt(
-        mainList: List<CourtList>,
-        selectedLocate: String?
-    ): List<CourtList> {
-        Log.i("checkINIT", "variable de filteredListCourt: $selectedLocate")
-        if (selectedLocate.isNullOrEmpty()) {
-            return mainList
-        }
-        return mainList.filter { court ->
-            court.located == selectedLocate
+        filterOptions.value = filterOptions.value.map { option ->
+            option.copy(isSelected = option.located == newFilterValue)
         }
     }
 
-    private fun checkSelectedLocate(
-        currentSelectedLocate: String?,
-        oldSelectedLocate: String?
-    ): String? {
-        return if (currentSelectedLocate == oldSelectedLocate) null else currentSelectedLocate
+    fun onSelectedDate(date: ZonedDateTime) {
+        selectedDate.value = date
     }
+
+    private data class FindParams(
+        val filter: String?,
+        val date: ZonedDateTime,
+        val options: List<FilterOption>
+    )
 }

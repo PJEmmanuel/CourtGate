@@ -104,7 +104,6 @@ private fun CourtEntity.toCourtDomain(): Court {
     )
 }
 
-//TODO revisar hardCode
 private fun String.toScheduleEntity() = ScheduleEntity(
     id = this,
     defaultHours = this

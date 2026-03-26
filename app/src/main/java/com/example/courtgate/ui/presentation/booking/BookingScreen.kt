@@ -43,9 +43,9 @@ fun BookingScreen(
     date: String,
     //onNavigate: (NavigationBarOnClick) -> Unit, // NO HAY bottonBar
     navigateBackToFindCourt: () -> Unit,
-    viewModel: BookingViewModel = hiltViewModel()
+//    viewModel: BookingViewModel = hiltViewModel()
 ) {
-    val state by viewModel.state.collectAsState()
+   /* val state by viewModel.state.collectAsState()
 
     //TODO: 1- el popUp
     // 2- llevar la fecha al Alert
@@ -159,7 +159,7 @@ fun BookingScreen(
                 }
             }
         }
-    }
+    }*/
 }
 
 /*@Preview

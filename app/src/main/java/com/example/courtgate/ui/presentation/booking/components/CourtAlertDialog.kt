@@ -16,14 +16,14 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.courtgate.domain.models.CourtList
+import com.example.courtgate.domain.models.Court
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CourtAlertDialog(
     onDismissRequest: () -> Unit,
     onConfirmation: () -> Unit,
-    requestedCourt: CourtList?,
+    requestedCourt: Court?,
     selectedHourToBook: String
 ) {
     AlertDialog(

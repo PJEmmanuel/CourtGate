@@ -8,7 +8,7 @@ import java.time.ZonedDateTime
 import javax.inject.Inject
 
 class GetAllCourtToShowUseCase @Inject constructor(private val repository: ManageCourtRepository) {
-    operator fun invoke(located: String?, date: ZonedDateTime): Flow<List<Court>> {
+    operator fun invoke(located: String?, date: ZonedDateTime): Flow<List<Court>>{
 
         //TODO: revisar ZoneId
         val defaultZone = ZoneId.of("Europe/Madrid")

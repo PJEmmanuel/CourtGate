@@ -1,9 +1,12 @@
 package com.example.courtgate.ui.presentation.find
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.courtgate.ResultCourt
+import com.example.courtgate.ResultManage
+import com.example.courtgate.domain.models.Court
+import com.example.courtgate.domain.models.DomainError
+import com.example.courtgate.domain.models.DomainException
 import com.example.courtgate.domain.models.FilterOption
 import com.example.courtgate.usecases.find.GetAllCourtToShowUseCase
 import com.example.courtgate.usecases.find.GetFilterOptionUseCase
@@ -26,12 +29,10 @@ class FindViewModel @Inject constructor(
     private val getAllCourtToShowUseCase: GetAllCourtToShowUseCase,
     private val getFilterOptionUseCase: GetFilterOptionUseCase
 ) : ViewModel() {
-
     //Inputs
     private val selectedFilter = MutableStateFlow<String?>(null)
     private val selectedDate = MutableStateFlow(ZonedDateTime.now())
 
-    // Carga desde Room
     private val filterOptions = MutableStateFlow<List<FilterOption>>(emptyList())
 
     init {
@@ -40,50 +41,48 @@ class FindViewModel @Inject constructor(
 
     private fun loadFilterOptions() {
         viewModelScope.launch {
-            val filters = getFilterOptionUseCase()
-            filterOptions.value = filters
-            Log.i("CourtVM", "filtros: $filters")
-
+            when (val result = getFilterOptionUseCase()) {
+                is ResultManage.Success -> filterOptions.value = result.data
+                is ResultManage.Failure -> {
+                    emptyList<FilterOption>()
+                }
+            }
         }
     }
-    /*El combine debe incluir los filtros para que cuando onFilter cambie la lista de FilterOption
-    (su isSelected), la UI reaccione.*/
 
-    //Stream principal
     @OptIn(ExperimentalCoroutinesApi::class)
     val state: StateFlow<ResultCourt<FindState>> =
         combine(selectedFilter, selectedDate, filterOptions) { filter, date, options ->
             FindParams(filter, date, options)
-        }.flatMapLatest { params ->
-            getAllCourtToShowUseCase(params.filter, params.date)
-                .catch { ResultCourt.Error(it)
-                    Log.e("CourtVM", "ErrorVM: $it")
-                }
-                .map { listCourt ->
-                    Log.i("CourtVM", "Courts: $listCourt")
-                    ResultCourt.Success(
-                        FindState(
-                            courts = listCourt,
-                            filterList = params.options,
-                            selectedDate = params.date,
+        }
+            .flatMapLatest { params ->
+                getAllCourtToShowUseCase(params.filter, params.date)
+                    .map<List<Court>, ResultCourt<FindState>> { listCourt ->
+                        ResultCourt.Success(
+                            FindState(
+                                courts = listCourt,
+                                filterList = params.options.map { option -> option.copy(isSelected = option.located == params.filter) },
+                                selectedDate = params.date,
+                            )
                         )
-                    )
-                }
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = ResultCourt.Loading
-        )
+                    }.catch { e ->
+                        val domainError = when (e) {
+                            is DomainException -> e.error
+                            else -> DomainError.Remote.UnknownRemoteError
+                        }
+                        emit(ResultCourt.Error(domainError))
+                    }
+            }.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = ResultCourt.Loading
+            )
 
-    //TODO: optimizable?
+
     fun onFilter(filter: String?) {
         val isAlreadySelected = selectedFilter.value == filter
         val newFilterValue = if (isAlreadySelected) null else filter
         selectedFilter.value = newFilterValue
-
-        filterOptions.value = filterOptions.value.map { option ->
-            option.copy(isSelected = option.located == newFilterValue)
-        }
     }
 
     fun onSelectedDate(date: ZonedDateTime) {

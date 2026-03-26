@@ -37,23 +37,3 @@ data class FindState(
     val filterList: List<FilterOption> = emptyList(),
     val selectedDate: ZonedDateTime,
 )
-
-/*sealed class FindUiState<out T> {
-    object Idle : FindUiState<Nothing>()
-    data class Loading<T>(val data: T) : FindUiState<T>()
-    data class Success<T>(val data: T) : FindUiState<T>()
-    data class Error(val message: String) : FindUiState<Nothing>()
-}*/
-
-/*data class FindState(
-    //val filter: FilterOption? = null,
-    val courts: List<Court> = emptyList(),
-    val filterList: List<FilterOption> = emptyList(),
-    //  val filteredCourt: List<Court> = emptyList(),
-    //val selectedCourt: Court? = null,
-    //val selectedLocate: String? = "",
-    //val selectedHour: String = "",
-    //val onSelectedLocated: Boolean = false,
-    val selectedDate: ZonedDateTime = ZonedDateTime.now(),
-    //val mainDate: ZonedDateTime = ZonedDateTime.now(),
-)*/

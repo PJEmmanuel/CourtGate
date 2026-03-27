@@ -29,7 +29,7 @@ const val SETTINGS_COLLECTION = "settings"
 const val SCHEDULES_DOCUMENT = "schedules"
 
 class FirebaseFirestoreDataSource @Inject constructor(
-    private val fireStore: FirebaseFirestore
+    private val fireStore: FirebaseFirestore,
 ) : CourtRemoteDataSource {
 
     // Obtengo todas las pistas. NUNCA cambia la oferta de pistas.
@@ -81,13 +81,12 @@ class FirebaseFirestoreDataSource @Inject constructor(
 
             val subscription = query.addSnapshotListener { snapshot, error ->
                 if (error != null) {
-                    // El error viajará por el Flow al Repository lo propaga y ViewModel lo atrapa
                     close(error)
                     return@addSnapshotListener
                 }
 
                 val bookings = snapshot?.documents?.mapNotNull { doc ->
-                    doc.toObject(BookingDTO::class.java)?.toDomain()
+                    doc.toObject(BookingDTO::class.java)?.toDomain()?.copy(id = doc.id)
                 }.orEmpty()
                 trySend(bookings)
             }
@@ -127,6 +126,7 @@ fun CourtDTO.toDomain(): Court {
 fun BookingDTO.toDomain(): CourtBooking {
     val zone = ZoneId.of("Europe/Madrid") //TODO: Pedir ubicacion. hardcode
     return CourtBooking(
+        id = this.id ?: "",
         code = this.code.orEmpty(),
         date = this.date?.toDate()?.toInstant()?.atZone(zone)
             ?: ZonedDateTime.now(zone),

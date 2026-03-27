@@ -10,9 +10,6 @@ import com.example.courtgate.framework.database.ManageCourtDAO
 import com.example.courtgate.framework.database.ScheduleEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import java.time.Instant
-import java.time.ZoneId
-import java.time.ZonedDateTime
 import javax.inject.Inject
 
 class ManageCourtRoomDataSource @Inject constructor(
@@ -37,15 +34,15 @@ class ManageCourtRoomDataSource @Inject constructor(
     override suspend fun getCourtsCount() = manageCourtDAO.getCourtCount()
     override suspend fun getScheduleCount() = manageCourtDAO.getScheduleCount()
 
-    override suspend fun syncBookingsForDay(
-        selectedDay: Long,
-        endSelectedDay: Long,
+    override suspend fun syncBookings(
+        windowStart: Long,
+        windowEnd: Long,
         bookings: List<CourtBooking>
     ) {
         val bookingsEntity = bookings.map { it.toBookingEntity() }
         manageCourtDAO.syncBookingsForDay(
-            selectedDay = selectedDay,
-            endSelectedDay = endSelectedDay,
+            windowStart = windowStart,
+            windowEnd = windowEnd,
             bookings = bookingsEntity
         )
     }
@@ -82,12 +79,12 @@ private fun String.toFilterOption(): FilterOption {
 
 private fun Court.toCourEntity(): CourtEntity {
     return CourtEntity(
-        id = this.id.orEmpty(),
-        code = this.code.orEmpty(),
-        name = this.name.orEmpty(),
-        color = this.color.orEmpty(),
-        image = this.image.orEmpty(),
-        located = this.located.orEmpty(),
+        id = this.id,
+        code = this.code,
+        name = this.name,
+        color = this.color,
+        image = this.image,
+        located = this.located,
         price = this.price
     )
 }
@@ -109,24 +106,13 @@ private fun String.toScheduleEntity() = ScheduleEntity(
     defaultHours = this
 )
 
-// Clave compuesta determinista: la lógica de negocio garantiza que no puede haber
-// dos reservas para el mismo código, hora y timestamp.
 private fun CourtBooking.toBookingEntity(): BookingEntity {
     val epochMs = this.date.toInstant().toEpochMilli()
     return BookingEntity(
-        id = "${this.code}_${epochMs}_${this.hour}",
+        id = this.id,
         code = this.code,
         date = epochMs,
         hour = this.hour,
         userId = this.userId
     )
-}
-
-//TODO: Sirve?
-private fun ZonedDateTime.toLong(): Long {
-    return this.toInstant().toEpochMilli()
-}
-//TODO: Sirve?
-fun Long.toZonedDateTime(zoneId: ZoneId = ZoneId.systemDefault()): ZonedDateTime {
-    return ZonedDateTime.ofInstant(Instant.ofEpochMilli(this), zoneId)
 }

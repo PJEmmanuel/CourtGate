@@ -33,7 +33,11 @@ class ManageCourtRepository @Inject constructor(
         launch {
             remoteDataSource.getBookingsSevenDaysAhead(currentDayStart, endSevenDaysFromNow)
                 .collect { bookings ->
-                    localDataSource.syncBookingsForDay(selectedDay, endSelectedDay, bookings)
+                    localDataSource.syncBookings(
+                        currentDayStart.toEpochMilli(),
+                        endSevenDaysFromNow.toEpochMilli(),
+                        bookings
+                    )
                 }
         }
 

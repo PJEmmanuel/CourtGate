@@ -7,11 +7,11 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import javax.inject.Inject
 
-class GetAllCourtToShowUseCase @Inject constructor(private val repository: ManageCourtRepository) {
+class GetAllCourtToShowUseCase @Inject constructor(
+    private val repository: ManageCourtRepository,
+    private val defaultZone: ZoneId
+    ) {
     operator fun invoke(located: String?, date: ZonedDateTime): Flow<List<Court>>{
-
-        //TODO: revisar ZoneId
-        val defaultZone = ZoneId.of("Europe/Madrid")
 
         val selectedDay = date.toLocalDate().atStartOfDay(defaultZone).toInstant().toEpochMilli()
         val endSelectedDay =

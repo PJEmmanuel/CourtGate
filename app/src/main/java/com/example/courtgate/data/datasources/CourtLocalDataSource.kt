@@ -16,8 +16,8 @@ interface CourtLocalDataSource {
     ): Flow<List<Court>>
 
     suspend fun getCourtsCount(): Int
-    suspend fun syncBookingsForDay(selectedDay: Long, endSelectedDay: Long, bookings: List<CourtBooking>)
     suspend fun getDistinctLocatedTypes(): List<FilterOption>
     suspend fun getScheduleCount(): Int
+    suspend fun syncBookings(windowStart: Long, windowEnd: Long, bookings: List<CourtBooking>)
 }
 

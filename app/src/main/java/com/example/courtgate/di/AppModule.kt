@@ -1,3 +1,4 @@
+/*
 package com.example.courtgate.di
 
 import dagger.Module
@@ -23,3 +24,4 @@ object CoroutineScopesModule {
     fun providesApplicationScope(): CoroutineScope =
         CoroutineScope(SupervisorJob() + Dispatchers.Default)
 }
+*/

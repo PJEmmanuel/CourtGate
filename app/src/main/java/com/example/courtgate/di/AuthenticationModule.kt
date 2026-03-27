@@ -17,6 +17,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import java.time.ZoneId
 import javax.inject.Singleton
 
 @Module
@@ -39,6 +40,11 @@ object AuthenticationModule {
     ): IsUserLoggedInUseCase {
         return IsUserLoggedInUseCase(repository)
     }
+
+    //para zona de GetAllCourtToShowUseCase
+    @Provides
+    @Singleton
+    fun providesZonId(): ZoneId = ZoneId.systemDefault()
 }
 
 @Module
@@ -54,5 +60,5 @@ abstract class ModuleDataSource {
     abstract fun bindCourtRemoteDS(remoteDS: FirebaseFirestoreDataSource): CourtRemoteDataSource
 
     @Binds
-    abstract fun bindCourtLocalDS(localDS : ManageCourtRoomDataSource): CourtLocalDataSource
+    abstract fun bindCourtLocalDS(localDS: ManageCourtRoomDataSource): CourtLocalDataSource
 }

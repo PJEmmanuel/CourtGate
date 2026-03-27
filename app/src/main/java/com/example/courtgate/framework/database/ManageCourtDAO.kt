@@ -32,26 +32,19 @@ interface ManageCourtDAO {
     @Query("SELECT COUNT(*) FROM schedules")
     suspend fun getScheduleCount(): Int
 
-
-    /*TODO:El problema de "Borrar y Re-insertar"
-    En syncBookingsForDay, haces deleteBookingsByDay.
-    Si el usuario está consultando el "Día 1", pero el snapshotListener de Firebase detecta un cambio en el "Día 3", tu código actual podría borrar datos que no debe si los parámetros selectedDay no coinciden con los del snapshot.
-    Recomendación: Firebase ya te da el snapshot de los 7 días. Room maneja bien el REPLACE. Quizás es más seguro confiar en el onConflict = REPLACE usando un ID único (ej. pistaId_timestamp) en lugar de borrar por rangos manualmente, para evitar inconsistencias visuales.
-    */
-    //Actualiza un día concreto si hay cambios en DDBB. Borra e inserta de nuevo.
     @Transaction
     suspend fun syncBookingsForDay(
-        selectedDay: Long,
-        endSelectedDay: Long,
+        windowStart: Long,
+        windowEnd: Long,
         bookings: List<BookingEntity>
     ) {
-        deleteBookingsByDay(selectedDay, endSelectedDay)
+        deleteBookingsByDay(windowStart, windowEnd)
         insertAllBookings(bookings)
     }
 
     // Borrado de un día concreto entero
-    @Query("DELETE FROM bookings WHERE date >= :selectedDay AND date < :endSelectedDay")
-    suspend fun deleteBookingsByDay(selectedDay: Long, endSelectedDay: Long)
+    @Query("DELETE FROM bookings WHERE date >= :windowStart AND date < :windowEnd")
+    suspend fun deleteBookingsByDay(windowStart: Long, windowEnd: Long)
 
 
     /*Para pantalla FindCourt!!!*/

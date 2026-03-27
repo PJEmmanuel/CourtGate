@@ -101,17 +101,13 @@ private fun CourtEntity.toCourtDomain(): Court {
     )
 }
 
-private fun String.toScheduleEntity() = ScheduleEntity(
-    id = this,
-    defaultHours = this
-)
+private fun String.toScheduleEntity() = ScheduleEntity(this)
 
 private fun CourtBooking.toBookingEntity(): BookingEntity {
-    val epochMs = this.date.toInstant().toEpochMilli()
     return BookingEntity(
         id = this.id,
         code = this.code,
-        date = epochMs,
+        date = this.date.toEpochMilli(),
         hour = this.hour,
         userId = this.userId
     )

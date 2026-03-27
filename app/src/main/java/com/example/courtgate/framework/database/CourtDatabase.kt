@@ -5,7 +5,9 @@ import androidx.room.RoomDatabase
 
 
 //TODO: Configurar la carpeta de esquemas (La recomendada)
-//Si quieres que Room guarde los esquemas (muy útil cuando la app crezca y tengas que cambiar tablas sin borrar los datos del usuario), debes configurar la ruta en tu archivo build.gradle.kts (Module :app).
+//Si quieres que Room guarde los esquemas (muy útil cuando la app crezca y tengas que cambiar tablas
+// sin borrar los datos del usuario), debes configurar la ruta en tu archivo build.gradle.kts
+// (Module :app).
 //Como estás usando KSP (según el log del error), añade esto dentro del bloque android:
 //Kotlin
 //// En app/build.gradle.kts
@@ -30,7 +32,7 @@ import androidx.room.RoomDatabase
         BookingEntity::class,
         ScheduleEntity::class
                ],
-    version = 1,
+    version = 3,
     exportSchema = false
 )
 abstract class CourtDatabase : RoomDatabase() {

@@ -27,15 +27,3 @@ data class CourtEntity(
     @ColumnInfo(name = "price")
     val price: Int
 )
-
-/*fun CourtListDTO.toEntity(docId: String): CourtEntity {
-    return CourtEntity(
-        id = docId,
-        code = this.code ?: "",
-        name = this.name ?: "",
-        color = this.color ?: "",
-        image = this.image ?: "",
-        located = this.located ?: "",
-        price = this.price ?: 0
-    )
-}*/

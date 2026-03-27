@@ -24,7 +24,7 @@ object RoomModule {
             CourtDatabase::class.java,
             "court_db"
         )
-            .fallbackToDestructiveMigration() //TODO Fallback activo
+            .fallbackToDestructiveMigration(dropAllTables = true) //TODO Fallback activo
             .build()
     }
 

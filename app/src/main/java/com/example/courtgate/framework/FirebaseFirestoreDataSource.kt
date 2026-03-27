@@ -123,13 +123,11 @@ fun CourtDTO.toDomain(): Court {
     )
 }
 
-fun BookingDTO.toDomain(): CourtBooking {
-    val zone = ZoneId.of("Europe/Madrid") //TODO: Pedir ubicacion. hardcode
+fun BookingDTO.toDomain(): CourtBooking? {
     return CourtBooking(
         id = this.id ?: "",
         code = this.code.orEmpty(),
-        date = this.date?.toDate()?.toInstant()?.atZone(zone)
-            ?: ZonedDateTime.now(zone),
+        date = this.date?.toDate()?.toInstant() ?: return null,
         hour = this.hour.orEmpty(),
         userId = this.userId.orEmpty()
     )

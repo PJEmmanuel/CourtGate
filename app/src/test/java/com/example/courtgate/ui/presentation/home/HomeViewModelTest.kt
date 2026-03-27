@@ -76,8 +76,7 @@ class HomeViewModelTest {
 
     @Test
     fun `If get any errors then show Error`(): Unit = runTest {
-        val errorMessage = "Fallo en Room"
-        val error = RuntimeException(errorMessage)
+        val error = RuntimeException("Fallo en Room")
 
         whenever(getLastResultUseCase.invoke()).thenReturn(flow { throw error })
         vm = HomeViewModel(getLastResultUseCase)
@@ -85,8 +84,9 @@ class HomeViewModelTest {
         vm.state.test {
             assertEquals(ResultCourt.Loading, awaitItem())
 
+            // Ahora ResultCourt.Error contiene DomainError tipado, no Throwable
             val emittedError = awaitItem() as ResultCourt.Error
-            assertEquals(error, emittedError.exception)
+            assertEquals(com.example.courtgate.domain.models.DomainError.Local.UnknownLocalError, emittedError.error)
         }
     }
 }

@@ -71,7 +71,10 @@ fun HomeScreen(
 
                 //TODO: Optimizable con scaffold custom
                 when (val s = state) {
-                    is ResultCourt.Error -> ErrorScreen(s.exception)
+                    is ResultCourt.Error -> ErrorScreen(
+                        s.error,
+                        onRetry = {}
+                    )
                     ResultCourt.Loading -> LoadingScreen()
                     is ResultCourt.Success -> LastResultSection(
                         lastMatchResult = s.data,

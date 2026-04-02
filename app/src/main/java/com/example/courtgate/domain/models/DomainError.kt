@@ -36,23 +36,3 @@ sealed interface DomainError {
 
 // Dentro de un Flow no se puede emitir un tipo de error tipado directamente,
 class DomainException(val error: DomainError) : Exception()
-
-// TODO: usar @StringRes
-fun DomainError.toUserMessage(): String = when (this) {
-    DomainError.Remote.AccessDenied       -> "No tienes permisos para acceder"
-    DomainError.Remote.ServerError        -> "Error del servidor. Inténtalo más tarde"
-    DomainError.Remote.NotFound           -> "Datos no encontrados"
-    DomainError.Remote.UnknownRemoteError -> "Error de conexión"
-    DomainError.Local.DiskFull            -> "Sin espacio en el dispositivo"
-    DomainError.Local.DatabaseCorrupted   -> "Error interno. Reinstala la app"
-    DomainError.Local.ConstraintViolation -> "Error interno de datos"
-    DomainError.Local.UnknownLocalError   -> "Error local inesperado"
-    DomainError.Court.NoCourtsAvailable   -> "No hay pistas disponibles"
-    // Auth errors - genérico aquí, cada pantalla de auth puede tener su propio mapper
-    DomainError.Auth.InvalidCredentials   -> "Credenciales incorrectas"
-    DomainError.Auth.UserCollision        -> "El usuario ya existe"
-    DomainError.Auth.WeakPassword         -> "La contraseña no es segura"
-    DomainError.Auth.UserNotFound         -> "Usuario no encontrado"
-    DomainError.Auth.NetworkError         -> "Sin conexión a internet"
-    DomainError.Auth.UnknownAuthError     -> "Error de autenticación"
-}

@@ -62,7 +62,6 @@ class ManageCourtRoomDataSource @Inject constructor(
         }
     }
 
-    //TODO: y si no hay filtros?
     override suspend fun getDistinctLocatedTypes(): List<FilterOption> {
         return manageCourtDAO.getDistinctLocatedTypes().map {
             it.toFilterOption()

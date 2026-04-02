@@ -9,6 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.courtgate.domain.models.Court
+import com.example.courtgate.domain.models.DomainError
+import com.example.courtgate.ui.presentation.core.ErrorScreen
 
 @Composable
 fun ShowCourt(
@@ -16,6 +18,7 @@ fun ShowCourt(
     courts: List<Court>,
     onCourtClick: (Court) -> Unit,
 ) {
+
     LazyColumn(
         modifier = modifier
             .fillMaxWidth()
@@ -23,7 +26,7 @@ fun ShowCourt(
         verticalArrangement = Arrangement.Center
     )
     {
-        items(items = courts) { court ->
+        items(items = courts, key = { it.id }) { court ->
             ShowCourtCard(
                 modifier = Modifier,
                 court = court,

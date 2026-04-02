@@ -1,4 +1,39 @@
 <resources>
     <string name="app_name">CourtGate</string>
     <string name="filter_tittle">Tipo de pista</string>
+
+    <!-- Errores remotos -->
+    <string name="error_access_denied">No tienes permisos para acceder</string>
+    <string name="error_server">Error del servidor. Inténtalo más tarde</string>
+    <string name="error_not_found">Datos no encontrados</string>
+    <string name="error_unknown_remote">Error de conexión</string>
+
+    <!-- Errores locales (Room) -->
+    <string name="error_disk_full">Sin espacio en el dispositivo</string>
+    <string name="error_db_corrupted">Error interno. Reinstala la app</string>
+    <string name="error_db_constraint">Error interno de datos</string>
+    <string name="error_db_unknown">Error local inesperado</string>
+
+    <!-- Errores de dominio (Court) -->
+    <string name="error_no_courts">No se pudo conectar con el servidor. Inténtelo de nuevo más tarde</string>
+
+    <!-- Errores de autenticación -->
+    <string name="error_invalid_credentials">Credenciales incorrectas</string>
+    <string name="error_user_collision">El usuario ya existe</string>
+    <string name="error_weak_password">La contraseña no es segura</string>
+    <string name="error_user_not_found">Usuario no encontrado</string>
+    <string name="error_network">Sin conexión a internet</string>
+    <string name="error_auth_unknown">Error de autenticación</string>
+
+    <!-- ErrorScreen -->
+    <string name="message_button_error_screen">Reintentar</string>
+
+    <!-- ShowCourtCard -->
+    <string name="court_color_label">Color: %1$s</string>
+    <string name="court_price_format">%1$s€</string>
+    <string name="court_image_description">Imagen de la pista %1$s</string>
+
+    <!-- FindCourtScreen -->
+    <string name="content_description_back">Volver</string>
+    <string name="find_court_title">Buscar Pista</string>
 </resources>

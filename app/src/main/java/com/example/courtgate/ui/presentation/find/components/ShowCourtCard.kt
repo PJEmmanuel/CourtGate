@@ -20,13 +20,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.courtgate.R
 import com.example.courtgate.domain.models.Court
 
 @Composable
 fun ShowCourtCard(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     court: Court,
     onClick: () -> Unit
 ) {
@@ -37,7 +38,7 @@ fun ShowCourtCard(
             containerColor = MaterialTheme.colorScheme.surface
         ),
         modifier = modifier
-            .padding(16.dp)
+            .padding(8.dp)
             .fillMaxWidth()
             .clickable { onClick() }
     ) {
@@ -59,7 +60,7 @@ fun ShowCourtCard(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Color: ${court.color}",
+                    text = stringResource(R.string.court_color_label, court.color),
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Text(
@@ -68,15 +69,15 @@ fun ShowCourtCard(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "${court.price.toString()}€",
+                    text = stringResource(R.string.court_price_format, court.price.toString()),
                     style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.secondary
                 )
             }
 
             Image(
-                painter = painterResource(R.drawable.avatar), //TODO De donde saco la imagen?
-                contentDescription = "Imagen pista",
+                painter = painterResource(R.drawable.avatar), 
+                contentDescription = stringResource(R.string.court_image_description, court.name),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(80.dp)

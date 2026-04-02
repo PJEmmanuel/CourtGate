@@ -18,9 +18,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.courtgate.R
 import com.example.courtgate.domain.models.DomainError
-import com.example.courtgate.domain.models.toUserMessage
 
 @Composable
 fun ErrorScreen(
@@ -34,8 +35,7 @@ fun ErrorScreen(
         else -> Icons.Default.Error
     }
 
-    // Mensaje legible por mapper toUserMessage()
-    val message = error.toUserMessage()
+    val message = error.asStringRes()
 
     Box(
         modifier = Modifier
@@ -45,19 +45,19 @@ fun ErrorScreen(
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Icon(
                 imageVector = icon,
-                contentDescription = message,
+                contentDescription = stringResource(message),
                 modifier = Modifier.size(48.dp),
                 tint = MaterialTheme.colorScheme.error
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = message,
+                text = stringResource(message),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(16.dp))
             Button(onClick = onRetry) {
-                Text("Reintentar")
+                Text(stringResource(R.string.message_button_error_screen))
             }
         }
     }

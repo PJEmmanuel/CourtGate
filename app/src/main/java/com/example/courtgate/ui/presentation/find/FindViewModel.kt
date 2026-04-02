@@ -27,9 +27,9 @@ import javax.inject.Inject
 @HiltViewModel
 class FindViewModel @Inject constructor(
     private val getAllCourtToShowUseCase: GetAllCourtToShowUseCase,
-    private val getFilterOptionUseCase: GetFilterOptionUseCase
+    private val getFilterOptionUseCase: GetFilterOptionUseCase,
 ) : ViewModel() {
-    //Inputs
+
     private val selectedFilter = MutableStateFlow<String?>(null)
     private val selectedDate = MutableStateFlow(ZonedDateTime.now())
 
@@ -78,7 +78,6 @@ class FindViewModel @Inject constructor(
                 initialValue = ResultCourt.Loading
             )
 
-
     fun onFilter(filter: String?) {
         val isAlreadySelected = selectedFilter.value == filter
         val newFilterValue = if (isAlreadySelected) null else filter
@@ -86,6 +85,10 @@ class FindViewModel @Inject constructor(
     }
 
     fun onSelectedDate(date: ZonedDateTime) {
+        selectedDate.value = date
+    }
+
+    fun onRetry(date: ZonedDateTime){
         selectedDate.value = date
     }
 

@@ -12,7 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.courtgate.R
 import com.example.courtgate.ResultCourt
 import com.example.courtgate.ui.presentation.core.CourtNavigationBar
 import com.example.courtgate.ui.presentation.core.CourtTopBar
@@ -43,7 +45,7 @@ fun FindCourtScreen(
                 navIcon = {
                     Image(
                         imageVector = Icons.AutoMirrored.TwoTone.ArrowBack,
-                        contentDescription = "Go Back"
+                        contentDescription = stringResource(R.string.content_description_back)
                     )
                 },
             )
@@ -70,7 +72,7 @@ fun FindCourtScreen(
                 when (val s = state) {
                     is ResultCourt.Error -> ErrorScreen(
                         error = s.error,
-                        onRetry = { viewModel.onSelectedDate(findStateScreen.selectedDate) }
+                        onRetry = { viewModel.onRetry(findStateScreen.selectedDate) }
                     )
 
                     ResultCourt.Loading -> LoadingScreen()
@@ -79,7 +81,6 @@ fun FindCourtScreen(
                             onLocatedSelected = { viewModel.onFilter(it) },
                             filters = s.data.filterList,
                         )
-                        //Resultados de pistas
                         ShowCourt(
                             courts = s.data.courts,
                             onCourtClick = {

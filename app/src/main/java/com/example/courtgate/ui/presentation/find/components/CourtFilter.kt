@@ -19,10 +19,18 @@ fun CourtFilter(
     filters: List<FilterOption>,
     onLocatedSelected: (String?) -> Unit,
 ) {
-    Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-        Text(stringResource(R.string.filter_tittle), style = MaterialTheme.typography.labelMedium)
+    if (filters.isEmpty()) return
 
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+        Text(
+            text = stringResource(R.string.filter_tittle),
+            style = MaterialTheme.typography.labelMedium
+        )
+
+        Row(
+            modifier = Modifier.padding(top = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
             filters.forEach { filter ->
                 CourtFilterChips(
                     label = filter.located,

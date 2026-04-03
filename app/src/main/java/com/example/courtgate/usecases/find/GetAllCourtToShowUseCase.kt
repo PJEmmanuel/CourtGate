@@ -3,24 +3,29 @@ package com.example.courtgate.usecases.find
 import com.example.courtgate.data.ManageCourtRepository
 import com.example.courtgate.domain.models.Court
 import kotlinx.coroutines.flow.Flow
-import java.time.ZoneId
+import java.time.Clock
 import java.time.ZonedDateTime
 import javax.inject.Inject
 
 class GetAllCourtToShowUseCase @Inject constructor(
     private val repository: ManageCourtRepository,
-    private val defaultZone: ZoneId
-    ) {
-    operator fun invoke(located: String?, date: ZonedDateTime): Flow<List<Court>>{
+    private val clock: Clock
+) {
 
-        val selectedDay = date.toLocalDate().atStartOfDay(defaultZone).toInstant().toEpochMilli()
+    private val zoneDefault = clock.zone
+
+    operator fun invoke(located: String?, date: ZonedDateTime): Flow<List<Court>> {
+
+        //TODO: optimizable con fun.ext
+        val selectedDay = date.toLocalDate().atStartOfDay(zoneDefault).toInstant().toEpochMilli()
         val endSelectedDay =
-            date.toLocalDate().plusDays(1).atStartOfDay(defaultZone).toInstant().toEpochMilli()
+            date.toLocalDate().plusDays(1).atStartOfDay(zoneDefault).toInstant().toEpochMilli()
 
-        val today = ZonedDateTime.now(defaultZone)
-        val currentDayStart = today.toLocalDate().atStartOfDay(defaultZone).toInstant()
+        val today = ZonedDateTime.now(clock)
+        val currentDayStart = today.toLocalDate().atStartOfDay(zoneDefault).toInstant()
         val endSevenDaysFromNow =
-            today.toLocalDate().plusDays(7).atTime(23, 59, 59).atZone(defaultZone).toInstant()
+            today.toLocalDate().plusDays(7).atTime(23, 59, 59)
+                .atZone(zoneDefault).toInstant()
 
         return repository.getAllCourtToShow(
             located = located,

@@ -19,7 +19,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import java.time.ZoneId
+import java.time.Clock
 import javax.inject.Singleton
 
 @Module
@@ -46,7 +46,7 @@ object AuthenticationModule {
     //para zona de GetAllCourtToShowUseCase
     @Provides
     @Singleton
-    fun providesZonId(): ZoneId = ZoneId.systemDefault()
+    fun providesClock(): Clock = Clock.systemDefaultZone()
 }
 
 @Module

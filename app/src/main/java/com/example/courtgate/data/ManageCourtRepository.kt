@@ -8,6 +8,7 @@ import com.example.courtgate.domain.models.Court
 import com.example.courtgate.domain.models.DomainError
 import com.example.courtgate.domain.models.DomainException
 import com.example.courtgate.domain.models.FilterOption
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
@@ -21,13 +22,14 @@ import javax.inject.Inject
 class ManageCourtRepository @Inject constructor(
     private val remoteDataSource: CourtRemoteDataSource,
     private val localDataSource: CourtLocalDataSource,
-    private val syncPreferencesDataSource: SyncPreferencesDataSource
+    private val syncPreferencesDataSource: SyncPreferencesDataSource,
+    private val ioDispatcher: CoroutineDispatcher
 ) {
 
     suspend fun syncStaticDataIfNeeded(): ResultManage<Unit, DomainError> {
         val today = LocalDate.now().toString()
         val roomEmpty = localDataSource.getCourtsCount() == 0
-                &&localDataSource.getScheduleCount() == 0
+                && localDataSource.getScheduleCount() == 0
 
         val isNewDay = syncPreferencesDataSource.getLastSyncDay() != today
         if (!roomEmpty && !isNewDay) return ResultManage.Success(Unit)
@@ -77,7 +79,7 @@ class ManageCourtRepository @Inject constructor(
         localDataSource.getAvailableCourts(located, selectedDay, endSelectedDay)
             .distinctUntilChanged()
             .collect { courts -> send(courts) }
-    }.flowOn(Dispatchers.IO)
+    }.flowOn(ioDispatcher)
 
     suspend fun getFilterOption(): ResultManage<List<FilterOption>, DomainError> {
         return try {

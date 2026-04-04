@@ -19,6 +19,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import java.time.Clock
 import javax.inject.Singleton
 
@@ -47,6 +49,10 @@ object AuthenticationModule {
     @Provides
     @Singleton
     fun providesClock(): Clock = Clock.systemDefaultZone()
+
+    @Provides
+    @Singleton
+    fun providesIODispatcher(): CoroutineDispatcher = Dispatchers.IO
 }
 
 @Module

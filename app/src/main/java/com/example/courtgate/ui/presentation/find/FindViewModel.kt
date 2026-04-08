@@ -3,7 +3,6 @@ package com.example.courtgate.ui.presentation.find
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.courtgate.ResultCourt
-import com.example.courtgate.ResultManage
 import com.example.courtgate.domain.models.Court
 import com.example.courtgate.domain.models.DomainError
 import com.example.courtgate.domain.models.DomainException
@@ -20,20 +19,20 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
 import javax.inject.Inject
+import kotlin.time.Clock
 
 @HiltViewModel
 class FindViewModel @Inject constructor(
     private val getAllCourtToShowUseCase: GetAllCourtToShowUseCase,
-    private val getFilterOptionUseCase: GetFilterOptionUseCase,
+    getFilterOptionUseCase: GetFilterOptionUseCase,
 ) : ViewModel() {
 
     private val selectedFilter = MutableStateFlow<String?>(null)
     private val selectedDate = MutableStateFlow(ZonedDateTime.now())
 
-    private val filterOptions = MutableStateFlow<List<FilterOption>>(emptyList())
+    /*private val filterOptions = MutableStateFlow<List<FilterOption>>(emptyList())
 
     init {
         loadFilterOptions()
@@ -43,16 +42,18 @@ class FindViewModel @Inject constructor(
         viewModelScope.launch {
             when (val result = getFilterOptionUseCase()) {
                 is ResultManage.Success -> filterOptions.value = result.data
-                is ResultManage.Failure -> {
-                    emptyList<FilterOption>()
-                }
+                is ResultManage.Failure -> {}
             }
         }
-    }
+    }*/
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val state: StateFlow<ResultCourt<FindState>> =
-        combine(selectedFilter, selectedDate, filterOptions) { filter, date, options ->
+        combine(
+            selectedFilter,
+            selectedDate,
+            getFilterOptionUseCase.invoke().catch { emit(emptyList()) } //TODO analizar esto
+        ) { filter, date, options ->
             FindParams(filter, date, options)
         }
             .flatMapLatest { params ->
@@ -88,7 +89,7 @@ class FindViewModel @Inject constructor(
         selectedDate.value = date
     }
 
-    fun onRetry(date: ZonedDateTime){
+    fun onRetry(date: ZonedDateTime) {
         selectedDate.value = date
     }
 

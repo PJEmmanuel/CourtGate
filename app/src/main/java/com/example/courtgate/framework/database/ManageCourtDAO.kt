@@ -32,6 +32,9 @@ interface ManageCourtDAO {
     @Query("SELECT COUNT(*) FROM schedules")
     suspend fun getScheduleCount(): Int
 
+    @Query("SELECT DISTINCT located FROM courts")
+    fun getDistinctLocatedTypes(): Flow<List<String>>
+
     @Transaction
     suspend fun syncBookingsForDay(
         windowStart: Long,
@@ -45,7 +48,6 @@ interface ManageCourtDAO {
     // Borrado de un día concreto entero
     @Query("DELETE FROM bookings WHERE date >= :windowStart AND date < :windowEnd")
     suspend fun deleteBookingsByDay(windowStart: Long, windowEnd: Long)
-
 
     /*Para pantalla FindCourt!!!*/
 
@@ -74,9 +76,6 @@ AND (
         selectedDay: Long,
         endSelectedDay: Long
     ): Flow<List<CourtEntity>>
-
-    @Query("SELECT DISTINCT located FROM courts")
-    suspend fun getDistinctLocatedTypes(): List<String>
 
 
     /*Para pantalla BookNow!!!*/

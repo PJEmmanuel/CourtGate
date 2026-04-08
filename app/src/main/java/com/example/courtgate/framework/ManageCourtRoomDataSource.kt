@@ -62,9 +62,12 @@ class ManageCourtRoomDataSource @Inject constructor(
         }
     }
 
-    override suspend fun getDistinctLocatedTypes(): List<FilterOption> {
-        return manageCourtDAO.getDistinctLocatedTypes().map {
-            it.toFilterOption()
+    override fun getDistinctLocatedTypes(): Flow<List<FilterOption>> {
+        val filter = manageCourtDAO.getDistinctLocatedTypes()
+        return filter.map { listFilter ->
+            listFilter.map {
+                it.toFilterOption()
+            }
         }
     }
 }

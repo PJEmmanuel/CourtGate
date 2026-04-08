@@ -81,11 +81,6 @@ class ManageCourtRepository @Inject constructor(
             .collect { courts -> send(courts) }
     }.flowOn(ioDispatcher)
 
-    suspend fun getFilterOption(): ResultManage<List<FilterOption>, DomainError> {
-        return try {
-            ResultManage.Success(localDataSource.getDistinctLocatedTypes())
-        } catch (e: Exception) {
-            ResultManage.Failure(DomainError.Local.UnknownLocalError)
-        }
-    }
+    fun getFilterOption(): Flow<List<FilterOption>> =
+        localDataSource.getDistinctLocatedTypes().distinctUntilChanged()
 }

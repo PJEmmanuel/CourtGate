@@ -18,6 +18,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import java.time.ZonedDateTime
+import java.time.format.TextStyle
+import java.util.Locale
 
 @Composable
 fun FindDateItem(
@@ -45,7 +47,7 @@ fun FindDateItem(
                 .fillMaxSize()
         ) {
             Text(
-                text = date.dayOfWeek.name.take(3),
+                text = date.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault()),
                 style = MaterialTheme.typography.labelMedium,
                 color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
             )

@@ -36,4 +36,10 @@
     <!-- FindCourtScreen -->
     <string name="content_description_back">Volver</string>
     <string name="find_court_title">Buscar Pista</string>
+
+    <!-- Navigation Bar -->
+    <string name="nav_home">Inicio</string>
+    <string name="nav_booking">Reservas</string>
+    <string name="nav_match">Partidos</string>
+    <string name="nav_settings">Ajustes</string>
 </resources>

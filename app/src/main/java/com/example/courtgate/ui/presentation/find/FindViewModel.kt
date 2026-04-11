@@ -36,7 +36,7 @@ class FindViewModel @Inject constructor(
         combine(
             selectedFilter,
             selectedDate,
-            getFilterOptionUseCase.invoke().catch { emit(emptyList()) } //TODO analizar esto
+            getFilterOptionUseCase.invoke().catch { emit(emptyList()) }
         ) { filter, date, options ->
             FindParams(filter, date, options)
         }

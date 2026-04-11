@@ -52,7 +52,6 @@ fun PasswordTextField(
     )
 }
 
-//TODO: Cómo mostrar o dónde se muestra el texto de error
 @Composable
 fun CourtTextField(
     value: String,

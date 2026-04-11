@@ -20,7 +20,7 @@ class FirebaseAuthDataSource @Inject constructor(
                     uid = user.uid,
                     email = user.email ?: ""
                 )
-            } ?: return Result.failure(Exception("Sign up failed: user is null"))
+            } ?: return Result.failure(Exception("Sign up failed: user is null")) //TODO: Hardcode
             Result.success(fireUser)
 
         } catch (e: Exception) {
@@ -45,7 +45,6 @@ class FirebaseAuthDataSource @Inject constructor(
     }
 
     override fun isUserLoggedIn(): Boolean = auth.currentUser != null
-
 
     override fun observeAuthState(): Flow<Boolean> = callbackFlow {
         val listener = FirebaseAuth.AuthStateListener { firebaseAuth ->

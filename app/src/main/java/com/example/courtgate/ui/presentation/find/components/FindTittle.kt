@@ -6,7 +6,6 @@ import androidx.compose.ui.res.stringResource
 import com.example.courtgate.R
 import com.example.courtgate.ui.presentation.core.CourtTittle
 
-//TODO revisar la necesidad de esto
 @Composable
 fun FindTittle(){
     CourtTittle(

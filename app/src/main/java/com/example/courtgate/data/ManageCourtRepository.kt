@@ -28,7 +28,7 @@ class ManageCourtRepository @Inject constructor(
 ) {
 
     suspend fun syncStaticDataIfNeeded(): ResultManage<Unit, DomainError> {
-        val today = LocalDate.now().toString() //TODO: Inyectar Clock?
+        val today = LocalDate.now().toString()
         val roomEmpty = localDataSource.getCourtsCount() == 0
                 && localDataSource.getScheduleCount() == 0
 

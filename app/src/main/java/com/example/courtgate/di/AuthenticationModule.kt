@@ -10,7 +10,7 @@ import com.example.courtgate.framework.FirebaseAuthDataSource
 import com.example.courtgate.framework.FirebaseFirestoreDataSource
 import com.example.courtgate.framework.ManageCourtRoomDataSource
 import com.example.courtgate.framework.MatchRoomDataSourceResult
-import com.example.courtgate.framework.SharedPrefsSyncPreferencesDataSource
+import com.example.courtgate.framework.DataStoreSyncPreferencesDataSource
 import com.example.courtgate.usecases.authentication.IsUserLoggedInUseCase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -71,5 +71,5 @@ abstract class ModuleDataSource {
     abstract fun bindCourtLocalDS(localDS: ManageCourtRoomDataSource): CourtLocalDataSource
 
     @Binds
-    abstract fun bindSyncPreferencesDS(syncPrefDS: SharedPrefsSyncPreferencesDataSource): SyncPreferencesDataSource
+    abstract fun bindSyncPreferencesDS(syncPrefDS: DataStoreSyncPreferencesDataSource): SyncPreferencesDataSource
 }

@@ -2,6 +2,7 @@ package com.example.courtgate
 
 import com.example.courtgate.domain.models.Court
 import com.example.courtgate.domain.models.CourtBooking
+import com.example.courtgate.domain.models.FilterOption
 import java.time.Instant
 
 fun createCourtBookingTest(id: Int) = CourtBooking(
@@ -22,7 +23,7 @@ fun createCourtTest(id: Int, located: String) = Court(
     image = "https://example.com/court.jpg"
 )
 
-/*
-fun createCourtListTest(vararg ids: Int): List<Court> {
-    return ids.map { createCourtTest(it) }
-}*/
+fun createFilterOptionsTest(located: String, isSelected: Boolean) = FilterOption(
+    located = located,
+    isSelected = isSelected
+)

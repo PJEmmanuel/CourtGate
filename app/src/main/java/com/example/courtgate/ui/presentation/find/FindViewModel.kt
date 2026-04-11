@@ -21,7 +21,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import java.time.ZonedDateTime
 import javax.inject.Inject
-import kotlin.time.Clock
 
 @HiltViewModel
 class FindViewModel @Inject constructor(
@@ -31,21 +30,6 @@ class FindViewModel @Inject constructor(
 
     private val selectedFilter = MutableStateFlow<String?>(null)
     private val selectedDate = MutableStateFlow(ZonedDateTime.now())
-
-    /*private val filterOptions = MutableStateFlow<List<FilterOption>>(emptyList())
-
-    init {
-        loadFilterOptions()
-    }
-
-    private fun loadFilterOptions() {
-        viewModelScope.launch {
-            when (val result = getFilterOptionUseCase()) {
-                is ResultManage.Success -> filterOptions.value = result.data
-                is ResultManage.Failure -> {}
-            }
-        }
-    }*/
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val state: StateFlow<ResultCourt<FindState>> =

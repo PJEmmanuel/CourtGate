@@ -60,7 +60,7 @@ class ManageCourtRepositoryTest {
     fun `when sync succeeds then emits courts from local`(): Unit = runTest {
         val expectedCourtList = listOf(createCourtTest(1, "indoor"), createCourtTest(2, "outdoor"))
 
-        whenever(syncPreferencesDS.getLastSyncDay()).thenReturn(LocalDate.now().toString())
+        whenever(syncPreferencesDS.lastSyncDay).thenReturn(flowOf(LocalDate.now().toString()))
         whenever(localDS.getCourtsCount()).thenReturn(3)
         whenever(localDS.getAvailableCourts(anyOrNull(), any(), any()))
             .thenReturn(flowOf(expectedCourtList))
@@ -80,7 +80,7 @@ class ManageCourtRepositoryTest {
 
     @Test(expected = DomainException::class)
     fun `when sync fails then throws DomainException`(): Unit = runTest {
-        whenever(syncPreferencesDS.getLastSyncDay()).thenReturn(LocalDate.now().toString())
+        whenever(syncPreferencesDS.lastSyncDay).thenReturn(flowOf(LocalDate.now().toString()))
         whenever(localDS.getCourtsCount()).thenReturn(0)
         whenever(localDS.getScheduleCount()).thenReturn(0)
         whenever(remoteDS.getAllCourt()).thenReturn(ResultManage.Failure(DomainError.Remote.NotFound))
@@ -98,7 +98,7 @@ class ManageCourtRepositoryTest {
     fun `bookings from remote are synced to local`(): Unit = runTest {
         val expectedBooking = listOf(createCourtBookingTest(1), createCourtBookingTest(2))
 
-        whenever(syncPreferencesDS.getLastSyncDay()).thenReturn(LocalDate.now().toString())
+        whenever(syncPreferencesDS.lastSyncDay).thenReturn(flowOf(LocalDate.now().toString()))
         whenever(localDS.getCourtsCount()).thenReturn(3)
         whenever(
             remoteDS.getBookingsSevenDaysAhead(any(), any())

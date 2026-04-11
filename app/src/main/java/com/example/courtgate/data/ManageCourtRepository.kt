@@ -13,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import java.time.Instant
@@ -27,11 +28,11 @@ class ManageCourtRepository @Inject constructor(
 ) {
 
     suspend fun syncStaticDataIfNeeded(): ResultManage<Unit, DomainError> {
-        val today = LocalDate.now().toString()
+        val today = LocalDate.now().toString() //TODO: Inyectar Clock?
         val roomEmpty = localDataSource.getCourtsCount() == 0
                 && localDataSource.getScheduleCount() == 0
 
-        val isNewDay = syncPreferencesDataSource.getLastSyncDay() != today
+        val isNewDay = syncPreferencesDataSource.lastSyncDay.first() != today
         if (!roomEmpty && !isNewDay) return ResultManage.Success(Unit)
 
         // Sinc courts

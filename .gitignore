@@ -7,11 +7,22 @@
 /.idea/workspace.xml
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
+/.idea/deploymentTargetDropDown.xml
+/.idea/androidTestResultsUserPreferences.xml
 .DS_Store
 /build
+app/build/
 /captures
 .externalNativeBuild
 .cxx
-local.properties
 app/google-services.json
+bfg.jar
+.bfg-report/
+*.jks
+*.keystore
+keystore.properties
+*.env
+*.env.local
+*.class
+*.log
 

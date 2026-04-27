@@ -43,9 +43,9 @@ From paper sheets and WhatsApp groups to a booking in 3 taps.
     <td align="center"><b>Find Court</b></td>
   </tr>
   <tr>
-    <td><img src="docs/media/screenshots/04-find-court.png"        width="220" alt="Login screen with validators"/></td>
-    <td><img src="docs/media/screenshots/02-login.png"         width="220" alt="App home screen"/></td>
-    <td><img src="docs/media/screenshots/03-home.png"   width="220" alt="List of available courts"/></td>
+    <td><img src="docs/media/screenshots/02-login.png"        width="220" alt="Login screen with validators"/></td>
+    <td><img src="docs/media/screenshots/03-home.png"         width="220" alt="App home screen"/></td>
+    <td><img src="docs/media/screenshots/04-find-court.png"   width="220" alt="List of available courts"/></td>
   </tr>
   <tr>
     <td align="center"><b>Booking</b></td>

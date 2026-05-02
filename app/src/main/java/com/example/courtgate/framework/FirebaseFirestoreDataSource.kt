@@ -5,8 +5,10 @@ import com.example.courtgate.data.datasources.CourtRemoteDataSource
 import com.example.courtgate.domain.models.Court
 import com.example.courtgate.domain.models.CourtBooking
 import com.example.courtgate.domain.models.DomainError
+import com.example.courtgate.domain.models.NewCourtBooking
 import com.example.courtgate.framework.remote.BookingDTO
 import com.example.courtgate.framework.remote.CourtDTO
+import com.example.courtgate.framework.remote.NewBookingDTO
 import com.example.courtgate.framework.remote.ScheduleDTO
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
@@ -16,6 +18,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
+import java.io.IOException
 import java.time.Instant
 import java.util.Date
 import javax.inject.Inject
@@ -66,6 +69,18 @@ class FirebaseFirestoreDataSource @Inject constructor(
         }
     }
 
+    override suspend fun setNewBooking(newBooking: NewCourtBooking): ResultManage<Unit, DomainError> {
+        return try {
+            fireStore.collection(BOOKINGS_COLLECTION)
+                .add(newBooking.toDTO())
+                .await()
+            ResultManage.Success(Unit)
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
+            ResultManage.Failure(e.toRemoteError())
+        }
+    }
+
     // Obtengo pistas a 7 días vista desde el día actual.
     override fun getBookingsSevenDaysAhead(
         currentDayStart: Instant,
@@ -104,9 +119,18 @@ class FirebaseFirestoreDataSource @Inject constructor(
                     else -> DomainError.Remote.UnknownRemoteError
                 }
 
-            is java.io.IOException -> DomainError.Remote.ServerError // Sin red
+            is IOException -> DomainError.Remote.ServerError // Sin red
             else -> DomainError.Remote.UnknownRemoteError
         }
+}
+
+fun NewCourtBooking.toDTO(): NewBookingDTO {
+    return NewBookingDTO(
+        code = this.code,
+        date = Timestamp(this.date),
+        hour = this.hour,
+        userId = this.userId
+    )
 }
 
 fun CourtDTO.toDomain(): Court {

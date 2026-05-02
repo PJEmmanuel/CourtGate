@@ -26,6 +26,7 @@ import javax.inject.Inject
 class BookingViewModel @Inject constructor(
     getCourtSelectedByCodeUseCase: GetCourtSelectedByCodeUseCase,
     getFreeHoursOnReservedCourtsUseCase: GetFreeHoursOnReservedCourtsUseCase,
+    val setNewBookingUseCase: SetNewBookingUseCase,
     @CourtCode code: String,
     @SelectedDay selectedDay: Long
 ) : ViewModel() {
@@ -48,6 +49,21 @@ class BookingViewModel @Inject constructor(
                 initialValue = ResultCourt.Loading
             )
 
+    fun reserveCourt(newBooking: NewCourtBooking) {
+        viewModelScope.launch {
+            val result = setNewBookingUseCase(newBooking)
+            when (result) {
+                is ResultManage.Failure<*> -> TODO()
+                is ResultManage.Success<*> -> TODO()
+            }
+        }
+    }
+
+    fun onSelectHour(hour: String) {}
+    fun onBookClicked() {}
+    fun onConfirmBooking() {}
+    fun onDismissSheet() {}
+    fun onRetryBooking() {}
 
     //TODO sacar de aquí
     private fun mapError(e: Throwable): DomainError = when (e) {

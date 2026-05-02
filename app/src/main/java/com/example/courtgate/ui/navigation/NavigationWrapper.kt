@@ -109,7 +109,13 @@ fun NavigationWrapper(navController: NavHostController, startDestination: Any) {
                         }
                     }
                 },
-                navigateToBookingScreen = { code, date ->
+                navigateToBookingScreen = { code, zonedDateTime ->
+                    val date = zonedDateTime //TODO: Optimizar
+                        .toLocalDate()
+                        .atStartOfDay(zonedDateTime.zone)
+                        .toInstant()
+                        .toEpochMilli()
+
                     navController.navigate(
                         Booking(
                             code = code,
@@ -124,10 +130,7 @@ fun NavigationWrapper(navController: NavHostController, startDestination: Any) {
         }
 
         composable<Booking> {
-            val booking: Booking = it.toRoute()
             BookingScreen(
-                code = booking.code,
-                date = booking.date,
                 // onNavigate = {},
                 navigateBackToFindCourt = {
                     navController.navigate(FindCourt) {

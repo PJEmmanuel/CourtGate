@@ -8,8 +8,9 @@ import com.example.courtgate.domain.models.Court
 import com.example.courtgate.domain.models.DomainError
 import com.example.courtgate.domain.models.DomainException
 import com.example.courtgate.domain.models.FilterOption
+import com.example.courtgate.domain.models.FreeHoursOfCourt
+import com.example.courtgate.domain.models.NewCourtBooking
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -84,4 +85,39 @@ class ManageCourtRepository @Inject constructor(
 
     fun getFilterOption(): Flow<List<FilterOption>> =
         localDataSource.getDistinctLocatedTypes().distinctUntilChanged()
+
+    fun getHoursWithAvailability(
+        code: String,
+        dayStart: Long,
+        dayEnd: Long,
+        currentDayStart: Instant,
+        endSevenDaysFromNow: Instant
+    ): Flow<List<FreeHoursOfCourt>> = channelFlow {
+
+        launch {
+            remoteDataSource.getBookingsSevenDaysAhead(currentDayStart, endSevenDaysFromNow)
+                .collect { bookings ->
+                    localDataSource.syncBookings(
+                        currentDayStart.toEpochMilli(),
+                        endSevenDaysFromNow.toEpochMilli(),
+                        bookings
+                    )
+                }
+        }
+
+        localDataSource.getHoursWithAvailability(code, dayStart, dayEnd)
+            .distinctUntilChanged()
+            .collect { freeHour -> send(freeHour) }
+    }.flowOn(ioDispatcher)
+
+    fun getCourtByCode(code: String): Flow<Court> =
+        localDataSource.getCourtByCode(code).distinctUntilChanged()
+
+    suspend fun setBooking(newBooking: NewCourtBooking): ResultManage<Unit, DomainError> {
+        when (val new = remoteDataSource.setNewBooking(newBooking)) {
+            is ResultManage.Success -> return ResultManage.Success(Unit)
+            is ResultManage.Failure ->
+                return ResultManage.Failure(new.error)
+        }
+    }
 }

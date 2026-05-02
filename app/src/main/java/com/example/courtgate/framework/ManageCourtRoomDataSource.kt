@@ -4,10 +4,13 @@ import com.example.courtgate.data.datasources.CourtLocalDataSource
 import com.example.courtgate.domain.models.Court
 import com.example.courtgate.domain.models.CourtBooking
 import com.example.courtgate.domain.models.FilterOption
+import com.example.courtgate.domain.models.FreeHoursOfCourt
 import com.example.courtgate.framework.database.BookingEntity
 import com.example.courtgate.framework.database.CourtEntity
+import com.example.courtgate.framework.database.CourtHourAvailability
 import com.example.courtgate.framework.database.ManageCourtDAO
 import com.example.courtgate.framework.database.ScheduleEntity
+import hilt_aggregated_deps._dagger_hilt_android_internal_managers_HiltWrapper_SavedStateHandleModule
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -32,6 +35,7 @@ class ManageCourtRoomDataSource @Inject constructor(
     }
 
     override suspend fun getCourtsCount() = manageCourtDAO.getCourtCount()
+
     override suspend fun getScheduleCount() = manageCourtDAO.getScheduleCount()
 
     override suspend fun syncBookings(
@@ -45,6 +49,22 @@ class ManageCourtRoomDataSource @Inject constructor(
             windowEnd = windowEnd,
             bookings = bookingsEntity
         )
+    }
+
+    override fun getCourtByCode(code: String): Flow<Court> {
+        return manageCourtDAO.getCourtByCode(code).map { it.toCourtDomain() }
+    }
+
+    override fun getHoursWithAvailability(
+        code: String,
+        dayStart: Long,
+        dayEnd: Long
+    ): Flow<List<FreeHoursOfCourt>> {
+        return manageCourtDAO.getHoursWithAvailability(code, dayStart, dayEnd).map { list ->
+            list.map {
+                it.toFreeHoursOfCourt()
+            }
+        }
     }
 
     override fun getAvailableCourts(
@@ -70,6 +90,14 @@ class ManageCourtRoomDataSource @Inject constructor(
             }
         }
     }
+}
+
+private fun CourtHourAvailability.toFreeHoursOfCourt(): FreeHoursOfCourt {
+    return FreeHoursOfCourt(
+        hour = this.hour,
+        isFree = this.isFree,
+        isSelected = false
+    )
 }
 
 private fun String.toFilterOption(): FilterOption {

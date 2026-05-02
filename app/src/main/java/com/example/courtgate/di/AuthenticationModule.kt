@@ -1,5 +1,7 @@
 package com.example.courtgate.di
 
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.toRoute
 import com.example.courtgate.data.AuthenticationRepository
 import com.example.courtgate.data.datasources.AuthDataSource
 import com.example.courtgate.data.datasources.CourtLocalDataSource
@@ -11,6 +13,7 @@ import com.example.courtgate.framework.FirebaseFirestoreDataSource
 import com.example.courtgate.framework.ManageCourtRoomDataSource
 import com.example.courtgate.framework.MatchRoomDataSourceResult
 import com.example.courtgate.framework.DataStoreSyncPreferencesDataSource
+import com.example.courtgate.ui.navigation.screens.Booking
 import com.example.courtgate.usecases.authentication.IsUserLoggedInUseCase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -18,17 +21,19 @@ import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.scopes.ViewModelScoped
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import java.time.Clock
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object AuthenticationModule {
 
-    //TODO: Separar otro modulo para Firebase?
     @Provides
     @Singleton
     fun providesFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
@@ -55,6 +60,7 @@ object AuthenticationModule {
     fun providesIODispatcher(): CoroutineDispatcher = Dispatchers.IO
 }
 
+// DataSources - ModuleDataSource
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class ModuleDataSource {
@@ -72,4 +78,24 @@ abstract class ModuleDataSource {
 
     @Binds
     abstract fun bindSyncPreferencesDS(syncPrefDS: DataStoreSyncPreferencesDataSource): SyncPreferencesDataSource
+}
+
+//Feature Booking - BookingArgsModule
+@Retention(AnnotationRetention.BINARY)
+@Qualifier
+annotation class CourtCode
+
+@Retention(AnnotationRetention.BINARY)
+@Qualifier
+annotation class SelectedDay
+
+@Module
+@InstallIn(ViewModelComponent::class)
+object BookingArgsModule {
+    @Provides @ViewModelScoped
+    @CourtCode
+    fun provideCode(ssh: SavedStateHandle): String = ssh.toRoute<Booking>().code
+
+    @Provides @ViewModelScoped @SelectedDay
+    fun provideSelectedDay(ssh: SavedStateHandle): Long = ssh.toRoute<Booking>().date
 }

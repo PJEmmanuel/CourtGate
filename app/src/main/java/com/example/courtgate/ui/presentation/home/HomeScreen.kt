@@ -71,12 +71,10 @@ fun HomeScreen(
 
                 //TODO: Optimizable con scaffold custom
                 when (val s = state) {
-                    // Adaptado a la nueva firma: DomainError + onRetry
                     is ResultCourt.Error -> ErrorScreen(
-                        error = s.error,
-                        onRetry = { /* TODO: implementar retry para Home */ }
+                        s.error,
+                        onRetry = {}
                     )
-                    /* is ResultCourt.Error -> ErrorScreen(s.exception) */
                     ResultCourt.Loading -> LoadingScreen()
                     is ResultCourt.Success -> LastResultSection(
                         lastMatchResult = s.data,

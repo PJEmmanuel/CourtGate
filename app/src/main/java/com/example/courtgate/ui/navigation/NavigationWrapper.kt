@@ -70,12 +70,10 @@ fun NavigationWrapper(navController: NavHostController, startDestination: Any) {
                         }
 
                         NavigationBarOnClick.GoToMatch -> {
-                            // Aquí deberías crear otra pantalla tipo segura Match y navegar a ella
                             // navController.navigate(Match)
                         }
 
                         NavigationBarOnClick.GoToSetting -> {
-                            // Aquí deberías crear otra pantalla tipo segura Setting y navegar a ella
                             // navController.navigate(Setting)
                         }
                     }
@@ -103,12 +101,10 @@ fun NavigationWrapper(navController: NavHostController, startDestination: Any) {
                         }
 
                         NavigationBarOnClick.GoToMatch -> {
-                            // Aquí deberías crear otra pantalla tipo segura Match y navegar a ella
                             // navController.navigate(Match)
                         }
 
                         NavigationBarOnClick.GoToSetting -> {
-                            // Aquí deberías crear otra pantalla tipo segura Setting y navegar a ella
                             // navController.navigate(Setting)
                         }
                     }
@@ -123,7 +119,7 @@ fun NavigationWrapper(navController: NavHostController, startDestination: Any) {
                         popUpTo(FindCourt) { inclusive = false }
                         launchSingleTop = true
                     }
-                }
+                },
             )
         }
 
@@ -132,10 +128,10 @@ fun NavigationWrapper(navController: NavHostController, startDestination: Any) {
             BookingScreen(
                 code = booking.code,
                 date = booking.date,
-               // onNavigate = {},
+                // onNavigate = {},
                 navigateBackToFindCourt = {
-                    navController.navigate(FindCourt){
-                        popUpTo<FindCourt>{inclusive = true}
+                    navController.navigate(FindCourt) {
+                        popUpTo<FindCourt> { inclusive = true }
                     }
                 }
 

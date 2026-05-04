@@ -1,10 +1,11 @@
+/*
 package com.example.courtgate.usecases.booking
 
-import com.example.courtgate.data.HomeRepository
-import com.example.courtgate.domain.models.CourtList
+import com.example.courtgate.data.ManageCourtRepository
+import com.example.courtgate.domain.models.Court
 
-class GetCourtSelectedByCode(private val repository: HomeRepository) {
-    suspend fun invoke(code: String): Result<CourtList> {
+class GetCourtSelectedByCode(private val repository: ManageCourtRepository) {
+    suspend fun invoke(code: String): Result<Court> {
         return repository.getCourtSelectedByCode(code)
     }
-}
+}*/

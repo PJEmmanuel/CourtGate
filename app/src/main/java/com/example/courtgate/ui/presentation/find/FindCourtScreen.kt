@@ -12,12 +12,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.courtgate.R
+import com.example.courtgate.ResultCourt
+import com.example.courtgate.ui.presentation.core.CourtNavigationBar
 import com.example.courtgate.ui.presentation.core.CourtTopBar
 import com.example.courtgate.ui.presentation.core.ErrorScreen
 import com.example.courtgate.ui.presentation.core.LoadingScreen
-import com.example.courtgate.ui.presentation.core.NoConnectionScreen
-import com.example.courtgate.ui.presentation.core.CourtNavigationBar
 import com.example.courtgate.ui.presentation.core.NavigationBarOnClick
 import com.example.courtgate.ui.presentation.find.components.CourtFilter
 import com.example.courtgate.ui.presentation.find.components.FindDateSelector
@@ -32,13 +34,18 @@ fun FindCourtScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
+    val findStateScreen = rememberFindStateScreen(
+        state = state,
+        onSelectedDate = { viewModel.onSelectedDate(it) }
+    )
+
     Scaffold(
         topBar = {
             CourtTopBar(
                 navIcon = {
                     Image(
                         imageVector = Icons.AutoMirrored.TwoTone.ArrowBack,
-                        contentDescription = "Go Back"
+                        contentDescription = stringResource(R.string.content_description_back)
                     )
                 },
             )
@@ -56,60 +63,32 @@ fun FindCourtScreen(
             Column() {
 
                 FindTittle()
+                FindDateSelector(
+                    dateRange = findStateScreen.datesRange,
+                    selectedDate = findStateScreen.selectedDate,
+                    onDateClick = { findStateScreen.onSelectedDate(it) }
+                )
 
-                when (state) {
-                    is FindUiState.Error -> ErrorScreen( error = Throwable("provisional") //TODO: revisar
+                when (val s = state) {
+                    is ResultCourt.Error -> ErrorScreen(
+                        error = s.error,
+                        onRetry = { viewModel.onRetry(findStateScreen.selectedDate) }
                     )
-                    FindUiState.Idle -> {
-                        NoConnectionScreen { } //TODO poner el botón de cargar la lista
-                    }
 
-                    is FindUiState.Loading -> {
-                        FindDateSelector(
-                            mainDate = (state as FindUiState.Loading<FindState>).data.mainDate,
-                            onDateClick = { },
-                            selectedDate = (state as FindUiState.Loading<FindState>).data.selectedDate
-                        )
-
-                        // Filtro (outdoor e indoor, hora)
-                        /*CourtFilterChips(
-                            selectedType = "",
-                            onTypeSelected = { },
-                            selectedHour = "",
-                            onHourSelected = {},
-                        )*/
-                        LoadingScreen()
-                    }
-
-                    is FindUiState.Success -> {
-                        // Fechas 7 días vista
-                        FindDateSelector(
-                            mainDate = (state as FindUiState.Success<FindState>).data.mainDate,
-                            onDateClick =
-                                {
-                                    viewModel.selectedDate(it)
-                                    //viewModel.fetchCourtList(it)
-                                },
-                            selectedDate = (state as FindUiState.Success<FindState>).data.selectedDate,
-                        )
-
-                        // Filtro (outdoor e indoor, hora)
+                    ResultCourt.Loading -> LoadingScreen()
+                    is ResultCourt.Success -> {
                         CourtFilter(
-                            onLocatedSelected = { viewModel.selectedFilterCourt(it) },
-                            selectedHour = (state as FindUiState.Success<FindState>).data.selectedHour,
-                            filters = (state as FindUiState.Success<FindState>).data.filterList,
-                            onHourSelected = {},
+                            onLocatedSelected = { viewModel.onFilter(it) },
+                            filters = s.data.filterList,
                         )
-
-                        //Resultados de pistas
                         ShowCourt(
-                            courtList = (state as FindUiState.Success<FindState>).data.filteredCourtList,
+                            courts = s.data.courts,
                             onCourtClick = {
                                 navigateToBookingScreen(
                                     it.code,
-                                    (state as FindUiState.Success<FindState>).data.selectedDate.toString()
+                                    s.data.selectedDate.toString()
                                 )
-                            }
+                            },
                         )
                     }
                 }

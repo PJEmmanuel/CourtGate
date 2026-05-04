@@ -11,47 +11,58 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-
-//TODO Poner en String o CONST!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+import androidx.compose.ui.res.stringResource
+import com.example.courtgate.R
 
 @Composable
 fun CourtNavigationBar(
     onNavigate: (NavigationBarOnClick) -> Unit,
     modifier: Modifier = Modifier
 ) {
-
     NavigationBar(modifier = modifier) {
         NavigationBarItem(
-            selected = true,
+            selected = false,
             onClick = { onNavigate(NavigationBarOnClick.GoToHome) },
-            icon = { Icon(imageVector = Icons.TwoTone.Home, contentDescription = "Home") },
-            label = { Text("Home") } //TODO Poner en VALUE
+            icon = {
+                Icon(
+                    imageVector = Icons.TwoTone.Home,
+                    contentDescription = stringResource(R.string.nav_home)
+                )
+            },
+            label = { Text(stringResource(R.string.nav_home)) }
         )
         NavigationBarItem(
-            selected = true,
+            selected = false,
             onClick = { onNavigate(NavigationBarOnClick.GoToBooking) },
             icon = {
                 Icon(
                     imageVector = Icons.TwoTone.EventAvailable,
-                    contentDescription = "Booking"
+                    contentDescription = stringResource(R.string.nav_booking)
                 )
             },
-            label = { Text("Booking") }//TODO Poner en VALUE
-
+            label = { Text(stringResource(R.string.nav_booking)) }
         )
         NavigationBarItem(
-            selected = true,
+            selected = false,
             onClick = { onNavigate(NavigationBarOnClick.GoToMatch) },
-            icon = { Icon(imageVector = Icons.TwoTone.Book, contentDescription = "Match") },
-            label = { Text("Match") }//TODO Poner en VALUE
-
+            icon = {
+                Icon(
+                    imageVector = Icons.TwoTone.Book,
+                    contentDescription = stringResource(R.string.nav_match)
+                )
+            },
+            label = { Text(stringResource(R.string.nav_match)) }
         )
         NavigationBarItem(
-            selected = true,
+            selected = false,
             onClick = { onNavigate(NavigationBarOnClick.GoToSetting) },
-            icon = { Icon(imageVector = Icons.TwoTone.Person, contentDescription = "Setting") },
-            label = { Text("Setting") }//TODO Poner en VALUE
-
+            icon = {
+                Icon(
+                    imageVector = Icons.TwoTone.Person,
+                    contentDescription = stringResource(R.string.nav_settings)
+                )
+            },
+            label = { Text(stringResource(R.string.nav_settings)) }
         )
     }
 }

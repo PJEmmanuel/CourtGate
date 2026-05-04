@@ -1,6 +1,6 @@
 package com.example.courtgate.ui.presentation.booking
 
-import com.example.courtgate.domain.models.CourtList
+import com.example.courtgate.domain.models.Court
 import com.example.courtgate.domain.models.FreeHoursOfCourt
 
 sealed class BookingUiState<out T> {
@@ -13,7 +13,7 @@ sealed class BookingUiState<out T> {
 data class BookingState(
     val code: String = "",
     val freeHoursOfCourt: List<FreeHoursOfCourt> = emptyList(),
-    val requestedCourt: CourtList?,
+    val requestedCourt: Court?,
     val timeOffer: List<String> = listOf("08:00","09:30","11:00","12:30","16:00","17:30"),
     val selectedHourToBook: String = "",
     val showConfirmationDialog: Boolean = false,

@@ -26,14 +26,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.courtgate.ui.presentation.core.CourtButton
-import com.example.courtgate.domain.models.CourtList
+import com.example.courtgate.domain.models.Court
 import com.example.courtgate.domain.models.FreeHoursOfCourt
 
 @Composable
 fun BookForm(
     modifier: Modifier = Modifier,
     freeHoursList: List<FreeHoursOfCourt>,
-    court: CourtList?,
+    court: Court?,
     timeOffer : List<String> = emptyList(),
     isLoading: Boolean = false,
     onHourSelected: (String) -> Unit,

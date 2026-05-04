@@ -1,6 +1,7 @@
 package com.example.courtgate.framework.remote
 
-data class CourtListDTO(
+data class CourtDTO(
+    val id: String? = null,
     val code: String? = null,
     val name: String? = null,
     val color: String? = null,

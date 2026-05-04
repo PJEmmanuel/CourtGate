@@ -23,6 +23,7 @@ class HomeViewModel @Inject constructor(
     val state: StateFlow<ResultCourt<List<LastResult>>> = getLastResultUseCase.invoke()
         .map<List<LastResult>, ResultCourt<List<LastResult>>> { ResultCourt.Success(it) }
         .catch { e ->
+            // Mapea Throwable a DomainError tipado
             val domainError = when (e) {
                 is DomainException -> e.error
                 else -> DomainError.Local.UnknownLocalError

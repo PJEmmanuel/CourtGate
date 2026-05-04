@@ -1,6 +1,7 @@
 package com.example.courtgate.domain.models
 
-data class CourtList(
+data class Court(
+    val id : String,
     val code : String,
     val name: String,
     val color: String,

@@ -84,6 +84,7 @@ class HomeViewModelTest {
         vm.state.test {
             assertEquals(ResultCourt.Loading, awaitItem())
 
+            // Ahora ResultCourt.Error contiene DomainError tipado, no Throwable
             val emittedError = awaitItem() as ResultCourt.Error
             assertEquals(com.example.courtgate.domain.models.DomainError.Local.UnknownLocalError, emittedError.error)
         }

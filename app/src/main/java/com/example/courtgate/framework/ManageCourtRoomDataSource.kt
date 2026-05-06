@@ -96,7 +96,6 @@ private fun CourtHourAvailability.toFreeHoursOfCourt(): FreeHoursOfCourt {
     return FreeHoursOfCourt(
         hour = this.hour,
         isFree = this.isFree,
-        isSelected = false
     )
 }
 

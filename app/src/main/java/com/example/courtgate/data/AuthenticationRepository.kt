@@ -22,4 +22,7 @@ class AuthenticationRepository @Inject constructor(
 
     fun observeAuthState(): Flow<Boolean> = authDataSource.observeAuthState()
 
+    fun getCurrentUserId(): String? = authDataSource.getCurrentUserId()
+
+
 }

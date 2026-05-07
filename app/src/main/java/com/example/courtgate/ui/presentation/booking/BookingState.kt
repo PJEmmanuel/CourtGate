@@ -5,12 +5,11 @@ import com.example.courtgate.domain.models.DomainError
 import com.example.courtgate.domain.models.FreeHoursOfCourt
 
 data class BookingState(
-    val code: String = "",
+    val code: String? = null,
     val freeHoursOfCourt: List<FreeHoursOfCourt> = emptyList(),
     val requestedCourt: Court?,
-    val newBookingFlowState: NewBookingFlowState = NewBookingFlowState.Hidden
-    //val selectedHourToBook: String = "",
-    //val showConfirmationDialog: Boolean = false,
+    val newBookingFlowState: NewBookingFlowState = NewBookingFlowState.Hidden,
+    val selectedHourToBook: String? = null,
 )
 
 sealed interface NewBookingFlowState {

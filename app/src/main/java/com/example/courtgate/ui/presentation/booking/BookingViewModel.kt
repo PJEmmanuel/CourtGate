@@ -8,11 +8,11 @@ import com.example.courtgate.di.CourtCode
 import com.example.courtgate.di.SelectedDay
 import com.example.courtgate.domain.models.DomainError
 import com.example.courtgate.domain.models.DomainException
-import com.example.courtgate.domain.models.NewCourtBooking
 import com.example.courtgate.usecases.booking.GetCourtSelectedByCodeUseCase
 import com.example.courtgate.usecases.booking.GetFreeHoursOnReservedCourtsUseCase
 import com.example.courtgate.usecases.booking.SetNewBookingUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -20,6 +20,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.time.Instant
+import java.util.logging.ErrorManager
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,19 +29,26 @@ class BookingViewModel @Inject constructor(
     getCourtSelectedByCodeUseCase: GetCourtSelectedByCodeUseCase,
     getFreeHoursOnReservedCourtsUseCase: GetFreeHoursOnReservedCourtsUseCase,
     val setNewBookingUseCase: SetNewBookingUseCase,
-    @CourtCode code: String,
-    @SelectedDay selectedDay: Long
+    @param:CourtCode private val code: String,
+    @param:SelectedDay private val selectedDay: Long
 ) : ViewModel() {
-
     //TODO: Quitar ir a pantalla booking desde el botón reservas(es para gestionar reservas)
+
+    private val selectedHourFlow = MutableStateFlow<String?>(null)
+    private val sheetStateFlow = MutableStateFlow<NewBookingFlowState>(NewBookingFlowState.Hidden)
+
     val state: StateFlow<ResultCourt<BookingState>> =
         combine(
             getCourtSelectedByCodeUseCase(code),
-            getFreeHoursOnReservedCourtsUseCase(code, selectedDay)
-        ) { court, freeHours ->
+            getFreeHoursOnReservedCourtsUseCase(code, selectedDay),
+            selectedHourFlow,
+            sheetStateFlow,
+        ) { serverCourt, serverFreeHours, uiSelectedHour, uiSheet ->
             BookingState(
-                freeHoursOfCourt = freeHours,
-                requestedCourt = court,
+                freeHoursOfCourt = serverFreeHours,
+                requestedCourt = serverCourt,
+                newBookingFlowState = uiSheet,
+                selectedHourToBook = uiSelectedHour,
             )
         }.map<BookingState, ResultCourt<BookingState>> { ResultCourt.Success(it) }
             .catch { e -> emit(ResultCourt.Error(mapError(e))) }
@@ -49,21 +58,50 @@ class BookingViewModel @Inject constructor(
                 initialValue = ResultCourt.Loading
             )
 
-    fun reserveCourt(newBooking: NewCourtBooking) {
+    fun onSelectHour(hour: String) {
+        selectedHourFlow.value = hour
+    }
+
+    fun onBookClicked() {
+        if (selectedHourFlow.value == null) return
+        if (sheetStateFlow.value !is NewBookingFlowState.Hidden) return
+        sheetStateFlow.value = NewBookingFlowState.Confirming
+    }
+
+    fun onConfirmBooking() {
+        if (sheetStateFlow.value !is NewBookingFlowState.Confirming
+            && sheetStateFlow.value !is NewBookingFlowState.Failed
+        ) return
+        val hour = selectedHourFlow.value ?: return
+
+        sheetStateFlow.value = NewBookingFlowState.Submitting
+
         viewModelScope.launch {
-            val result = setNewBookingUseCase(newBooking)
-            when (result) {
-                is ResultManage.Failure<*> -> TODO()
-                is ResultManage.Success<*> -> TODO()
+            val result = setNewBookingUseCase(
+                code = code,
+                date = selectedDay,
+                hour = hour
+            )
+            sheetStateFlow.value = when (result) {
+                is ResultManage.Success -> NewBookingFlowState.Succeeded
+                is ResultManage.Failure -> NewBookingFlowState.Failed(result.error)
             }
         }
     }
 
-    fun onSelectHour(hour: String) {}
-    fun onBookClicked() {}
-    fun onConfirmBooking() {}
-    fun onDismissSheet() {}
-    fun onRetryBooking() {}
+    fun onDismissSheet() {
+        val current = sheetStateFlow.value
+        if (current is NewBookingFlowState.Submitting) return // bloquea cierre durante envío
+        if (current is NewBookingFlowState.Succeeded) {
+            selectedHourFlow.value = null
+        }
+        sheetStateFlow.value = NewBookingFlowState.Hidden
+    }
+
+    fun onRetryBooking() {
+        if (sheetStateFlow.value !is NewBookingFlowState.Failed) return
+        onConfirmBooking()
+    }
 
     //TODO sacar de aquí
     private fun mapError(e: Throwable): DomainError = when (e) {

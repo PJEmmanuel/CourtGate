@@ -14,8 +14,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.twotone.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -29,31 +32,28 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.courtgate.R
+import com.example.courtgate.ResultCourt
+import com.example.courtgate.ui.presentation.booking.components.BookForm
+import com.example.courtgate.ui.presentation.booking.components.BookingFlowSheetContent
+import com.example.courtgate.ui.presentation.booking.components.BookingImage
 import com.example.courtgate.ui.presentation.core.CourtTopBar
 import com.example.courtgate.ui.presentation.core.ErrorScreen
 import com.example.courtgate.ui.presentation.core.LoadingScreen
-import com.example.courtgate.ui.presentation.core.NoConnectionScreen
-import com.example.courtgate.ui.presentation.booking.components.BookForm
-import com.example.courtgate.ui.presentation.booking.components.BookingImage
-import com.example.courtgate.ui.presentation.booking.components.CourtAlertDialog
+import kotlinx.coroutines.delay
 
+private const val SUCCEEDED_DISMISS_DELAY_MS = 2_000L
+
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookingScreen(
-    code: String,
-    date: String,
-    //onNavigate: (NavigationBarOnClick) -> Unit, // NO HAY bottonBar
+    viewModel: BookingViewModel = hiltViewModel(),
     navigateBackToFindCourt: () -> Unit,
-//    viewModel: BookingViewModel = hiltViewModel()
+    backToHome: () -> Unit,
 ) {
-   /* val state by viewModel.state.collectAsState()
+    val state by viewModel.state.collectAsState()
 
-    //TODO: 1- el popUp
-    // 2- llevar la fecha al Alert
-    // 3- terminar las llamadas de lambdas
-    // 4- Si no hay hora seleccionada, boton Book disable
-    // repaso de todo para terminar de ajustar y rematar.
-
-    LaunchedEffect(code, date) { viewModel.fetchBookingData(code, date) }
+    // LaunchedEffect(code, date) { viewModel.fetchBookingData(code, date) }
 
     Scaffold(
         topBar = {
@@ -72,27 +72,15 @@ fun BookingScreen(
             modifier = Modifier
                 .fillMaxSize(),
         ) {
-            when (state) {
-                is BookingUiState.Error -> {
-                    ErrorScreen(
-                        error = Throwable("provisional") //TODO: revisar 
-                    )
-                }
+            when (val s = state) {
+                is ResultCourt.Error -> ErrorScreen(
+                    error = s.error,
+                    onRetry = { }
+                )
 
-                BookingUiState.Idle -> {
-                    NoConnectionScreen(
-                        onRetry = { viewModel.fetchBookingData(code, date) }
-                    ) //TODO poner el botón de cargar la lista
-                }
-
-                is BookingUiState.Loading -> {
-                    LoadingScreen(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight(0.6f)
-                    )
+                ResultCourt.Loading -> {
+                    LoadingScreen()
                     BookForm(
-                        timeOffer = emptyList(), //TODO: Qué le pongo para que respete los espacios?
                         isLoading = true, // para el indicador de carga en el button
                         modifier = Modifier
                             .padding(
@@ -105,11 +93,12 @@ fun BookingScreen(
                         court = null,
                         freeHoursList = emptyList(), //TODO: Qué le pongo para que respete los espacios?
                         onHourSelected = {},
-                        onActivateAlertDialog = {}
+                        onBookClicked = {},
+                        selectedHour = null
                     )
                 }
 
-                is BookingUiState.Success -> {
+                is ResultCourt.Success -> {
                     Box {
                         BookingImage(
                             imageUrl = painterResource(R.drawable.green_court),
@@ -134,8 +123,6 @@ fun BookingScreen(
                         )
                     }
                     BookForm(
-                        timeOffer = (state as BookingUiState.Success<BookingState>).data.timeOffer,
-                        court = (state as BookingUiState.Success<BookingState>).data.requestedCourt,
                         modifier = Modifier
                             .padding(
                                 start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
@@ -144,31 +131,47 @@ fun BookingScreen(
                             )
                             .fillMaxWidth()
                             .weight(1f),
-                        freeHoursList = (state as BookingUiState.Success<BookingState>).data.freeHoursOfCourt,
-                        onHourSelected = { viewModel.selectedHour(it) },
-                        onActivateAlertDialog = { viewModel.activateAlertDialog() }
+                        freeHoursList = s.data.freeHoursOfCourt,
+                        court = s.data.requestedCourt,
+                        isLoading = false,
+                        onHourSelected = { viewModel.onSelectHour(it) },
+                        onBookClicked = viewModel::onBookClicked,
+                        selectedHour = s.data.selectedHourToBook
                     )
-                    if ((state as BookingUiState.Success<BookingState>).data.showConfirmationDialog) {
-                        CourtAlertDialog(
-                            onDismissRequest = { viewModel.dismissDialog() },
-                            onConfirmation = { viewModel.reserveCourt() },
-                            requestedCourt = (state as BookingUiState.Success<BookingState>).data.requestedCourt,
-                            selectedHourToBook = (state as BookingUiState.Success<BookingState>).data.selectedHourToBook,
-                        )
-                    }
                 }
             }
         }
-    }*/
-}
+        //TODO: stateholder para simplificarr
+        val data = (state as? ResultCourt.Success)?.data
+        val sheetState = data?.newBookingFlowState
 
-/*@Preview
-@Composable
-fun PreviewBooking() {
-    CourtGateTheme {
-        BookingScreen(
-            code = "e",
-            onNavigate = {}
-        )
+        LaunchedEffect(sheetState) {
+            if (sheetState is NewBookingFlowState.Succeeded) {
+                delay(SUCCEEDED_DISMISS_DELAY_MS)
+                viewModel.onDismissSheet()
+                backToHome()
+            }
+        }
+
+        if (data != null && sheetState != null && sheetState !is NewBookingFlowState.Hidden) {
+            val modalState = rememberModalBottomSheetState(
+                skipPartiallyExpanded = true,
+                confirmValueChange = { sheetState !is NewBookingFlowState.Submitting &&
+                        sheetState !is NewBookingFlowState.Succeeded }
+            )
+            ModalBottomSheet(
+                onDismissRequest = viewModel::onDismissSheet,
+                sheetState = modalState,
+            ) {
+                BookingFlowSheetContent(
+                    state = sheetState,
+                    court = data.requestedCourt,
+                    selectedHour = data.selectedHourToBook,
+                    onConfirm = viewModel::onConfirmBooking,
+                    onRetry = viewModel::onRetryBooking,
+                    onDismiss = viewModel::onDismissSheet,
+                )
+            }
+        }
     }
-}*/
+}

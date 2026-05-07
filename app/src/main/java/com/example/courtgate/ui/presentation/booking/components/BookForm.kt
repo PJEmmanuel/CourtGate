@@ -34,10 +34,10 @@ fun BookForm(
     modifier: Modifier = Modifier,
     freeHoursList: List<FreeHoursOfCourt>,
     court: Court?,
-    timeOffer : List<String> = emptyList(),
+    selectedHour: String?,
     isLoading: Boolean = false,
     onHourSelected: (String) -> Unit,
-    onActivateAlertDialog: () -> Unit,
+    onBookClicked: () -> Unit,
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         Column(
@@ -75,22 +75,23 @@ fun BookForm(
 
             // Selector de horarios
             BookingFilterChip(
-                timeOffer = timeOffer,
+                //timeOffer = timeOffer,
                 onHourSelected = { onHourSelected(it) },
-                freeHoursList = freeHoursList
+                freeHoursList = freeHoursList,
+                selectedHour = selectedHour
             )
 
             // Botón de reservar
             CourtButton(
                 isLoading = isLoading,
                 text = "Book Now for ${court?.price}€",
-                isEnabled = true,
+                isEnabled = selectedHour != null,
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(4f)
                     .padding(16.dp),
                 shape = ShapeDefaults.Small,
-                onClick = {onActivateAlertDialog ()}
+                onClick = { onBookClicked() }
             )
         }
     }
@@ -130,63 +131,3 @@ fun InfoChip(
         }
     }
 }
-
-
-/* Box(modifier = Modifier.fillMaxSize()) {
-
-
-     Column(
-         modifier = Modifier
-             .fillMaxSize()
-             .align(alignment = Alignment.BottomCenter),
-         horizontalAlignment = Alignment.CenterHorizontally,
-         verticalArrangement = Arrangement.SpaceBetween
-     ) {
-         BookingImage(
-             imageUrl = painterResource(R.drawable.green_court),
-             modifier = Modifier
-                 .fillMaxWidth()
-                 .fillMaxHeight(0.6f) // 👈 60% del alto
-         )
-         CourtTittle(
-             modifier = Modifier,
-             text = "Nombre de la pista",
-             style = MaterialTheme.typography.bodyLarge,
-         )
-         Row (){
-             CourtTittle(
-                 modifier = Modifier,
-                 text = "Color: Negro",
-                 style = MaterialTheme.typography.bodyLarge,
-             )
-             CourtTittle(
-                 modifier = Modifier,
-                 text = "Outdoor",
-                 style = MaterialTheme.typography.bodyLarge,
-             )
-         }
-         BookingFilterChip(
-             timeOffer = emptyList(),
-             onHourSelected = {}
-         )
-         CourtButton(
-             text = "Book Now for 10€",
-             isEnabled = true,
-             modifier = Modifier
-                 .fillMaxWidth()
-                 .aspectRatio(4f)
-                 .padding(16.dp),
-             shape = ShapeDefaults.Small,
-             onClick = {}
-         )
-     }
- }
-}*/
-
-/*@Preview
-@Composable
-fun PreviewBook() {
-    CourtGateTheme {
-        BookForm()
-    }
-}*/

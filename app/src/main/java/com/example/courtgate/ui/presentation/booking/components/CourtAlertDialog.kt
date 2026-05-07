@@ -1,3 +1,4 @@
+/*
 package com.example.courtgate.ui.presentation.booking.components
 
 import androidx.compose.foundation.layout.Column
@@ -66,4 +67,4 @@ fun CourtAlertDialog(
             }
         }
     )
-}
+}*/

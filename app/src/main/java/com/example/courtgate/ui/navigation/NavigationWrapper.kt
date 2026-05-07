@@ -131,18 +131,16 @@ fun NavigationWrapper(navController: NavHostController, startDestination: Any) {
 
         composable<Booking> {
             BookingScreen(
-                // onNavigate = {},
                 navigateBackToFindCourt = {
                     navController.navigate(FindCourt) {
                         popUpTo<FindCourt> { inclusive = true }
                     }
-                }
-
-                /*navigateToFindCourt = {
+                },
+                backToHome = {
                     navController.navigate(Home) {
                         popUpTo<Login> { inclusive = true }
                     }
-                }*/
+                }
             )
         }
     }

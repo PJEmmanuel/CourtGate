@@ -114,10 +114,6 @@ class ManageCourtRepository @Inject constructor(
         localDataSource.getCourtByCode(code).distinctUntilChanged()
 
     suspend fun setBooking(newBooking: NewCourtBooking): ResultManage<Unit, DomainError> {
-        when (val new = remoteDataSource.setNewBooking(newBooking)) {
-            is ResultManage.Success -> return ResultManage.Success(Unit)
-            is ResultManage.Failure ->
-                return ResultManage.Failure(new.error)
-        }
+        return  remoteDataSource.setNewBooking(newBooking)
     }
 }

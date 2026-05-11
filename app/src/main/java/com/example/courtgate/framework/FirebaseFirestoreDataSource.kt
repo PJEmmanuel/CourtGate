@@ -71,9 +71,16 @@ class FirebaseFirestoreDataSource @Inject constructor(
 
     override suspend fun setNewBooking(newBooking: NewCourtBooking): ResultManage<Unit, DomainError> {
         return try {
-            fireStore.collection(BOOKINGS_COLLECTION)
-                .add(newBooking.toDTO())
-                .await()
+            val docId = buildBookingId(newBooking)
+            val docRef = fireStore.collection(BOOKINGS_COLLECTION).document(docId)
+
+            fireStore.runTransaction { tx ->
+                val snap = tx.get(docRef)
+                if (snap.exists()) throw SlotAlreadyTakenException()
+
+                tx.set(docRef, newBooking.toDTO())
+            }.await()
+
             ResultManage.Success(Unit)
         } catch (e: Exception) {
             if (e is CancellationException) throw e
@@ -107,8 +114,9 @@ class FirebaseFirestoreDataSource @Inject constructor(
         }
     }
 
-    private fun Exception.toRemoteError(): DomainError.Remote =
+    private fun Exception.toRemoteError(): DomainError =
         when (this) {
+            is SlotAlreadyTakenException -> DomainError.Booking.SlotAlreadyTaken
             is FirebaseFirestoreException ->
                 when (code) {
                     FirebaseFirestoreException.Code.PERMISSION_DENIED -> DomainError.Remote.AccessDenied
@@ -122,6 +130,13 @@ class FirebaseFirestoreDataSource @Inject constructor(
             is IOException -> DomainError.Remote.ServerError // Sin red
             else -> DomainError.Remote.UnknownRemoteError
         }
+
+    private fun buildBookingId(b: NewCourtBooking): String {
+        val dayMillis = b.date.toEpochMilli()
+        return "${b.code}_${dayMillis}_${b.hour}"
+    }
+
+    private class SlotAlreadyTakenException : RuntimeException()
 }
 
 fun NewCourtBooking.toDTO(): NewBookingDTO {

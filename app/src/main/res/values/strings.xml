@@ -28,6 +28,9 @@
     <!-- ErrorScreen -->
     <string name="message_button_error_screen">Reintentar</string>
 
+    <!-- Errores de reserva -->
+    <string name="error_booking_slot_taken">No se ha podido reservar, está reservada por otro usuario</string>
+
     <!-- ShowCourtCard -->
     <string name="court_color_label">Color: %1$s</string>
     <string name="court_price_format">%1$s€</string>
@@ -42,4 +45,5 @@
     <string name="nav_booking">Reservas</string>
     <string name="nav_match">Partidos</string>
     <string name="nav_settings">Ajustes</string>
+
 </resources>

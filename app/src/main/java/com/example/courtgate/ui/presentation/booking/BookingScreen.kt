@@ -170,6 +170,7 @@ fun BookingScreen(
                     onConfirm = viewModel::onConfirmBooking,
                     onRetry = viewModel::onRetryBooking,
                     onDismiss = viewModel::onDismissSheet,
+                    isSelectedHourStillFree = data.isSelectedHourStillFree,
                 )
             }
         }

@@ -3,10 +3,13 @@ package com.example.courtgate.usecases.booking
 import com.example.courtgate.data.ManageCourtRepository
 import com.example.courtgate.domain.models.FreeHoursOfCourt
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import java.time.Clock
 import java.time.Instant
+import java.time.LocalTime
 import java.time.ZonedDateTime
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.ExperimentalTime
 
 class GetFreeHoursOnReservedCourtsUseCase @Inject constructor(
@@ -32,12 +35,26 @@ class GetFreeHoursOnReservedCourtsUseCase @Inject constructor(
             today.toLocalDate().plusDays(7).atTime(23, 59, 59)
                 .atZone(zoneDefault).toInstant()
 
+        //Defensa para no reservar horas del pasado
+        val isToday = Instant.ofEpochMilli(selectedDay)
+            .atZone(zoneDefault)
+            .toLocalDate()
+            .isEqual(today.toLocalDate())
+        val nowTime = today.toLocalTime()
         return repository.getHoursWithAvailability(
             code = code,
             dayStart = selectedDay,
             dayEnd = endSelectedDay,
             currentDayStart = currentDayStart,
             endSevenDaysFromNow = endSevenDaysFromNow
-        )
+        ).map { list->
+            if (!isToday) list
+            else list.map {h ->
+                val hourTime = LocalTime.parse(h.hour)
+                if (hourTime.isBefore(nowTime)) h.copy(isFree = false)
+                else h
+            }
+        }
     }
 }
+

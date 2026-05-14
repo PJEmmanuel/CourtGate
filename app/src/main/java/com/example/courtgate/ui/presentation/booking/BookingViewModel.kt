@@ -20,8 +20,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.time.Instant
-import java.util.logging.ErrorManager
 import javax.inject.Inject
 
 @HiltViewModel
@@ -44,11 +42,14 @@ class BookingViewModel @Inject constructor(
             selectedHourFlow,
             sheetStateFlow,
         ) { serverCourt, serverFreeHours, uiSelectedHour, uiSheet ->
+            val steelFree =
+                serverFreeHours.firstOrNull { it.hour == uiSelectedHour }?.isFree ?: false
             BookingState(
                 freeHoursOfCourt = serverFreeHours,
                 requestedCourt = serverCourt,
                 newBookingFlowState = uiSheet,
                 selectedHourToBook = uiSelectedHour,
+                isSelectedHourStillFree = steelFree,
             )
         }.map<BookingState, ResultCourt<BookingState>> { ResultCourt.Success(it) }
             .catch { e -> emit(ResultCourt.Error(mapError(e))) }

@@ -24,6 +24,7 @@ import com.example.courtgate.ui.presentation.core.asStringRes
 @Composable
 fun BookingFlowSheetContent(
     state: NewBookingFlowState,
+    isSelectedHourStillFree: Boolean,
     court: Court?,
     selectedHour: String?,
     onConfirm: () -> Unit,
@@ -41,7 +42,10 @@ fun BookingFlowSheetContent(
 
             //TODO: hardcode
             NewBookingFlowState.Confirming -> {
-                Text("Confirmar reserva", style = MaterialTheme.typography.titleLarge)
+                Text(
+                    if (isSelectedHourStillFree) "Confirmar reserva" else "La selección no está disponible, ha sido reservada por otro usuario",
+                    style = MaterialTheme.typography.titleLarge
+                )
                 Spacer(Modifier.height(8.dp))
                 Text("Pista: ${court?.name ?: "-"}")
                 Text("Hora: ${selectedHour ?: "-"}")
@@ -50,7 +54,10 @@ fun BookingFlowSheetContent(
                 Row {
                     TextButton(onClick = onDismiss) { Text("Cancelar") }
                     Spacer(Modifier.width(8.dp))
-                    Button(onClick = onConfirm) { Text("Confirmar") }
+                    Button(
+                        onClick = onConfirm,
+                        enabled = isSelectedHourStillFree
+                    ) { Text("Confirmar") }
                 }
             }
 
@@ -68,14 +75,13 @@ fun BookingFlowSheetContent(
                 Row {
                     TextButton(onClick = onDismiss) { Text("Volver") }
                     Spacer(Modifier.width(8.dp))
-                    Button(onClick = onRetry) { Text("Reintentar") }
+                    Button(onClick = onRetry, enabled = isSelectedHourStillFree) { Text("Reintentar") }
                 }
             }
 
             NewBookingFlowState.Succeeded -> {
                 Text("Reserva confirmada", style = MaterialTheme.typography.titleLarge)
                 Spacer(Modifier.height(8.dp))
-              //  Button(onClick = backToHome) { Text("Cerrar") }
             }
         }
     }

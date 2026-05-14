@@ -144,7 +144,8 @@ fun NewCourtBooking.toDTO(): NewBookingDTO {
         code = this.code,
         date = Timestamp(this.date),
         hour = this.hour,
-        userId = this.userId
+        userId = this.userId,
+        startsAt = Timestamp(this.startsAt)
     )
 }
 

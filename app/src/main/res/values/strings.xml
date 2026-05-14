@@ -45,5 +45,6 @@
     <string name="nav_booking">Reservas</string>
     <string name="nav_match">Partidos</string>
     <string name="nav_settings">Ajustes</string>
+    <string name="slot_in_past">Esa hora ya ha pasado</string>
 
 </resources>

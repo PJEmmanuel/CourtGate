@@ -6,5 +6,6 @@ data class NewCourtBooking(
     val code: String,
     val date: Instant,
     val hour: String,
-    val userId: String
+    val userId: String,
+    val startsAt: Instant,
 )

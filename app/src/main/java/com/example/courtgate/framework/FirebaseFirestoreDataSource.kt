@@ -29,6 +29,11 @@ const val FIELD_DATE = "date"
 const val SETTINGS_COLLECTION = "settings"
 const val SCHEDULES_DOCUMENT = "schedules"
 
+internal fun buildBookingId(b: NewCourtBooking): String {
+    val dayMillis = b.date.toEpochMilli()
+    return "${b.code}_${dayMillis}_${b.hour}"
+}
+
 class FirebaseFirestoreDataSource @Inject constructor(
     private val fireStore: FirebaseFirestore,
 ) : CourtRemoteDataSource {
@@ -130,11 +135,6 @@ class FirebaseFirestoreDataSource @Inject constructor(
             is IOException -> DomainError.Remote.ServerError // Sin red
             else -> DomainError.Remote.UnknownRemoteError
         }
-
-    private fun buildBookingId(b: NewCourtBooking): String {
-        val dayMillis = b.date.toEpochMilli()
-        return "${b.code}_${dayMillis}_${b.hour}"
-    }
 
     private class SlotAlreadyTakenException : RuntimeException()
 }

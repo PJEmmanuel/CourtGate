@@ -3,6 +3,7 @@ package com.example.courtgate
 import com.example.courtgate.domain.models.Court
 import com.example.courtgate.domain.models.CourtBooking
 import com.example.courtgate.domain.models.FilterOption
+import com.example.courtgate.domain.models.FreeHoursOfCourt
 import java.time.Instant
 
 fun createCourtBookingTest(id: Int) = CourtBooking(
@@ -26,4 +27,9 @@ fun createCourtTest(id: Int, located: String) = Court(
 fun createFilterOptionsTest(located: String, isSelected: Boolean) = FilterOption(
     located = located,
     isSelected = isSelected
+)
+
+fun createFreeHoursOfCourt(hour: String, isFree: Boolean) = FreeHoursOfCourt(
+    hour = hour,
+    isFree = isFree
 )

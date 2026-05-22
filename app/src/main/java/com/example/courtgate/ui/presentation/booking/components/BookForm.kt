@@ -57,8 +57,6 @@ fun BookForm(
                     .align(Alignment.Start) // alinear a la izquierda, más natural
             )
 
-            //  Spacer(modifier = Modifier.height(6.dp))
-
             // Chips decorativos
             Row(
                 modifier = Modifier

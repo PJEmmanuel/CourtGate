@@ -30,7 +30,6 @@ class BookingViewModel @Inject constructor(
     @param:CourtCode private val code: String,
     @param:SelectedDay private val selectedDay: Long
 ) : ViewModel() {
-    //TODO: Quitar ir a pantalla booking desde el botón reservas(es para gestionar reservas)
 
     private val selectedHourFlow = MutableStateFlow<String?>(null)
     private val sheetStateFlow = MutableStateFlow<NewBookingFlowState>(NewBookingFlowState.Hidden)

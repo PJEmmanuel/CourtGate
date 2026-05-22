@@ -53,7 +53,7 @@ fun BookingScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
-    // LaunchedEffect(code, date) { viewModel.fetchBookingData(code, date) }
+    val bookingStateScreen = rememberBookingStateScreen(state)
 
     Scaffold(
         topBar = {
@@ -141,36 +141,32 @@ fun BookingScreen(
                 }
             }
         }
-        //TODO: stateholder para simplificarr
-        val data = (state as? ResultCourt.Success)?.data
-        val sheetState = data?.newBookingFlowState
 
-        LaunchedEffect(sheetState) {
-            if (sheetState is NewBookingFlowState.Succeeded) {
+        LaunchedEffect(bookingStateScreen.sheet?.state) {
+            if (bookingStateScreen.isSheetSucceeded) {
                 delay(SUCCEEDED_DISMISS_DELAY_MS)
                 viewModel.onDismissSheet()
                 backToHome()
             }
         }
 
-        if (data != null && sheetState != null && sheetState !is NewBookingFlowState.Hidden) {
+        bookingStateScreen.sheet?.let { sheet ->
             val modalState = rememberModalBottomSheetState(
                 skipPartiallyExpanded = true,
-                confirmValueChange = { sheetState !is NewBookingFlowState.Submitting &&
-                        sheetState !is NewBookingFlowState.Succeeded }
+                confirmValueChange = { sheet.canDismiss }
             )
             ModalBottomSheet(
                 onDismissRequest = viewModel::onDismissSheet,
                 sheetState = modalState,
             ) {
                 BookingFlowSheetContent(
-                    state = sheetState,
-                    court = data.requestedCourt,
-                    selectedHour = data.selectedHourToBook,
+                    state = sheet.state,
+                    court = sheet.court,
+                    selectedHour = sheet.selectedHour,
+                    isSelectedHourStillFree = sheet.isSelectedHourStillFree,
                     onConfirm = viewModel::onConfirmBooking,
                     onRetry = viewModel::onRetryBooking,
                     onDismiss = viewModel::onDismissSheet,
-                    isSelectedHourStillFree = data.isSelectedHourStillFree,
                 )
             }
         }

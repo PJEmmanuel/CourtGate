@@ -15,7 +15,7 @@ fun BookingImage(
     Image(
         painter = imageUrl,
         "default image",
-        modifier = modifier, // 👈 importante
+        modifier = modifier,
         contentScale = ContentScale.Crop // Para que no se deforme
 
     )

@@ -47,4 +47,18 @@
     <string name="nav_settings">Ajustes</string>
     <string name="slot_in_past">Esa hora ya ha pasado</string>
 
+    <!-- BookingFlowSheetContent -->
+    <string name="booking_confirm_title">Confirmar reserva</string>
+    <string name="booking_hour_unavailable">La selección no está disponible, ha sido reservada por otro usuario</string>
+    <string name="booking_court_label">Pista: %1$s</string>
+    <string name="booking_hour_label">Hora: %1$s</string>
+    <string name="booking_price_label">Precio: %1$s€</string>
+    <string name="booking_action_cancel">Cancelar</string>
+    <string name="booking_action_confirm">Confirmar</string>
+    <string name="booking_action_back">Volver</string>
+    <string name="booking_action_retry">Reintentar</string>
+    <string name="booking_submitting">Reservando…</string>
+    <string name="booking_failed_title">No se pudo reservar</string>
+    <string name="booking_succeeded_title">Reserva confirmada</string>
+
 </resources>

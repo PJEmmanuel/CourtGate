@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.courtgate.R
 import com.example.courtgate.domain.models.Court
 import com.example.courtgate.ui.presentation.booking.NewBookingFlowState
 import com.example.courtgate.ui.presentation.core.asStringRes
@@ -40,47 +41,61 @@ fun BookingFlowSheetContent(
         when (state) {
             NewBookingFlowState.Hidden -> Unit
 
-            //TODO: hardcode
             NewBookingFlowState.Confirming -> {
                 Text(
-                    if (isSelectedHourStillFree) "Confirmar reserva" else "La selección no está disponible, ha sido reservada por otro usuario",
+                    stringResource(
+                        if (isSelectedHourStillFree) R.string.booking_confirm_title
+                        else R.string.booking_hour_unavailable
+                    ),
                     style = MaterialTheme.typography.titleLarge
                 )
                 Spacer(Modifier.height(8.dp))
-                Text("Pista: ${court?.name ?: "-"}")
-                Text("Hora: ${selectedHour ?: "-"}")
-                Text("Precio: ${court?.price ?: "-"}€")
+                Text(stringResource(R.string.booking_court_label, court?.name ?: "-"))
+                Text(stringResource(R.string.booking_hour_label, selectedHour ?: "-"))
+                Text(stringResource(R.string.booking_price_label, court?.price?.toString() ?: "-"))
                 Spacer(Modifier.height(16.dp))
                 Row {
-                    TextButton(onClick = onDismiss) { Text("Cancelar") }
+                    TextButton(onClick = onDismiss) {
+                        Text(stringResource(R.string.booking_action_cancel))
+                    }
                     Spacer(Modifier.width(8.dp))
                     Button(
                         onClick = onConfirm,
                         enabled = isSelectedHourStillFree
-                    ) { Text("Confirmar") }
+                    ) { Text(stringResource(R.string.booking_action_confirm)) }
                 }
             }
 
             NewBookingFlowState.Submitting -> {
                 CircularProgressIndicator()
                 Spacer(Modifier.height(8.dp))
-                Text("Reservando…")
+                Text(stringResource(R.string.booking_submitting))
             }
 
             is NewBookingFlowState.Failed -> {
-                Text("No se pudo reservar", style = MaterialTheme.typography.titleLarge)
+                Text(
+                    stringResource(R.string.booking_failed_title),
+                    style = MaterialTheme.typography.titleLarge
+                )
                 Spacer(Modifier.height(8.dp))
                 Text(stringResource(state.error.asStringRes()))
                 Spacer(Modifier.height(16.dp))
                 Row {
-                    TextButton(onClick = onDismiss) { Text("Volver") }
+                    TextButton(onClick = onDismiss) {
+                        Text(stringResource(R.string.booking_action_back))
+                    }
                     Spacer(Modifier.width(8.dp))
-                    Button(onClick = onRetry, enabled = isSelectedHourStillFree) { Text("Reintentar") }
+                    Button(onClick = onRetry, enabled = isSelectedHourStillFree) {
+                        Text(stringResource(R.string.booking_action_retry))
+                    }
                 }
             }
 
             NewBookingFlowState.Succeeded -> {
-                Text("Reserva confirmada", style = MaterialTheme.typography.titleLarge)
+                Text(
+                    stringResource(R.string.booking_succeeded_title),
+                    style = MaterialTheme.typography.titleLarge
+                )
                 Spacer(Modifier.height(8.dp))
             }
         }

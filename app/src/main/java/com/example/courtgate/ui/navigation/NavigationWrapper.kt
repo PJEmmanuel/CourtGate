@@ -62,11 +62,12 @@ fun NavigationWrapper(navController: NavHostController, startDestination: Any) {
                             }
                         }
 
+                        //TODO: navegar a gestion de reservas
                         NavigationBarOnClick.GoToBooking -> {
-                            navController.navigate(FindCourt) {
+                           /* navController.navigate(FindCourt) {
                                 popUpTo(Home) { inclusive = false }
                                 launchSingleTop = true
-                            }
+                            }*/
                         }
 
                         NavigationBarOnClick.GoToMatch -> {
@@ -93,11 +94,12 @@ fun NavigationWrapper(navController: NavHostController, startDestination: Any) {
                             }
                         }
 
+                        //TODO: navegar a gestion de reservas
                         NavigationBarOnClick.GoToBooking -> {
-                            navController.navigate(FindCourt) {
-                                popUpTo(Home) { inclusive = false }
-                                launchSingleTop = true
-                            }
+                            /* navController.navigate(FindCourt) {
+                                 popUpTo(Home) { inclusive = false }
+                                 launchSingleTop = true
+                             }*/
                         }
 
                         NavigationBarOnClick.GoToMatch -> {

@@ -28,6 +28,8 @@ const val BOOKINGS_COLLECTION = "bookings"
 const val FIELD_DATE = "date"
 const val SETTINGS_COLLECTION = "settings"
 const val SCHEDULES_DOCUMENT = "schedules"
+const val FIELD_START_AT = "startsAt"
+const val FIELD_USER_ID = "userId"
 
 internal fun buildBookingId(b: NewCourtBooking): String {
     val dayMillis = b.date.toEpochMilli()
@@ -91,6 +93,41 @@ class FirebaseFirestoreDataSource @Inject constructor(
             if (e is CancellationException) throw e
             ResultManage.Failure(e.toRemoteError())
         }
+    }
+
+    override suspend fun deleteMyBookings(docId: String): ResultManage<Unit, DomainError> {
+        return try {
+             fireStore.collection(BOOKINGS_COLLECTION).document(docId)
+                 .delete()
+                 .await()
+            ResultManage.Success(Unit)
+        }catch (e: Exception) {
+            if (e is CancellationException) throw e
+            ResultManage.Failure(e.toRemoteError())
+        }
+    }
+
+    override fun getMyBookings(currentUser: String, startAt: Instant): Flow<List<CourtBooking>> {
+
+        //TODO: Estructura repetida con getBookingsSevenDaysAhead. Extraer a un helper
+        return callbackFlow {
+            val query = fireStore.collection(BOOKINGS_COLLECTION)
+                .whereEqualTo(FIELD_USER_ID, currentUser)
+                .whereGreaterThan(FIELD_START_AT, Timestamp(startAt))
+                .orderBy(FIELD_DATE)
+
+            val subscription = query.addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+                val myBookings = snapshot?.documents?.mapNotNull {doc->
+                    doc.toObject(BookingDTO::class.java)?.toDomain()?.copy(id = doc.id)
+                }.orEmpty()
+                trySend(myBookings)
+            }
+            awaitClose { subscription.remove() }
+        } //TODO: Estudiar .buffer(Channel.CONFLATED)
     }
 
     // Obtengo pistas a 7 días vista desde el día actual.

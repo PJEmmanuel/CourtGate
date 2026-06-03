@@ -5,7 +5,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import com.example.courtgate.domain.models.Court
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -82,7 +81,8 @@ AND (
     /*Para pantalla BookNow!!!*/
 
 
-    @Query("""
+    @Query(
+        """
     SELECT s.hour,
            CASE WHEN b.hour IS NULL THEN 1 ELSE 0 END AS isFree
     FROM schedules s
@@ -92,7 +92,8 @@ AND (
         AND b.date >= :dayStart 
         AND b.date < :dayEnd
     ORDER BY s.hour
-""")
+"""
+    )
     fun getHoursWithAvailability(
         code: String,
         dayStart: Long,
@@ -105,6 +106,4 @@ AND (
 
 
     /*Para el apartado de modificar reservas!!!*/
-
-
 }

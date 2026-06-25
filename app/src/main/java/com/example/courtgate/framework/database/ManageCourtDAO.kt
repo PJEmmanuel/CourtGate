@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import com.example.courtgate.domain.models.Court
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -80,12 +81,29 @@ AND (
 
     /*Para pantalla BookNow!!!*/
 
-    // Llamar a una pista en concreto.
-    // TODO: Necesito las horas libres de esta pista para mostrarlas al usuario
-    // Para ello tiene que estar escuchando las reservas continuamente.
-    /*  @Query("SELECT *")
-      fun getCourtByCode() // Flow
-  */
+
+    @Query("""
+    SELECT s.hour,
+           CASE WHEN b.hour IS NULL THEN 1 ELSE 0 END AS isFree
+    FROM schedules s
+    LEFT JOIN bookings b 
+        ON s.hour = b.hour 
+        AND b.code = :code 
+        AND b.date >= :dayStart 
+        AND b.date < :dayEnd
+    ORDER BY s.hour
+""")
+    fun getHoursWithAvailability(
+        code: String,
+        dayStart: Long,
+        dayEnd: Long
+    ): Flow<List<CourtHourAvailability>>
+
+
+    @Query("SELECT * FROM courts WHERE code = :code LIMIT 1")
+    fun getCourtByCode(code: String): Flow<CourtEntity>
+
+
     /*Para el apartado de modificar reservas!!!*/
 
 

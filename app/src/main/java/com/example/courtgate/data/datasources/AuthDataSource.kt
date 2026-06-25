@@ -8,4 +8,5 @@ interface AuthDataSource {
     suspend fun signUp(email: String, password: String): Result<User>
     fun isUserLoggedIn(): Boolean
     fun observeAuthState(): Flow<Boolean>
+    fun getCurrentUserId(): String?
 }

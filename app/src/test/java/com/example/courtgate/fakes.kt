@@ -8,6 +8,8 @@ import com.example.courtgate.domain.models.Court
 import com.example.courtgate.domain.models.CourtBooking
 import com.example.courtgate.domain.models.DomainError
 import com.example.courtgate.domain.models.FilterOption
+import com.example.courtgate.domain.models.FreeHoursOfCourt
+import com.example.courtgate.domain.models.NewCourtBooking
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -64,6 +66,10 @@ class FakeRemoteDS(
     override suspend fun getRegularHours(): ResultManage<List<String>, DomainError> {
         return errorInMemory?.let { ResultManage.Failure(it) }
             ?: ResultManage.Success(scheduleInMemory)
+    }
+
+    override suspend fun setNewBooking(newBooking: NewCourtBooking): ResultManage<Unit, DomainError> {
+        TODO("Not yet implemented")
     }
 
     override fun getBookingsSevenDaysAhead(
@@ -132,5 +138,17 @@ class FakeLocalDS(
         bookings: List<CourtBooking>
     ) {
         bookingInMemory = bookings
+    }
+
+    override fun getCourtByCode(code: String): Flow<Court> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getHoursWithAvailability(
+        code: String,
+        dayStart: Long,
+        dayEnd: Long
+    ): Flow<List<FreeHoursOfCourt>> {
+        TODO("Not yet implemented")
     }
 }

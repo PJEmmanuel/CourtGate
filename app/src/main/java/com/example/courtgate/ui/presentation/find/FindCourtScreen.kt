@@ -25,10 +25,11 @@ import com.example.courtgate.ui.presentation.find.components.CourtFilter
 import com.example.courtgate.ui.presentation.find.components.FindDateSelector
 import com.example.courtgate.ui.presentation.find.components.FindTittle
 import com.example.courtgate.ui.presentation.find.components.ShowCourt
+import java.time.ZonedDateTime
 
 @Composable
 fun FindCourtScreen(
-    navigateToBookingScreen: (String, String) -> Unit,
+    navigateToBookingScreen: (String, ZonedDateTime) -> Unit,
     onNavigate: (NavigationBarOnClick) -> Unit,
     viewModel: FindViewModel = hiltViewModel()
 ) {
@@ -86,7 +87,7 @@ fun FindCourtScreen(
                             onCourtClick = {
                                 navigateToBookingScreen(
                                     it.code,
-                                    s.data.selectedDate.toString()
+                                    s.data.selectedDate
                                 )
                             },
                         )

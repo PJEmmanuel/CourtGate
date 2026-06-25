@@ -53,4 +53,8 @@ class FirebaseAuthDataSource @Inject constructor(
         auth.addAuthStateListener(listener)
         awaitClose { auth.removeAuthStateListener(listener) }
     }
+
+    override fun getCurrentUserId(): String? {
+        return auth.currentUser?.uid
+    }
 }

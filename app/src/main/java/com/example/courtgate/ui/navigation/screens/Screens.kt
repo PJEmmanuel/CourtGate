@@ -17,5 +17,5 @@ object FindCourt
 @Serializable
 data class Booking(
     val code: String,
-    val date: String
+    val date: Long
 )

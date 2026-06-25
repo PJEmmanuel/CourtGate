@@ -32,6 +32,13 @@ sealed interface DomainError {
     sealed interface Court : DomainError {
         data object NoCourtsAvailable : Court
     }
+
+    // Errires de al reservar (Set booking)
+    sealed interface Booking : DomainError {
+        data object SlotAlreadyTaken : Booking      // La reserva ya existe(slot ocupado)
+        data object SlotInPast       : Booking      // Esa hora ya ha pasado
+
+    }
 }
 
 // Dentro de un Flow no se puede emitir un tipo de error tipado directamente,

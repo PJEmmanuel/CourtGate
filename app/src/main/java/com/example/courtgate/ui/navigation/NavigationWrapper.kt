@@ -62,11 +62,12 @@ fun NavigationWrapper(navController: NavHostController, startDestination: Any) {
                             }
                         }
 
+                        //TODO: navegar a gestion de reservas
                         NavigationBarOnClick.GoToBooking -> {
-                            navController.navigate(FindCourt) {
+                           /* navController.navigate(FindCourt) {
                                 popUpTo(Home) { inclusive = false }
                                 launchSingleTop = true
-                            }
+                            }*/
                         }
 
                         NavigationBarOnClick.GoToMatch -> {
@@ -93,11 +94,12 @@ fun NavigationWrapper(navController: NavHostController, startDestination: Any) {
                             }
                         }
 
+                        //TODO: navegar a gestion de reservas
                         NavigationBarOnClick.GoToBooking -> {
-                            navController.navigate(FindCourt) {
-                                popUpTo(Home) { inclusive = false }
-                                launchSingleTop = true
-                            }
+                            /* navController.navigate(FindCourt) {
+                                 popUpTo(Home) { inclusive = false }
+                                 launchSingleTop = true
+                             }*/
                         }
 
                         NavigationBarOnClick.GoToMatch -> {
@@ -109,7 +111,13 @@ fun NavigationWrapper(navController: NavHostController, startDestination: Any) {
                         }
                     }
                 },
-                navigateToBookingScreen = { code, date ->
+                navigateToBookingScreen = { code, zonedDateTime ->
+                    val date = zonedDateTime //TODO: Optimizar
+                        .toLocalDate()
+                        .atStartOfDay(zonedDateTime.zone)
+                        .toInstant()
+                        .toEpochMilli()
+
                     navController.navigate(
                         Booking(
                             code = code,
@@ -124,22 +132,17 @@ fun NavigationWrapper(navController: NavHostController, startDestination: Any) {
         }
 
         composable<Booking> {
-            val booking: Booking = it.toRoute()
             BookingScreen(
-                code = booking.code,
-                date = booking.date,
-                // onNavigate = {},
                 navigateBackToFindCourt = {
                     navController.navigate(FindCourt) {
                         popUpTo<FindCourt> { inclusive = true }
                     }
-                }
-
-                /*navigateToFindCourt = {
+                },
+                backToHome = {
                     navController.navigate(Home) {
                         popUpTo<Login> { inclusive = true }
                     }
-                }*/
+                }
             )
         }
     }

@@ -5,8 +5,10 @@ import com.example.courtgate.data.datasources.CourtRemoteDataSource
 import com.example.courtgate.domain.models.Court
 import com.example.courtgate.domain.models.CourtBooking
 import com.example.courtgate.domain.models.DomainError
+import com.example.courtgate.domain.models.NewCourtBooking
 import com.example.courtgate.framework.remote.BookingDTO
 import com.example.courtgate.framework.remote.CourtDTO
+import com.example.courtgate.framework.remote.NewBookingDTO
 import com.example.courtgate.framework.remote.ScheduleDTO
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
@@ -16,6 +18,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
+import java.io.IOException
 import java.time.Instant
 import java.util.Date
 import javax.inject.Inject
@@ -25,6 +28,11 @@ const val BOOKINGS_COLLECTION = "bookings"
 const val FIELD_DATE = "date"
 const val SETTINGS_COLLECTION = "settings"
 const val SCHEDULES_DOCUMENT = "schedules"
+
+internal fun buildBookingId(b: NewCourtBooking): String {
+    val dayMillis = b.date.toEpochMilli()
+    return "${b.code}_${dayMillis}_${b.hour}"
+}
 
 class FirebaseFirestoreDataSource @Inject constructor(
     private val fireStore: FirebaseFirestore,
@@ -66,6 +74,25 @@ class FirebaseFirestoreDataSource @Inject constructor(
         }
     }
 
+    override suspend fun setNewBooking(newBooking: NewCourtBooking): ResultManage<Unit, DomainError> {
+        return try {
+            val docId = buildBookingId(newBooking)
+            val docRef = fireStore.collection(BOOKINGS_COLLECTION).document(docId)
+
+            fireStore.runTransaction { tx ->
+                val snap = tx.get(docRef)
+                if (snap.exists()) throw SlotAlreadyTakenException()
+
+                tx.set(docRef, newBooking.toDTO())
+            }.await()
+
+            ResultManage.Success(Unit)
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
+            ResultManage.Failure(e.toRemoteError())
+        }
+    }
+
     // Obtengo pistas a 7 días vista desde el día actual.
     override fun getBookingsSevenDaysAhead(
         currentDayStart: Instant,
@@ -92,8 +119,9 @@ class FirebaseFirestoreDataSource @Inject constructor(
         }
     }
 
-    private fun Exception.toRemoteError(): DomainError.Remote =
+    private fun Exception.toRemoteError(): DomainError =
         when (this) {
+            is SlotAlreadyTakenException -> DomainError.Booking.SlotAlreadyTaken
             is FirebaseFirestoreException ->
                 when (code) {
                     FirebaseFirestoreException.Code.PERMISSION_DENIED -> DomainError.Remote.AccessDenied
@@ -104,9 +132,21 @@ class FirebaseFirestoreDataSource @Inject constructor(
                     else -> DomainError.Remote.UnknownRemoteError
                 }
 
-            is java.io.IOException -> DomainError.Remote.ServerError // Sin red
+            is IOException -> DomainError.Remote.ServerError // Sin red
             else -> DomainError.Remote.UnknownRemoteError
         }
+
+    private class SlotAlreadyTakenException : RuntimeException()
+}
+
+fun NewCourtBooking.toDTO(): NewBookingDTO {
+    return NewBookingDTO(
+        code = this.code,
+        date = Timestamp(this.date),
+        hour = this.hour,
+        userId = this.userId,
+        startsAt = Timestamp(this.startsAt)
+    )
 }
 
 fun CourtDTO.toDomain(): Court {

@@ -19,3 +19,6 @@ data class Booking(
     val code: String,
     val date: Long
 )
+
+@Serializable
+object MyBookings

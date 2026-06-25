@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.toRoute
 import com.example.courtgate.ui.presentation.login.LoginScreen
 import com.example.courtgate.ui.presentation.signup.SignUpScreen
 import com.example.courtgate.ui.presentation.booking.BookingScreen
@@ -15,7 +14,9 @@ import com.example.courtgate.ui.navigation.screens.Booking
 import com.example.courtgate.ui.navigation.screens.FindCourt
 import com.example.courtgate.ui.navigation.screens.Home
 import com.example.courtgate.ui.navigation.screens.Login
+import com.example.courtgate.ui.navigation.screens.MyBookings
 import com.example.courtgate.ui.navigation.screens.SignUp
+import com.example.courtgate.ui.presentation.myBookings.MyBookingsScreen
 
 @Composable
 fun NavigationWrapper(navController: NavHostController, startDestination: Any) {
@@ -62,12 +63,12 @@ fun NavigationWrapper(navController: NavHostController, startDestination: Any) {
                             }
                         }
 
-                        //TODO: navegar a gestion de reservas
-                        NavigationBarOnClick.GoToBooking -> {
-                           /* navController.navigate(FindCourt) {
-                                popUpTo(Home) { inclusive = false }
+                        NavigationBarOnClick.GoToMyBookings -> {
+                            navController.navigate(MyBookings) {
+                                // Evita duplicados en el back stack
+                                popUpTo(MyBookings) { inclusive = false }
                                 launchSingleTop = true
-                            }*/
+                            }
                         }
 
                         NavigationBarOnClick.GoToMatch -> {
@@ -94,12 +95,12 @@ fun NavigationWrapper(navController: NavHostController, startDestination: Any) {
                             }
                         }
 
-                        //TODO: navegar a gestion de reservas
-                        NavigationBarOnClick.GoToBooking -> {
-                            /* navController.navigate(FindCourt) {
-                                 popUpTo(Home) { inclusive = false }
-                                 launchSingleTop = true
-                             }*/
+                        NavigationBarOnClick.GoToMyBookings -> {
+                            navController.navigate(MyBookings) {
+                                // Evita duplicados en el back stack
+                                popUpTo(MyBookings) { inclusive = false }
+                                launchSingleTop = true
+                            }
                         }
 
                         NavigationBarOnClick.GoToMatch -> {
@@ -145,5 +146,44 @@ fun NavigationWrapper(navController: NavHostController, startDestination: Any) {
                 }
             )
         }
+
+        composable<MyBookings> {
+            MyBookingsScreen(
+                onNavigate = {
+                    when (it) {
+                        NavigationBarOnClick.GoToHome -> {
+                            navController.navigate(Home) {
+                                // Evita duplicados en el back stack
+                                popUpTo(Home) { inclusive = false }
+                                launchSingleTop = true
+                            }
+                        }
+
+                        NavigationBarOnClick.GoToMyBookings -> {
+                            navController.navigate(MyBookings) {
+                                // Evita duplicados en el back stack
+                                popUpTo(MyBookings) { inclusive = false }
+                                launchSingleTop = true
+                            }
+                        }
+
+                        NavigationBarOnClick.GoToMatch -> {
+                            // navController.navigate(Match)
+                        }
+
+                        NavigationBarOnClick.GoToSetting -> {
+                            // navController.navigate(Setting)
+                        }
+                    }
+                },
+                backToHome = {
+                    navController.navigate(Home) {
+                        popUpTo<Login> { inclusive = true }
+                    }
+                }
+
+            )
+        }
+
     }
 }

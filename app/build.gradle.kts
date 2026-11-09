@@ -69,11 +69,6 @@ dependencies {
     // kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.room.runtime)
 
-    // Retrofit
-    implementation(libs.retrofit)
-    implementation(libs.converter.moshi)
-    implementation(libs.logging.interceptor)
-
     // DataStore
     implementation(libs.androidx.datastore.preferences)
 

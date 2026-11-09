@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.example.courtgate.R
 import com.example.courtgate.domain.models.CourtBooking
 import com.example.courtgate.ui.presentation.core.asStringRes
+import com.example.courtgate.ui.presentation.core.toBookingDateLabel
 import com.example.courtgate.ui.presentation.myBookings.MyBookingFlowState
 
 //TODO: sealed interface par unificar estados con "BookingFlowSheetContent"
@@ -43,33 +44,36 @@ fun MyBookingsFlowSheetContent(
         when (state) {
             MyBookingFlowState.Hidden -> Unit
 
-            //TODO: hardcode
             is MyBookingFlowState.Confirming -> {
+                Text(
+                    stringResource(R.string.my_booking_cancel_title),
+                    style = MaterialTheme.typography.titleLarge
+                )
                 Spacer(Modifier.height(8.dp))
-                Text("Pista: $court.code")
-                Text("Fecha: ${court.date}")
-                Text("Hora: $court")
+                Text(stringResource(R.string.booking_court_label, court.code))
+                Text(stringResource(R.string.booking_date_label, court.date.toBookingDateLabel()))
+                Text(stringResource(R.string.booking_hour_label, court.hour))
                 Spacer(Modifier.height(16.dp))
                 Row {
                     TextButton(onClick = onDismiss) {
-                        Text(stringResource(R.string.booking_action_cancel))
+                        Text(stringResource(R.string.booking_action_back))
                     }
                     Spacer(Modifier.width(8.dp))
                     Button(
                         onClick = onConfirm,
-                    ) { Text(stringResource(R.string.booking_action_confirm)) }
+                    ) { Text(stringResource(R.string.my_booking_action_cancel_booking)) }
                 }
             }
 
             is MyBookingFlowState.Submitting -> {
                 CircularProgressIndicator()
                 Spacer(Modifier.height(8.dp))
-                Text("Modificando...")
+                Text(stringResource(R.string.my_booking_submitting))
             }
 
             is MyBookingFlowState.Failed -> {
                 Text(
-                    "No se pudo modificar",
+                    stringResource(R.string.my_booking_failed_title),
                     style = MaterialTheme.typography.titleLarge
                 )
                 Spacer(Modifier.height(8.dp))
@@ -88,7 +92,7 @@ fun MyBookingsFlowSheetContent(
 
             is MyBookingFlowState.Succeeded -> {
                 Text(
-                    "Confirmada la modificación",
+                    stringResource(R.string.my_booking_succeeded_title),
                     style = MaterialTheme.typography.titleLarge
                 )
                 Spacer(Modifier.height(8.dp))

@@ -15,3 +15,12 @@ sealed interface MyBookingFlowState {
     data class Failed(val booking: CourtBooking, val error: DomainError) : MyBookingFlowState
     data class Succeeded(val booking: CourtBooking) : MyBookingFlowState
 }
+
+val MyBookingFlowState.bookingOrNull: CourtBooking?
+    get() = when (this) {
+        MyBookingFlowState.Hidden -> null
+        is MyBookingFlowState.Confirming -> booking
+        is MyBookingFlowState.Submitting -> booking
+        is MyBookingFlowState.Failed -> booking
+        is MyBookingFlowState.Succeeded -> booking
+    }

@@ -60,5 +60,13 @@
     <string name="booking_submitting">Reservando…</string>
     <string name="booking_failed_title">No se pudo reservar</string>
     <string name="booking_succeeded_title">Reserva confirmada</string>
+    <string name="booking_date_label">Fecha: %1$s</string>
+
+    <!-- MyBookingsFlowSheetContent -->
+    <string name="my_booking_cancel_title">¿Cancelar esta reserva?</string>
+    <string name="my_booking_action_cancel_booking">Cancelar reserva</string>
+    <string name="my_booking_submitting">Cancelando…</string>
+    <string name="my_booking_failed_title">No se pudo cancelar la reserva</string>
+    <string name="my_booking_succeeded_title">Reserva cancelada</string>
 
 </resources>

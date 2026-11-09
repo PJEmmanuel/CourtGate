@@ -79,6 +79,18 @@ class FakeRemoteDS(
         return bookingInMemory
     }
 
+    override fun getMyBookings(currentUser: String, startAt: Instant): Flow<List<CourtBooking>> {
+        return bookingInMemory.map { list ->
+            list.filter { it.userId == currentUser && !it.date.isBefore(startAt) }
+        }
+    }
+
+    override suspend fun deleteMyBookings(docId: String): ResultManage<Unit, DomainError> {
+        errorInMemory?.let { return ResultManage.Failure(it) }
+        bookingInMemory.value = bookingInMemory.value.filterNot { it.id == docId }
+        return ResultManage.Success(Unit)
+    }
+
 }
 
 class FakeLocalDS(

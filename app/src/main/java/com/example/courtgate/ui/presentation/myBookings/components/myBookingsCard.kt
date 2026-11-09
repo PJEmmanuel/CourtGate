@@ -15,7 +15,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.courtgate.R
 import com.example.courtgate.domain.models.CourtBooking
 import com.example.courtgate.ui.presentation.core.toBookingDateLabel
 
@@ -54,11 +56,11 @@ fun MyBookingsCard(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Fecha: ${court.date.toBookingDateLabel()}",
+                    text = stringResource(R.string.booking_date_label, court.date.toBookingDateLabel()),
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Text(
-                    text ="Hora: ${court.hour}",
+                    text = stringResource(R.string.booking_hour_label, court.hour),
                     style = MaterialTheme.typography.bodyMedium
                 )
             }

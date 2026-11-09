@@ -86,7 +86,9 @@ fun MyBookingsScreen(
             }
         }
 
-        if (sheetState != null && sheetState !is MyBookingFlowState.Hidden) {
+        val booking = sheetState?.bookingOrNull
+
+        if (sheetState != null && booking != null) {
             val modalState = rememberModalBottomSheetState(
                 skipPartiallyExpanded = true,
                 confirmValueChange = {
@@ -94,21 +96,13 @@ fun MyBookingsScreen(
                 }
             )
 
-            val booking = when (sheetState) {
-                is MyBookingFlowState.Confirming -> sheetState.booking
-                is MyBookingFlowState.Failed -> sheetState.booking
-                MyBookingFlowState.Hidden -> null
-                is MyBookingFlowState.Submitting -> sheetState.booking
-                is MyBookingFlowState.Succeeded -> sheetState.booking
-            }
-
             ModalBottomSheet(
                 onDismissRequest = viewModel::onDismissSheet,
                 sheetState = modalState
             ) {
                 MyBookingsFlowSheetContent(
                     state = sheetState,
-                    court = booking!!, //TODO: Revisar la doble !
+                    court = booking,
                     onConfirm = viewModel::onConfirmEditBook,
                     onRetry = viewModel::onRetryEdit,
                     onDismiss = viewModel::onDismissSheet

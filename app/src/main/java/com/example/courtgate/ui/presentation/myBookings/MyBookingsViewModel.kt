@@ -25,8 +25,7 @@ class MyBookingsViewModel @Inject constructor(
     getMyBookingsUseCase: GetMyBookingsUseCase,
     val deleteMyBookingsUseCase: DeleteMyBookingsUseCase
 ) : ViewModel() {
-//TODO 1 Find muestra pistas reservables del pasado
-    // 2. Al abrir el sheet, la info sale cruda al usuario
+//TODO Find muestra pistas reservables del pasado
 
     private val sheetStateFlow = MutableStateFlow<MyBookingFlowState>(MyBookingFlowState.Hidden)
 

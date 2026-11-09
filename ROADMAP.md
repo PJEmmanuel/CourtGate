@@ -29,13 +29,13 @@ Sin fecha de entrega; las estimaciones son orientativas.
 
 ## Fase 0 · Poner la casa en orden (~1–2 días)
 
-- [ ] Implementar `getMyBookings` y `deleteMyBookings` en `FakeRemoteDS` y conseguir que todos los tests pasen
-- [ ] Mis reservas: formatear la info del bottom sheet (ahora sale cruda)
-- [ ] Mis reservas: eliminar el `!!` de `MyBookingsScreen.kt`
-- [ ] Tests de `MyBookingsViewModel`
-- [ ] Merge `feature/mybookings` → `Develop`, y `Develop` → `main`
-- [ ] Quitar Retrofit, Moshi y logging-interceptor de las dependencias
-- [ ] Actualizar el README (Retrofit, estado real, funcionalidades)
+- [x] Implementar `getMyBookings` y `deleteMyBookings` en `FakeRemoteDS` y conseguir que todos los tests pasen
+- [x] Mis reservas: formatear la info del bottom sheet (ahora sale cruda)
+- [x] Mis reservas: eliminar el `!!` de `MyBookingsScreen.kt`
+- [x] Tests de `MyBookingsViewModel`
+- [x] Merge `feature/mybookings` → `Develop`, y `Develop` → `main`
+- [x] Quitar Retrofit, Moshi y logging-interceptor de las dependencias
+- [x] Actualizar el README (Retrofit, estado real, funcionalidades)
 
 ## Fase 1 · Bugs visibles para el usuario (~2–3 días)
 

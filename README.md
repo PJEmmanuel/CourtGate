@@ -183,8 +183,9 @@ to another screen. It makes no sense to view possibly outdated availabilities or
 Current coverage in `app/src/test/`:
 
 - **Repositories**: `AuthenticationRepositoryTest`, `MatchRepositoryTest`, `ManageCourtRepositoryTest`.
-- **ViewModels**: `MainViewModelTest`, `LoginViewModelTest`, `SignUpViewModelTest`, `HomeViewModelTest`, `FindViewModelTest`.
-- **UseCases**: `GetAllCourtToShowUseCaseTest`.
+- **ViewModels**: `MainViewModelTest`, `LoginViewModelTest`, `SignUpViewModelTest`, `HomeViewModelTest`, `FindViewModelTest`, `BookingViewModelTest`, `MyBookingsViewModelTest`.
+- **UseCases**: `GetAllCourtToShowUseCaseTest`, `GetFreeHoursOnReservedCourtsUseCaseTest`, `SetNewBookingUseCaseTest`.
+- **Contracts**: `BookingIdContractTest`.
 - **Integration**: `FindIntegrationTest` — exercises the full flow
   ViewModel → UseCase → Repository → fake DataSources, with `Turbine` to
   validate the state sequence (`Loading → Success/Error`).
@@ -200,20 +201,29 @@ Current coverage in `app/src/test/`:
 - Clean layered architecture + modular dependency injection.
 - Offline-first synchronization (Firestore ⇄ Room) with frequency control via DataStore.
 - **FindCourt** screen with court-type filter and 7-day selector.
-- **Booking** screen with free-slot calculation over existing bookings.
+- **Booking** screen with free-slot calculation over existing bookings, atomic Firestore
+  transactions and protection against booking past hours.
+- **My Bookings** screen to review and cancel upcoming bookings.
 - Reusable UI components (`CourtButton`, `CourtTextField`, `CourtNavigationBar`, etc.).
 - Type-safe navigation.
 - Centralized mapping of domain errors to UI.
 - Unit test suite + integration test.
 
-### 🛠️ In progress / next iteration
-- **Working on:** Implementing booking logic, pop up and testing of the booking layer.
-- Screen to manage match history / results.
-- Push notifications (FCM) and reminders with WorkManager.
-- Add different authentication methods.
-- User and court management for club administrators.
+### 🛠️ Next: v1.0 (Google Play release)
+- **Match** screen to record results (stored on device).
+- **Settings / Profile**: logout and account deletion.
+- Password recovery.
 - Instrumented UI tests with Compose Testing.
+- Release hardening: Firestore security rules, R8, signing.
+
+### 🔮 After v1.0
+- Admin panel: manual bookings and price management.
+- Push notifications (FCM) and reminders with WorkManager.
+- Cloud sync for match results.
+- Additional authentication methods.
 - CI (GitHub Actions) for build + tests on every push.
+
+The detailed plan (in Spanish) lives in [ROADMAP.md](ROADMAP.md).
 
 ---
 
@@ -237,7 +247,7 @@ app/src/main/java/com/example/courtgate/
 └── ui/
     ├── navigation/
     ├── presentation/  # Compose screens + ViewModels
-    │   ├── login/ signup/ home/ find/ booking/
+    │   ├── login/ signup/ home/ find/ booking/ myBookings/
     │   └── core/      # Reusable components
     └── theme/
 ```

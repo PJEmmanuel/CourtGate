@@ -7,5 +7,6 @@ data class BookingDTO(
     val code: String? = null,
     val date: Timestamp? = null,
     val hour: String? = null,
-    val userId: String? = null
+    val userId: String? = null,
+    val startsAt: Timestamp? = null,
 )

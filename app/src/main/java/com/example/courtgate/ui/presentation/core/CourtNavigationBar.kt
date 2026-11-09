@@ -33,7 +33,7 @@ fun CourtNavigationBar(
         )
         NavigationBarItem(
             selected = false,
-            onClick = { onNavigate(NavigationBarOnClick.GoToBooking) },
+            onClick = { onNavigate(NavigationBarOnClick.GoToMyBookings) },
             icon = {
                 Icon(
                     imageVector = Icons.TwoTone.EventAvailable,

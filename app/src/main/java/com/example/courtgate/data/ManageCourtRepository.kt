@@ -5,6 +5,7 @@ import com.example.courtgate.data.datasources.CourtLocalDataSource
 import com.example.courtgate.data.datasources.CourtRemoteDataSource
 import com.example.courtgate.data.datasources.SyncPreferencesDataSource
 import com.example.courtgate.domain.models.Court
+import com.example.courtgate.domain.models.CourtBooking
 import com.example.courtgate.domain.models.DomainError
 import com.example.courtgate.domain.models.DomainException
 import com.example.courtgate.domain.models.FilterOption
@@ -114,6 +115,15 @@ class ManageCourtRepository @Inject constructor(
         localDataSource.getCourtByCode(code).distinctUntilChanged()
 
     suspend fun setBooking(newBooking: NewCourtBooking): ResultManage<Unit, DomainError> {
-        return  remoteDataSource.setNewBooking(newBooking)
+        return remoteDataSource.setNewBooking(newBooking)
+    }
+
+    fun getMyBookings(currentUser: String, startAt: Instant): Flow<List<CourtBooking>> {
+        return remoteDataSource.getMyBookings(currentUser, startAt)
+            .distinctUntilChanged()
+    }
+
+    suspend fun deleteMyBookings(docId: String): ResultManage<Unit, DomainError> {
+        return remoteDataSource.deleteMyBookings(docId)
     }
 }

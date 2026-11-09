@@ -16,4 +16,6 @@ interface CourtRemoteDataSource {
         currentDayStart: Instant,
         endSevenDaysFromNow: Instant
     ): Flow<List<CourtBooking>>
+    fun getMyBookings(currentUser: String, startAt: Instant): Flow<List<CourtBooking>>
+    suspend fun deleteMyBookings(docId:String): ResultManage<Unit, DomainError>
 }

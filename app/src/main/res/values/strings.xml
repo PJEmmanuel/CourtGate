@@ -3,27 +3,37 @@
     <string name="filter_tittle">Tipo de pista</string>
 
     <!-- Errores remotos -->
-    <string name="error_access_denied">No tienes permisos para acceder</string>
-    <string name="error_server">Error del servidor. Inténtalo más tarde</string>
-    <string name="error_not_found">Datos no encontrados</string>
-    <string name="error_unknown_remote">Error de conexión</string>
+    <string name="error_access_denied">No tienes permiso para ver esta información</string>
+    <string name="error_server">No hemos podido conectar. Comprueba tu conexión e inténtalo de nuevo</string>
+    <string name="error_not_found">No hemos encontrado lo que buscabas</string>
+    <string name="error_unknown_remote">Algo ha ido mal. Comprueba tu conexión e inténtalo de nuevo</string>
 
     <!-- Errores locales (Room) -->
-    <string name="error_disk_full">Sin espacio en el dispositivo</string>
-    <string name="error_db_corrupted">Error interno. Reinstala la app</string>
-    <string name="error_db_constraint">Error interno de datos</string>
-    <string name="error_db_unknown">Error local inesperado</string>
+    <string name="error_disk_full">No queda espacio en el dispositivo. Libera espacio e inténtalo de nuevo</string>
+    <string name="error_db_corrupted">No hemos podido cargar los datos guardados. Si el problema continúa, reinstala la app</string>
+    <string name="error_db_constraint">No se ha podido guardar. Inténtalo de nuevo</string>
+    <string name="error_db_unknown">Algo ha ido mal. Inténtalo de nuevo</string>
 
     <!-- Errores de dominio (Court) -->
-    <string name="error_no_courts">No se pudo conectar con el servidor. Inténtelo de nuevo más tarde</string>
+    <string name="error_no_courts">No hemos podido cargar las pistas. Inténtalo de nuevo más tarde</string>
 
     <!-- Errores de autenticación -->
-    <string name="error_invalid_credentials">Credenciales incorrectas</string>
-    <string name="error_user_collision">El usuario ya existe</string>
-    <string name="error_weak_password">La contraseña no es segura</string>
-    <string name="error_user_not_found">Usuario no encontrado</string>
-    <string name="error_network">Sin conexión a internet</string>
-    <string name="error_auth_unknown">Error de autenticación</string>
+    <string name="error_invalid_credentials">Email o contraseña incorrectos</string>
+    <string name="error_user_collision">Ya existe una cuenta con ese email</string>
+    <string name="error_weak_password">La contraseña es demasiado débil. Prueba con otra</string>
+    <string name="error_user_not_found">Email o contraseña incorrectos</string>
+    <string name="error_network">Sin conexión a internet. Comprueba tu conexión e inténtalo de nuevo</string>
+    <string name="error_too_many_requests">Demasiados intentos. Espera unos minutos y vuelve a probar</string>
+    <string name="error_auth_unknown">No se ha podido completar la operación. Inténtalo de nuevo</string>
+
+    <!-- Login · Restablecer contraseña -->
+    <string name="email_placeholder">Email</string>
+    <string name="reset_password_title">Restablecer contraseña</string>
+    <string name="reset_password_description">Escribe tu email y te enviaremos un enlace para crear una contraseña nueva.</string>
+    <string name="reset_password_sent">Si hay una cuenta con ese email, recibirás un enlace en unos minutos. Revisa también la carpeta de spam.</string>
+    <string name="reset_password_send">Enviar</string>
+    <string name="reset_password_cancel">Cancelar</string>
+    <string name="reset_password_close">Cerrar</string>
 
     <!-- ErrorScreen -->
     <string name="message_button_error_screen">Reintentar</string>

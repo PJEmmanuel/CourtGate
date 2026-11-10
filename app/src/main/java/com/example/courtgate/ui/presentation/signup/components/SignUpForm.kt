@@ -24,6 +24,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import com.example.courtgate.ui.presentation.core.asStringRes
 import com.example.courtgate.ui.presentation.signup.SignUpState
 import com.example.courtgate.ui.presentation.core.CourtButton
 import com.example.courtgate.ui.presentation.core.CourtTextField
@@ -80,9 +83,19 @@ fun SignUpForm(
             ),
             keyboardActions = KeyboardActions(onAny = {
                 focusManager.clearFocus()
-                fetchSignUp()
+                if (state.isSubmitEnabled) fetchSignUp()
             })
         )
+
+        state.authError?.let { error ->
+            Text(
+                text = stringResource(error.asStringRes()),
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(vertical = 4.dp)
+            )
+        }
 
         CourtButton(
             text = "Create account",//TODO: HardCode

@@ -15,7 +15,8 @@ interface CourtLocalDataSource {
     fun getAvailableCourts(
         locatedFilter: String?,
         selectedDay: Long,
-        endSelectedDay: Long
+        endSelectedDay: Long,
+        minHour: String?
     ): Flow<List<Court>>
 
     suspend fun getCourtsCount(): Int

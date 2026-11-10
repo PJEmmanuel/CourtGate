@@ -16,6 +16,10 @@ class AuthenticationRepository @Inject constructor(
         return authDataSource.login(email, password)
     }
 
+    suspend fun sendPasswordResetEmail(email: String): Result<Unit> {
+        return authDataSource.sendPasswordResetEmail(email)
+    }
+
     fun isUserLoggedIn(): Boolean {
         return authDataSource.isUserLoggedIn()
     }

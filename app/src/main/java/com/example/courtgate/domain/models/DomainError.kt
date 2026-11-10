@@ -9,6 +9,7 @@ sealed interface DomainError {
         data object WeakPassword : Auth              // Contraseña no segura
         data object UserNotFound : Auth              // El usuario no existe
         data object NetworkError : Auth              // Sin internet durante login/signup
+        data object TooManyRequests : Auth           // Demasiados intentos seguidos
         data object UnknownAuthError : Auth          // Error genérico
     }
 

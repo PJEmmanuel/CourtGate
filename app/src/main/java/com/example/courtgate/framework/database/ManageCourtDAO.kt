@@ -54,16 +54,19 @@ interface ManageCourtDAO {
     /*Llama a todas las pistas de un día concreto, que AL MENOS tengan un tramo horario libre
     hay que pasarle la fecha del día de la consulta, esto hace que compare las reserevas
     a ver si hay alguna hora disponible del día concreto que se le mande.
-    Si no hay ninguna hora libre, no se muestra esa pista*/
+    Si no hay ninguna hora libre, no se muestra esa pista.
+    minHour ("HH:mm") descarta las horas anteriores; null = todas las horas del día*/
     @Query(
         """
         SELECT * FROM courts
 WHERE (:locatedFilter IS NULL OR located = :locatedFilter)
-AND (
-    (SELECT COUNT(*) FROM schedules) >
-    (
-        SELECT COUNT(*) FROM bookings
+AND EXISTS (
+    SELECT 1 FROM schedules s
+    WHERE (:minHour IS NULL OR s.hour >= :minHour)
+    AND NOT EXISTS (
+        SELECT 1 FROM bookings
         WHERE bookings.code = courts.code
+        AND bookings.hour = s.hour
         AND bookings.date >= :selectedDay
         AND bookings.date < :endSelectedDay
     )
@@ -74,7 +77,8 @@ AND (
     fun getAvailableCourts(
         locatedFilter: String?,
         selectedDay: Long,
-        endSelectedDay: Long
+        endSelectedDay: Long,
+        minHour: String?
     ): Flow<List<CourtEntity>>
 
 

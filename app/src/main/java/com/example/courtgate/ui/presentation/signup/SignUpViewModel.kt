@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.courtgate.core.extension.emailValidator
 import com.example.courtgate.core.extension.passValidator
+import com.example.courtgate.domain.models.DomainError
+import com.example.courtgate.domain.models.DomainException
 import com.example.courtgate.usecases.authentication.SignUpWhitEmailUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,13 +25,13 @@ class SignUpViewModel @Inject constructor(
 
     fun signUp() {
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true, isSubmitEnabled = false) }
+            _state.update { it.copy(isLoading = true, isSubmitEnabled = false, authError = null) }
             signUpUseCase.invoke(
                 email = _state.value.email, password = _state.value.password
             ).onSuccess {
                 _state.update { it.copy(isSignedUpIn = true) }
             }.onFailure { throwable ->
-                _state.update { it.copy(emailError = throwable.message) }
+                _state.update { it.copy(authError = mapError(throwable)) }
             }
             _state.update { it.copy(isLoading = false, isSubmitEnabled = it.isFormValid) }
         }
@@ -37,15 +39,20 @@ class SignUpViewModel @Inject constructor(
 
     fun onEmailChange(email: String) {
         _state.update {
-            val updated = it.copy(email = email, emailError = email.emailValidator())
+            val updated = it.copy(email = email, emailError = email.emailValidator(), authError = null)
             updated.copy(isSubmitEnabled = updated.isFormValid)
         }
     }
 
     fun onPasswordChange(password: String) {
         _state.update {
-            val updated = it.copy(password = password, passwordError = password.passValidator())
+            val updated = it.copy(password = password, passwordError = password.passValidator(), authError = null)
             updated.copy(isSubmitEnabled = updated.isFormValid)
         }
+    }
+
+    private fun mapError(e: Throwable): DomainError = when (e) {
+        is DomainException -> e.error
+        else -> DomainError.Auth.UnknownAuthError
     }
 }

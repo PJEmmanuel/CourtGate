@@ -62,7 +62,7 @@ class ManageCourtRepositoryTest {
 
         whenever(syncPreferencesDS.lastSyncDay).thenReturn(flowOf(LocalDate.now().toString()))
         whenever(localDS.getCourtsCount()).thenReturn(3)
-        whenever(localDS.getAvailableCourts(anyOrNull(), any(), any()))
+        whenever(localDS.getAvailableCourts(anyOrNull(), any(), any(), anyOrNull()))
             .thenReturn(flowOf(expectedCourtList))
         whenever(remoteDS.getBookingsSevenDaysAhead(any(), any()))
             .thenReturn(flowOf(emptyList()))
@@ -73,6 +73,7 @@ class ManageCourtRepositoryTest {
             0L,
             currentDayStart = currentDayStart,
             endSevenDaysFromNow = endSevenDaysFromNow,
+            minHour = null,
         ).first()
 
         assertEquals(expectedCourtList, result)
@@ -91,6 +92,7 @@ class ManageCourtRepositoryTest {
             0L,
             currentDayStart = currentDayStart,
             endSevenDaysFromNow = endSevenDaysFromNow,
+            minHour = null,
         ).first()
     }
 
@@ -103,7 +105,7 @@ class ManageCourtRepositoryTest {
         whenever(
             remoteDS.getBookingsSevenDaysAhead(any(), any())
         ).thenReturn(flowOf(expectedBooking))
-        whenever(localDS.getAvailableCourts(anyOrNull(), any(), any()))
+        whenever(localDS.getAvailableCourts(anyOrNull(), any(), any(), anyOrNull()))
             .thenReturn(flowOf(emptyList()))
 
         repository.getAllCourtToShow(
@@ -112,6 +114,7 @@ class ManageCourtRepositoryTest {
             0L,
             currentDayStart = currentDayStart,
             endSevenDaysFromNow = endSevenDaysFromNow,
+            minHour = null,
         ).first()
 
         verify(localDS).syncBookings(

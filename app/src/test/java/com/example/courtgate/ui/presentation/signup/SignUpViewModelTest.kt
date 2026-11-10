@@ -1,6 +1,8 @@
 package com.example.courtgate.ui.presentation.signup
 
 import com.example.courtgate.core.CoroutinesTestRule
+import com.example.courtgate.domain.models.DomainError
+import com.example.courtgate.domain.models.DomainException
 import com.example.courtgate.domain.models.User
 import com.example.courtgate.usecases.authentication.SignUpWhitEmailUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -129,10 +131,9 @@ class SignUpViewModelTest {
     }
 
     @Test
-    fun `signUp failure, then emailError is set`(): Unit = runTest {
-        val errorMessage = "Email already in use"
+    fun `signUp failure, then authError is set and emailError stays clean`(): Unit = runTest {
         whenever(signUpUseCase.invoke(correctEmail, correctPass))
-            .thenReturn(Result.failure(Exception(errorMessage)))
+            .thenReturn(Result.failure(DomainException(DomainError.Auth.UserCollision)))
 
         vm.onEmailChange(correctEmail)
         vm.onPasswordChange(correctPass)
@@ -140,8 +141,23 @@ class SignUpViewModelTest {
         vm.signUp()
         runCurrent()
 
-        assertEquals(errorMessage, vm.state.value.emailError)
+        assertEquals(DomainError.Auth.UserCollision, vm.state.value.authError)
+        assertNull(vm.state.value.emailError)
         assertEquals(false, vm.state.value.isLoading)
+    }
+
+    @Test
+    fun `signUp failure with unexpected exception, then shows generic auth error`(): Unit = runTest {
+        whenever(signUpUseCase.invoke(correctEmail, correctPass))
+            .thenReturn(Result.failure(IllegalStateException("internal firebase message")))
+
+        vm.onEmailChange(correctEmail)
+        vm.onPasswordChange(correctPass)
+
+        vm.signUp()
+        runCurrent()
+
+        assertEquals(DomainError.Auth.UnknownAuthError, vm.state.value.authError)
     }
 
     @Test

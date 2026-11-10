@@ -71,12 +71,14 @@ class ManageCourtRoomDataSource @Inject constructor(
     override fun getAvailableCourts(
         locatedFilter: String?,
         selectedDay: Long,
-        endSelectedDay: Long
+        endSelectedDay: Long,
+        minHour: String?
     ): Flow<List<Court>> {
         val courts = manageCourtDAO.getAvailableCourts(
             locatedFilter = locatedFilter,
             selectedDay = selectedDay,
-            endSelectedDay = endSelectedDay
+            endSelectedDay = endSelectedDay,
+            minHour = minHour
         )
         return courts.map { listCourtEntity ->
             listCourtEntity.map { it.toCourtDomain() }

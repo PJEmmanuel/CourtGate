@@ -116,7 +116,8 @@ class FakeLocalDS(
     override fun getAvailableCourts(
         locatedFilter: String?,
         selectedDay: Long,
-        endSelectedDay: Long
+        endSelectedDay: Long,
+        minHour: String?
     ): Flow<List<Court>> {
         return courtInMemory.map { listCourt ->
             if (locatedFilter == null) listCourt else listCourt.filter { it.located == locatedFilter }

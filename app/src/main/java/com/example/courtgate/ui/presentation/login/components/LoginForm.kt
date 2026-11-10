@@ -27,6 +27,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import com.example.courtgate.ui.presentation.core.asStringRes
 import com.example.courtgate.ui.presentation.login.LoginState
 import com.example.courtgate.ui.presentation.core.CourtTextField
 import com.example.courtgate.ui.presentation.core.PasswordTextField
@@ -39,7 +42,8 @@ fun LoginForm(
     state: LoginState,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
-    fetchLogin: () -> Unit
+    fetchLogin: () -> Unit,
+    onForgotPassword: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -80,13 +84,22 @@ fun LoginForm(
                 ),
                 keyboardActions = KeyboardActions(onAny = {
                     focusManager.clearFocus()
-                    fetchLogin()
+                    if (state.isSubmitEnabled) fetchLogin()
                 }),
                 errorMessage = state.passwordError,
                 isEnabled = !state.isLoading,
                 modifier = Modifier
             )
 
+            state.authError?.let { error ->
+                Text(
+                    text = stringResource(error.asStringRes()),
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(vertical = 4.dp)
+                )
+            }
 
             CourtButton(
                 text = "Login",//TODO harscoded
@@ -100,7 +113,8 @@ fun LoginForm(
             Spacer(Modifier.padding(4.dp))
 
             TextButton(
-                onClick = {} //TODO: Terminar boton Forgot pass
+                onClick = { onForgotPassword() },
+                enabled = !state.isLoading
             ) {
                 Text("Forgot Password?", textDecoration = TextDecoration.Underline)//TODO harscoded
             }

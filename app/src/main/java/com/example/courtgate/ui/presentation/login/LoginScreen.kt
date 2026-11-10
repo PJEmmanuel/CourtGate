@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.courtgate.R
 import com.example.courtgate.ui.presentation.login.components.LoginForm
+import com.example.courtgate.ui.presentation.login.components.ResetPasswordDialog
 
 @Composable
 fun LoginScreen(
@@ -62,8 +63,18 @@ fun LoginScreen(
                 onEmailChange = { viewModel.onEmailChange(it) },
                 onPasswordChange = { viewModel.onPasswordChange(it) },
                 fetchLogin = { viewModel.login() },
+                onForgotPassword = { viewModel.onForgotPassword() },
                 state = state.value
             )
         }
+    }
+
+    state.value.resetPassword?.let { resetState ->
+        ResetPasswordDialog(
+            state = resetState,
+            onEmailChange = { viewModel.onResetEmailChange(it) },
+            onSend = { viewModel.sendPasswordReset() },
+            onDismiss = { viewModel.onDismissResetPassword() }
+        )
     }
 }

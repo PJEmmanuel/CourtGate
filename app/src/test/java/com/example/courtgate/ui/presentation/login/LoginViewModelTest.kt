@@ -1,8 +1,11 @@
 package com.example.courtgate.ui.presentation.login
 
 import com.example.courtgate.core.CoroutinesTestRule
+import com.example.courtgate.domain.models.DomainError
+import com.example.courtgate.domain.models.DomainException
 import com.example.courtgate.domain.models.User
 import com.example.courtgate.usecases.authentication.LoginWithEmailUseCase
+import com.example.courtgate.usecases.authentication.SendPasswordResetEmailUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
@@ -17,6 +20,7 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -29,6 +33,9 @@ class LoginViewModelTest {
     @Mock
     lateinit var loginWithEmailUseCase: LoginWithEmailUseCase
 
+    @Mock
+    lateinit var sendPasswordResetEmailUseCase: SendPasswordResetEmailUseCase
+
     private lateinit var vm: LoginViewModel
 
     private val wrongEmail = "asd.com"
@@ -39,7 +46,7 @@ class LoginViewModelTest {
 
     @Before
     fun setUp() {
-        vm = LoginViewModel(loginWithEmailUseCase)
+        vm = LoginViewModel(loginWithEmailUseCase, sendPasswordResetEmailUseCase)
     }
 
     @Test
@@ -129,10 +136,9 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun `login failure, then emailError is set`(): Unit = runTest {
-        val errorMessage = "Invalid credentials"
+    fun `login failure, then authError is set and emailError stays clean`(): Unit = runTest {
         whenever(loginWithEmailUseCase.invoke(correctEmail, correctPass))
-            .thenReturn(Result.failure(Exception(errorMessage)))
+            .thenReturn(Result.failure(DomainException(DomainError.Auth.InvalidCredentials)))
 
         vm.onEmailChange(correctEmail)
         vm.onPasswordChange(correctPass)
@@ -140,8 +146,119 @@ class LoginViewModelTest {
         vm.login()
         runCurrent()
 
-        assertEquals(errorMessage, vm.state.value.emailError)
+        assertEquals(DomainError.Auth.InvalidCredentials, vm.state.value.authError)
+        assertNull(vm.state.value.emailError)
         assertEquals(false, vm.state.value.isLoading)
+    }
+
+    @Test
+    fun `login failure with unexpected exception, then shows generic auth error`(): Unit = runTest {
+        whenever(loginWithEmailUseCase.invoke(correctEmail, correctPass))
+            .thenReturn(Result.failure(IllegalStateException("internal firebase message")))
+
+        vm.onEmailChange(correctEmail)
+        vm.onPasswordChange(correctPass)
+
+        vm.login()
+        runCurrent()
+
+        assertEquals(DomainError.Auth.UnknownAuthError, vm.state.value.authError)
+    }
+
+    @Test
+    fun `editing a field after login failure clears authError`(): Unit = runTest {
+        whenever(loginWithEmailUseCase.invoke(correctEmail, correctPass))
+            .thenReturn(Result.failure(DomainException(DomainError.Auth.InvalidCredentials)))
+
+        vm.onEmailChange(correctEmail)
+        vm.onPasswordChange(correctPass)
+        vm.login()
+        runCurrent()
+
+        vm.onPasswordChange("${correctPass}4")
+
+        assertNull(vm.state.value.authError)
+    }
+
+    @Test
+    fun `forgot password opens dialog prefilled with typed email`() {
+        vm.onEmailChange(correctEmail)
+
+        vm.onForgotPassword()
+
+        assertEquals(correctEmail, vm.state.value.resetPassword?.email)
+        assertNull(vm.state.value.resetPassword?.emailError)
+    }
+
+    @Test
+    fun `forgot password with empty email opens dialog without error`() {
+        vm.onForgotPassword()
+
+        assertEquals("", vm.state.value.resetPassword?.email)
+        assertNull(vm.state.value.resetPassword?.emailError)
+        assertEquals(false, vm.state.value.resetPassword?.isSubmitEnabled)
+    }
+
+    @Test
+    fun `send password reset success, then dialog shows sent`(): Unit = runTest {
+        whenever(sendPasswordResetEmailUseCase.invoke(correctEmail))
+            .thenReturn(Result.success(Unit))
+
+        vm.onForgotPassword()
+        vm.onResetEmailChange(correctEmail)
+        vm.sendPasswordReset()
+        runCurrent()
+
+        verify(sendPasswordResetEmailUseCase).invoke(correctEmail)
+        assertEquals(true, vm.state.value.resetPassword?.isSent)
+        assertEquals(false, vm.state.value.resetPassword?.isLoading)
+    }
+
+    @Test
+    fun `send password reset for unknown user, then shows sent without revealing it`(): Unit = runTest {
+        whenever(sendPasswordResetEmailUseCase.invoke(correctEmail))
+            .thenReturn(Result.failure(DomainException(DomainError.Auth.UserNotFound)))
+
+        vm.onForgotPassword()
+        vm.onResetEmailChange(correctEmail)
+        vm.sendPasswordReset()
+        runCurrent()
+
+        assertEquals(true, vm.state.value.resetPassword?.isSent)
+        assertNull(vm.state.value.resetPassword?.error)
+    }
+
+    @Test
+    fun `send password reset network failure, then error is shown and dialog stays open`(): Unit = runTest {
+        whenever(sendPasswordResetEmailUseCase.invoke(correctEmail))
+            .thenReturn(Result.failure(DomainException(DomainError.Auth.NetworkError)))
+
+        vm.onForgotPassword()
+        vm.onResetEmailChange(correctEmail)
+        vm.sendPasswordReset()
+        runCurrent()
+
+        assertEquals(DomainError.Auth.NetworkError, vm.state.value.resetPassword?.error)
+        assertEquals(false, vm.state.value.resetPassword?.isSent)
+    }
+
+    @Test
+    fun `send password reset with invalid email does not call use case`(): Unit = runTest {
+        vm.onForgotPassword()
+        vm.onResetEmailChange(wrongEmail)
+        vm.sendPasswordReset()
+        runCurrent()
+
+        verifyNoInteractions(sendPasswordResetEmailUseCase)
+    }
+
+    @Test
+    fun `dismiss password reset closes dialog`() {
+        vm.onForgotPassword()
+
+        vm.onDismissResetPassword()
+
+        assertNull(vm.state.value.resetPassword)
     }
 
     @Test

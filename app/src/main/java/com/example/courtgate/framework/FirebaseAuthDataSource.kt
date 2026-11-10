@@ -1,8 +1,17 @@
 package com.example.courtgate.framework
 
 import com.example.courtgate.data.datasources.AuthDataSource
+import com.example.courtgate.domain.models.DomainError
+import com.example.courtgate.domain.models.DomainException
 import com.example.courtgate.domain.models.User
+import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -20,11 +29,12 @@ class FirebaseAuthDataSource @Inject constructor(
                     uid = user.uid,
                     email = user.email ?: ""
                 )
-            } ?: return Result.failure(Exception("Sign up failed: user is null")) //TODO: Hardcode
+            } ?: return Result.failure(DomainException(DomainError.Auth.UnknownAuthError))
             Result.success(fireUser)
 
         } catch (e: Exception) {
-            Result.failure(e)
+            if (e is CancellationException) throw e
+            Result.failure(DomainException(e.toAuthError()))
         }
     }
 
@@ -36,11 +46,22 @@ class FirebaseAuthDataSource @Inject constructor(
                     uid = user.uid,
                     email = user.email ?: ""
                 )
-            } ?: return Result.failure(Exception("Login failed: user is null"))
+            } ?: return Result.failure(DomainException(DomainError.Auth.UnknownAuthError))
             Result.success(fireUser)
 
         } catch (e: Exception) {
-            Result.failure(e)
+            if (e is CancellationException) throw e
+            Result.failure(DomainException(e.toAuthError()))
+        }
+    }
+
+    override suspend fun sendPasswordResetEmail(email: String): Result<Unit> {
+        return try {
+            auth.sendPasswordResetEmail(email).await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
+            Result.failure(DomainException(e.toAuthError()))
         }
     }
 
@@ -57,4 +78,16 @@ class FirebaseAuthDataSource @Inject constructor(
     override fun getCurrentUserId(): String? {
         return auth.currentUser?.uid
     }
+
+    // WeakPassword hereda de InvalidCredentials: tiene que ir antes
+    private fun Exception.toAuthError(): DomainError.Auth =
+        when (this) {
+            is FirebaseAuthWeakPasswordException -> DomainError.Auth.WeakPassword
+            is FirebaseAuthInvalidCredentialsException -> DomainError.Auth.InvalidCredentials
+            is FirebaseAuthInvalidUserException -> DomainError.Auth.UserNotFound
+            is FirebaseAuthUserCollisionException -> DomainError.Auth.UserCollision
+            is FirebaseNetworkException -> DomainError.Auth.NetworkError
+            is FirebaseTooManyRequestsException -> DomainError.Auth.TooManyRequests
+            else -> DomainError.Auth.UnknownAuthError
+        }
 }

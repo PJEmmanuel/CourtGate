@@ -60,7 +60,8 @@ class ManageCourtRepository @Inject constructor(
         selectedDay: Long,
         endSelectedDay: Long,
         currentDayStart: Instant,
-        endSevenDaysFromNow: Instant
+        endSevenDaysFromNow: Instant,
+        minHour: String?
     ): Flow<List<Court>> = channelFlow {
 
         val syncResult = syncStaticDataIfNeeded()
@@ -79,7 +80,7 @@ class ManageCourtRepository @Inject constructor(
                 }
         }
 
-        localDataSource.getAvailableCourts(located, selectedDay, endSelectedDay)
+        localDataSource.getAvailableCourts(located, selectedDay, endSelectedDay, minHour)
             .distinctUntilChanged()
             .collect { courts -> send(courts) }
     }.flowOn(ioDispatcher)

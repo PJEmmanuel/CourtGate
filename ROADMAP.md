@@ -39,9 +39,9 @@ Sin fecha de entrega; las estimaciones son orientativas.
 
 ## Fase 1 · Bugs visibles para el usuario (~2–3 días)
 
-- [ ] Find: no mostrar horas pasadas como reservables
-- [ ] "Forgot password" con `sendPasswordResetEmail`
-- [ ] Revisar mensajes de error: nada técnico de cara al usuario
+- [x] Find: no mostrar horas pasadas como reservables
+- [x] "Forgot password" con `sendPasswordResetEmail`
+- [x] Revisar mensajes de error: nada técnico de cara al usuario
 
 ## Fase 2 · Completar el MVP (~1–2 semanas)
 

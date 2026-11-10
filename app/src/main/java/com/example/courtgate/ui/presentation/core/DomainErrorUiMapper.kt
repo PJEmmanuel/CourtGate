@@ -20,6 +20,7 @@ fun DomainError.asStringRes(): Int = when (this) {
     DomainError.Auth.WeakPassword -> R.string.error_weak_password
     DomainError.Auth.UserNotFound -> R.string.error_user_not_found
     DomainError.Auth.NetworkError -> R.string.error_network
+    DomainError.Auth.TooManyRequests -> R.string.error_too_many_requests
     DomainError.Auth.UnknownAuthError -> R.string.error_auth_unknown
     DomainError.Booking.SlotAlreadyTaken -> R.string.error_booking_slot_taken
     DomainError.Booking.SlotInPast -> R.string.slot_in_past

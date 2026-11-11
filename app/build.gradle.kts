@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlinxSerialization)
     alias(libs.plugins.googleServices)
+    alias(libs.plugins.room)
 }
 
 android {
@@ -42,6 +43,12 @@ android {
     buildFeatures {
         compose = true
     }
+}
+
+// Esquemas exportados de Room: base de las migraciones y de MigrationTestHelper.
+// El plugin también los añade a los assets de androidTest.
+room {
+    schemaDirectory("$projectDir/schemas")
 }
 
 dependencies {

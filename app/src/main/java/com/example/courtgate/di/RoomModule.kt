@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.example.courtgate.framework.database.CourtDatabase
 import com.example.courtgate.framework.database.LastResultDAO
 import com.example.courtgate.framework.database.ManageCourtDAO
+import com.example.courtgate.framework.database.withCourtMigrations
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,9 +23,9 @@ object RoomModule {
         return Room.databaseBuilder(
             context = context,
             CourtDatabase::class.java,
-            "court_db"
+            CourtDatabase.NAME
         )
-            .fallbackToDestructiveMigration(dropAllTables = true) //TODO Fallback activo
+            .withCourtMigrations()
             .build()
     }
 

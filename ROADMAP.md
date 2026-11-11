@@ -74,7 +74,7 @@ Sin fecha de entrega; las estimaciones son orientativas.
 - [x] Extraer `mapError` (duplicado en varios ViewModels) a un único sitio
 - [ ] Unificar `myBookingsCard` y `ShowCourtCard` con un UiModel común
 - [ ] Unificar estados de `BookingFlowSheetContent` y `MyBookingsFlowSheetContent` (sealed interface)
-- [ ] Extraer el helper repetido en `FirebaseFirestoreDataSource`
+- [x] Extraer el helper repetido en `FirebaseFirestoreDataSource`
 - [ ] Room:
   - [ ] Quitar `fallbackToDestructiveMigration`
   - [ ] Configurar la carpeta de esquemas

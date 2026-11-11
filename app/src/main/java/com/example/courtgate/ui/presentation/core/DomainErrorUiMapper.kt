@@ -22,6 +22,7 @@ fun DomainError.asStringRes(): Int = when (this) {
     DomainError.Auth.NetworkError -> R.string.error_network
     DomainError.Auth.TooManyRequests -> R.string.error_too_many_requests
     DomainError.Auth.SessionExpired -> R.string.error_session_expired
+    DomainError.Auth.RecentLoginRequired -> R.string.error_recent_login_required
     DomainError.Auth.UnknownAuthError -> R.string.error_auth_unknown
     DomainError.Booking.SlotAlreadyTaken -> R.string.error_booking_slot_taken
     DomainError.Booking.SlotInPast -> R.string.slot_in_past

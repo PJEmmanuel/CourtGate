@@ -14,6 +14,7 @@ import com.example.courtgate.framework.remote.ScheduleDTO
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.Source
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -31,6 +32,7 @@ const val SETTINGS_COLLECTION = "settings"
 const val SCHEDULES_DOCUMENT = "schedules"
 const val FIELD_START_AT = "startsAt"
 const val FIELD_USER_ID = "userId"
+private const val MAX_WRITES_PER_TRANSACTION = 500
 
 internal fun buildBookingId(b: NewCourtBooking): String {
     val dayMillis = b.date.toEpochMilli()
@@ -111,6 +113,32 @@ class FirebaseFirestoreDataSource @Inject constructor(
 
             ResultManage.Success(Unit)
         }catch (e: Exception) {
+            if (e is CancellationException) throw e
+            ResultManage.Failure(e.toRemoteError())
+        }
+    }
+
+    // Borrar la cuenta: todas las reservas del usuario, también las pasadas.
+    // Source.SERVER para que, sin red, falle en vez de borrar solo lo que hay en caché.
+    // Transacciones por el mismo motivo que en deleteMyBookings; cada una admite 500 escrituras.
+    override suspend fun deleteAllUserBookings(userId: String): ResultManage<Unit, DomainError> {
+        return try {
+            val refs = fireStore.collection(BOOKINGS_COLLECTION)
+                .whereEqualTo(FIELD_USER_ID, userId)
+                .get(Source.SERVER)
+                .await()
+                .documents
+                .map { it.reference }
+
+            refs.chunked(MAX_WRITES_PER_TRANSACTION).forEach { chunk ->
+                fireStore.runTransaction { tx ->
+                    chunk.forEach { tx.delete(it) }
+                    null
+                }.await()
+            }
+
+            ResultManage.Success(Unit)
+        } catch (e: Exception) {
             if (e is CancellationException) throw e
             ResultManage.Failure(e.toRemoteError())
         }

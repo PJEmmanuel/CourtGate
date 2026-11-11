@@ -28,5 +28,15 @@ class AuthenticationRepository @Inject constructor(
 
     fun getCurrentUserId(): String? = authDataSource.getCurrentUserId()
 
+    fun getCurrentUser(): User? = authDataSource.getCurrentUser()
 
+    fun signOut() = authDataSource.signOut()
+
+    suspend fun reauthenticate(password: String): Result<Unit> {
+        return authDataSource.reauthenticate(password)
+    }
+
+    suspend fun deleteCurrentUser(): Result<Unit> {
+        return authDataSource.deleteCurrentUser()
+    }
 }

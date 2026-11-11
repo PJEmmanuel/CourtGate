@@ -13,7 +13,8 @@ interface LastResultDAO {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertLastResult(lastResultEntity: LastResultEntity)
 
-    @Query("SELECT * FROM LAST_RESULT")
+    // El id es autoincremental: el más alto es el último resultado guardado
+    @Query("SELECT * FROM LAST_RESULT ORDER BY id DESC")
     fun getLastResult(): Flow<List<LastResultEntity>>
 
     @Delete()
@@ -21,5 +22,8 @@ interface LastResultDAO {
 
     @Update
     suspend fun  editLastResult(lastResultEntity: LastResultEntity)
+
+    @Query("DELETE FROM LAST_RESULT")
+    suspend fun deleteAllResults()
 
 }

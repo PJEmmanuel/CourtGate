@@ -22,3 +22,9 @@ data class Booking(
 
 @Serializable
 object MyBookings
+
+@Serializable
+object Match
+
+@Serializable
+object Settings

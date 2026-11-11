@@ -72,14 +72,14 @@ Sin fecha de entrega; las estimaciones son orientativas.
 
 - [x] Mover todos los textos hardcodeados a `strings.xml` (ES + EN)
 - [x] Extraer `mapError` (duplicado en varios ViewModels) a un único sitio
-- [ ] Unificar `myBookingsCard` y `ShowCourtCard` con un UiModel común
-- [ ] Unificar estados de `BookingFlowSheetContent` y `MyBookingsFlowSheetContent` (sealed interface)
+- [x] Unificar `myBookingsCard` y `ShowCourtCard` con un UiModel común
+- [x] Unificar estados de `BookingFlowSheetContent` y `MyBookingsFlowSheetContent` (sealed interface)
 - [x] Extraer el helper repetido en `FirebaseFirestoreDataSource`
 - [x] Room:
   - [x] Quitar `fallbackToDestructiveMigration`
   - [x] Configurar la carpeta de esquemas
   - [x] Definir migraciones (los resultados de Match solo viven en el dispositivo y no se pueden perder)
-- [ ] Tests de UI con Compose: login, reserva, cancelación, alta de resultado
+- [x] Tests de UI con Compose: login, reserva, cancelación, alta de resultado
 
 ## Fase 4 · Preparar la publicación (~1 semana + ~2 semanas de espera)
 

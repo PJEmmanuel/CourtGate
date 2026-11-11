@@ -132,4 +132,8 @@ class ManageCourtRepository @Inject constructor(
     suspend fun deleteMyBookings(docId: String): ResultManage<Unit, DomainError> {
         return remoteDataSource.deleteMyBookings(docId)
     }
+
+    suspend fun deleteAllUserBookings(userId: String): ResultManage<Unit, DomainError> {
+        return remoteDataSource.deleteAllUserBookings(userId)
+    }
 }

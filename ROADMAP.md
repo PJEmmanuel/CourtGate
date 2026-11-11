@@ -50,15 +50,23 @@ Sin fecha de entrega; las estimaciones son orientativas.
 
 ## Fase 2 · Completar el MVP (~1–2 semanas)
 
-- [ ] **Match**: pantalla para crear, editar y borrar resultados
+- [x] **Match**: pantalla para crear, editar y borrar resultados
   - Almacenamiento **solo local (Room)** en v1.0; los casos de uso ya existen
   - Falta UI, ViewModel, navegación y tests
   - Limpiar los TODO y el comentario "Step 5" de `MatchRepository`
-- [ ] **Settings / Perfil**
-  - [ ] Ver datos de la cuenta
-  - [ ] Cerrar sesión
-  - [ ] **Borrar cuenta** (obligatorio en Google Play para apps con registro)
+- [x] **Settings / Perfil**
+  - [x] Ver datos de la cuenta
+  - [x] Cerrar sesión
+  - [x] **Borrar cuenta** (obligatorio en Google Play para apps con registro)
     - Debe borrar también las reservas del usuario y los resultados locales
+
+## 📝 Pendientes sin fase asignada
+
+- [ ] Login y SignUp tienen su propio `mapError` y textos en inglés (encaja con la Fase 3)
+- [ ] Reintento automático cuando vuelve la red
+- [ ] Find: posible problema con la sync sin conexión en el primer arranque
+- [ ] Resultados al cerrar sesión: los resultados de Room no van ligados al usuario y no se borran al cerrar sesión, así que otra cuenta en el mismo dispositivo los vería (solo se borran al borrar la cuenta)
+- [ ] Reglas de Firestore (Fase 4): deben permitir que cada usuario consulte y borre sus reservas filtrando por `userId`; si no, "Borrar cuenta" fallará
 
 ## Fase 3 · Calidad y deuda técnica (~1 semana)
 

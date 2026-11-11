@@ -18,4 +18,5 @@ interface CourtRemoteDataSource {
     ): Flow<List<CourtBooking>>
     fun getMyBookings(currentUser: String, startAt: Instant): Flow<List<CourtBooking>>
     suspend fun deleteMyBookings(docId:String): ResultManage<Unit, DomainError>
+    suspend fun deleteAllUserBookings(userId: String): ResultManage<Unit, DomainError>
 }

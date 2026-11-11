@@ -10,4 +10,8 @@ interface AuthDataSource {
     fun isUserLoggedIn(): Boolean
     fun observeAuthState(): Flow<Boolean>
     fun getCurrentUserId(): String?
+    fun getCurrentUser(): User?
+    fun signOut()
+    suspend fun reauthenticate(password: String): Result<Unit>
+    suspend fun deleteCurrentUser(): Result<Unit>
 }

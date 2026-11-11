@@ -6,9 +6,11 @@ import com.example.courtgate.domain.models.DomainException
 import com.example.courtgate.domain.models.User
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.FirebaseTooManyRequestsException
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import kotlinx.coroutines.CancellationException
@@ -16,6 +18,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
+import java.time.Instant
 import javax.inject.Inject
 
 class FirebaseAuthDataSource @Inject constructor(
@@ -79,10 +82,51 @@ class FirebaseAuthDataSource @Inject constructor(
         return auth.currentUser?.uid
     }
 
-    // WeakPassword hereda de InvalidCredentials: tiene que ir antes
+    override fun getCurrentUser(): User? {
+        return auth.currentUser?.let { user ->
+            User(
+                uid = user.uid,
+                email = user.email.orEmpty(),
+                createdAt = user.metadata?.creationTimestamp?.let(Instant::ofEpochMilli)
+            )
+        }
+    }
+
+    override fun signOut() = auth.signOut()
+
+    // Borrar la cuenta exige un inicio de sesión reciente: se vuelve a pedir la contraseña
+    override suspend fun reauthenticate(password: String): Result<Unit> {
+        return try {
+            val user = auth.currentUser
+                ?: return Result.failure(DomainException(DomainError.Auth.SessionExpired))
+            val email = user.email
+                ?: return Result.failure(DomainException(DomainError.Auth.SessionExpired))
+            user.reauthenticate(EmailAuthProvider.getCredential(email, password)).await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
+            Result.failure(DomainException(e.toAuthError()))
+        }
+    }
+
+    override suspend fun deleteCurrentUser(): Result<Unit> {
+        return try {
+            val user = auth.currentUser
+                ?: return Result.failure(DomainException(DomainError.Auth.SessionExpired))
+            user.delete().await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
+            Result.failure(DomainException(e.toAuthError()))
+        }
+    }
+
+    // WeakPassword hereda de InvalidCredentials y RecentLoginRequired de InvalidUser:
+    // tienen que ir antes
     private fun Exception.toAuthError(): DomainError.Auth =
         when (this) {
             is FirebaseAuthWeakPasswordException -> DomainError.Auth.WeakPassword
+            is FirebaseAuthRecentLoginRequiredException -> DomainError.Auth.RecentLoginRequired
             is FirebaseAuthInvalidCredentialsException -> DomainError.Auth.InvalidCredentials
             is FirebaseAuthInvalidUserException -> DomainError.Auth.UserNotFound
             is FirebaseAuthUserCollisionException -> DomainError.Auth.UserCollision

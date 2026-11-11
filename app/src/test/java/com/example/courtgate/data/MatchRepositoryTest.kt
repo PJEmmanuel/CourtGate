@@ -1,7 +1,9 @@
 package com.example.courtgate.data
 
+import com.example.courtgate.ResultManage
 import com.example.courtgate.core.lastResultTest
 import com.example.courtgate.data.datasources.ResultLocalDataSource
+import com.example.courtgate.domain.models.DomainError
 import com.example.courtgate.domain.models.LastResult
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
@@ -62,23 +64,51 @@ class MatchRepositoryTest {
 
     @Test
     fun `Insert lastResult in database`(): Unit = runTest {
-        repository.insertLastResult(lastResult1)
+        whenever(resultLocalDataSource.insertLastResult(lastResult1)).thenReturn(ResultManage.Success(Unit))
 
+        val result = repository.insertLastResult(lastResult1)
+
+        assertEquals(ResultManage.Success(Unit), result)
         verify(resultLocalDataSource).insertLastResult(lastResult1)
     }
 
+    @Test
+    fun `Insert returns the local error when Room fails`(): Unit = runTest {
+        whenever(resultLocalDataSource.insertLastResult(lastResult1))
+            .thenReturn(ResultManage.Failure(DomainError.Local.DiskFull))
+
+        val result = repository.insertLastResult(lastResult1)
+
+        assertEquals(ResultManage.Failure(DomainError.Local.DiskFull), result)
+    }
 
     @Test
     fun `Delete a result of database`():Unit = runTest {
-        repository.deleteLastResult(lastResult1)
+        whenever(resultLocalDataSource.deleteLastResult(lastResult1)).thenReturn(ResultManage.Success(Unit))
 
+        val result = repository.deleteLastResult(lastResult1)
+
+        assertEquals(ResultManage.Success(Unit), result)
         verify(resultLocalDataSource).deleteLastResult(lastResult1)
     }
 
     @Test
     fun `Edit a result of database`():Unit=runTest {
-        repository.editLastResult(lastResult1)
+        whenever(resultLocalDataSource.editLastResult(lastResult1)).thenReturn(ResultManage.Success(Unit))
 
+        val result = repository.editLastResult(lastResult1)
+
+        assertEquals(ResultManage.Success(Unit), result)
         verify(resultLocalDataSource).editLastResult(lastResult1)
+    }
+
+    @Test
+    fun `Delete all results of database`(): Unit = runTest {
+        whenever(resultLocalDataSource.deleteAllResults()).thenReturn(ResultManage.Success(Unit))
+
+        val result = repository.deleteAllResults()
+
+        assertEquals(ResultManage.Success(Unit), result)
+        verify(resultLocalDataSource).deleteAllResults()
     }
 }

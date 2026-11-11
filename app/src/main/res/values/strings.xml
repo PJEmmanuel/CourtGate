@@ -36,6 +36,7 @@
     <string name="reset_password_close">Cerrar</string>
 
     <string name="error_session_expired">Tu sesión ha caducado. Vuelve a iniciar sesión</string>
+    <string name="error_recent_login_required">Por seguridad, cierra sesión y vuelve a entrar antes de continuar</string>
 
     <!-- ErrorScreen -->
     <string name="message_button_error_screen">Reintentar</string>
@@ -83,5 +84,43 @@
     <string name="my_booking_submitting">Cancelando…</string>
     <string name="my_booking_failed_title">No se pudo cancelar la reserva</string>
     <string name="my_booking_succeeded_title">Reserva cancelada</string>
+
+    <!-- Match -->
+    <string name="match_title">Mis partidos</string>
+    <string name="match_empty">Todavía no has guardado ningún resultado. Pulsa + para añadir el primero.</string>
+    <string name="match_add_result">Añadir resultado</string>
+    <string name="match_edit_result">Editar resultado</string>
+    <string name="match_delete_result">Borrar resultado</string>
+    <string name="match_form_title_new">Nuevo resultado</string>
+    <string name="match_form_title_edit">Editar resultado</string>
+    <string name="match_set_label">Set %1$d</string>
+    <string name="match_set_optional_label">Set %1$d (opcional)</string>
+    <string name="match_team_1">Pareja 1</string>
+    <string name="match_team_2">Pareja 2</string>
+    <string name="match_action_save">Guardar</string>
+    <string name="match_action_cancel">Cancelar</string>
+    <string name="match_error_missing_sets">Completa los dos primeros sets. El tercero, si se jugó, también entero</string>
+    <string name="match_error_invalid_games">Un set no puede tener más de 7 juegos</string>
+    <string name="match_error_tied_set">Un set no puede acabar en empate</string>
+    <string name="match_error_third_set">Si una pareja gana los dos primeros sets, no hay tercer set</string>
+    <string name="match_delete_title">¿Borrar este resultado?</string>
+    <string name="match_delete_message">Los resultados solo se guardan en este dispositivo: no se podrá recuperar.</string>
+    <string name="match_delete_confirm">Borrar</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Ajustes</string>
+    <string name="settings_account_section">Tu cuenta</string>
+    <string name="settings_email_label">Email</string>
+    <string name="settings_member_since_label">Miembro desde</string>
+    <string name="settings_logout">Cerrar sesión</string>
+    <string name="settings_logout_title">¿Cerrar sesión?</string>
+    <string name="settings_logout_message">Tendrás que volver a iniciar sesión para reservar pistas.</string>
+    <string name="settings_delete_account">Borrar cuenta</string>
+    <string name="settings_delete_account_title">¿Borrar tu cuenta?</string>
+    <string name="settings_delete_account_message">Se borrarán tu cuenta, todas tus reservas y los resultados guardados en este dispositivo. No se puede deshacer. Escribe tu contraseña para confirmar.</string>
+    <string name="settings_delete_account_confirm">Borrar cuenta</string>
+    <string name="settings_password_placeholder">Contraseña</string>
+    <string name="settings_wrong_password">Contraseña incorrecta</string>
+    <string name="settings_action_cancel">Cancelar</string>
 
 </resources>

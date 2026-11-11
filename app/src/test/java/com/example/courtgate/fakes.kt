@@ -91,6 +91,12 @@ class FakeRemoteDS(
         return ResultManage.Success(Unit)
     }
 
+    override suspend fun deleteAllUserBookings(userId: String): ResultManage<Unit, DomainError> {
+        errorInMemory?.let { return ResultManage.Failure(it) }
+        bookingInMemory.value = bookingInMemory.value.filterNot { it.userId == userId }
+        return ResultManage.Success(Unit)
+    }
+
 }
 
 class FakeLocalDS(

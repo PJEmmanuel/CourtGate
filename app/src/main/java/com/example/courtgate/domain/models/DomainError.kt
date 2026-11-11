@@ -11,6 +11,7 @@ sealed interface DomainError {
         data object NetworkError : Auth              // Sin internet durante login/signup
         data object TooManyRequests : Auth           // Demasiados intentos seguidos
         data object SessionExpired : Auth            // No hay usuario con sesión iniciada
+        data object RecentLoginRequired : Auth       // Operación sensible (borrar cuenta) con un login antiguo
         data object UnknownAuthError : Auth          // Error genérico
     }
 
@@ -63,6 +64,7 @@ val DomainError.isRetryable: Boolean
         DomainError.Auth.WeakPassword,
         DomainError.Auth.UserNotFound,
         DomainError.Auth.SessionExpired,
+        DomainError.Auth.RecentLoginRequired,
         DomainError.Remote.AccessDenied,
         DomainError.Remote.NotFound,
         DomainError.Local.DiskFull,

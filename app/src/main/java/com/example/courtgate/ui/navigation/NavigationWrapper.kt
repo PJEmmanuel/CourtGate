@@ -14,12 +14,23 @@ import com.example.courtgate.ui.navigation.screens.Booking
 import com.example.courtgate.ui.navigation.screens.FindCourt
 import com.example.courtgate.ui.navigation.screens.Home
 import com.example.courtgate.ui.navigation.screens.Login
+import com.example.courtgate.ui.navigation.screens.Match
 import com.example.courtgate.ui.navigation.screens.MyBookings
+import com.example.courtgate.ui.navigation.screens.Settings
 import com.example.courtgate.ui.navigation.screens.SignUp
+import com.example.courtgate.ui.presentation.match.MatchScreen
 import com.example.courtgate.ui.presentation.myBookings.MyBookingsScreen
+import com.example.courtgate.ui.presentation.settings.SettingsScreen
 
 @Composable
 fun NavigationWrapper(navController: NavHostController, startDestination: Any) {
+
+    // Sin sesión no tiene sentido volver atrás: se limpia el back stack
+    val navigateToLogin: () -> Unit = {
+        navController.navigate(Login) {
+            popUpTo(navController.graph.id) { inclusive = true }
+        }
+    }
 
     NavHost(navController = navController, startDestination = startDestination) {
 
@@ -53,65 +64,13 @@ fun NavigationWrapper(navController: NavHostController, startDestination: Any) {
         composable<Home> {
             HomeScreen(
                 navigateToFindCourt = { navController.navigate(FindCourt) },
-                onNavigate = {
-                    when (it) {
-                        NavigationBarOnClick.GoToHome -> {
-                            navController.navigate(Home) {
-                                // Evita duplicados en el back stack
-                                popUpTo(Home) { inclusive = false }
-                                launchSingleTop = true
-                            }
-                        }
-
-                        NavigationBarOnClick.GoToMyBookings -> {
-                            navController.navigate(MyBookings) {
-                                // Evita duplicados en el back stack
-                                popUpTo(MyBookings) { inclusive = false }
-                                launchSingleTop = true
-                            }
-                        }
-
-                        NavigationBarOnClick.GoToMatch -> {
-                            // navController.navigate(Match)
-                        }
-
-                        NavigationBarOnClick.GoToSetting -> {
-                            // navController.navigate(Setting)
-                        }
-                    }
-                },
+                onNavigate = navController::navigateFromBottomBar,
             )
         }
 
         composable<FindCourt> {
             FindCourtScreen(
-                onNavigate = {
-                    when (it) {
-                        NavigationBarOnClick.GoToHome -> {
-                            navController.navigate(Home) {
-                                // Evita duplicados en el back stack
-                                popUpTo(Home) { inclusive = false }
-                                launchSingleTop = true
-                            }
-                        }
-
-                        NavigationBarOnClick.GoToMyBookings -> {
-                            navController.navigate(MyBookings) {
-                                // Evita duplicados en el back stack
-                                popUpTo(MyBookings) { inclusive = false }
-                                launchSingleTop = true
-                            }
-                        }
-
-                        NavigationBarOnClick.GoToMatch -> {
-                            // navController.navigate(Match)
-                        }
-
-                        NavigationBarOnClick.GoToSetting -> {
-                            // navController.navigate(Setting)
-                        }
-                    }
-                },
+                onNavigate = navController::navigateFromBottomBar,
                 navigateToBookingScreen = { code, zonedDateTime ->
                     val date = zonedDateTime //TODO: Optimizar
                         .toLocalDate()
@@ -149,46 +108,40 @@ fun NavigationWrapper(navController: NavHostController, startDestination: Any) {
 
         composable<MyBookings> {
             MyBookingsScreen(
-                onNavigate = {
-                    when (it) {
-                        NavigationBarOnClick.GoToHome -> {
-                            navController.navigate(Home) {
-                                // Evita duplicados en el back stack
-                                popUpTo(Home) { inclusive = false }
-                                launchSingleTop = true
-                            }
-                        }
-
-                        NavigationBarOnClick.GoToMyBookings -> {
-                            navController.navigate(MyBookings) {
-                                // Evita duplicados en el back stack
-                                popUpTo(MyBookings) { inclusive = false }
-                                launchSingleTop = true
-                            }
-                        }
-
-                        NavigationBarOnClick.GoToMatch -> {
-                            // navController.navigate(Match)
-                        }
-
-                        NavigationBarOnClick.GoToSetting -> {
-                            // navController.navigate(Setting)
-                        }
-                    }
-                },
+                onNavigate = navController::navigateFromBottomBar,
                 backToHome = {
                     navController.navigate(Home) {
                         popUpTo<Login> { inclusive = true }
                     }
                 },
-                navigateToLogin = {
-                    // Sin sesión no tiene sentido volver atrás: se limpia el back stack
-                    navController.navigate(Login) {
-                        popUpTo(navController.graph.id) { inclusive = true }
-                    }
-                }
+                navigateToLogin = navigateToLogin
             )
         }
 
+        composable<Match> {
+            MatchScreen(onNavigate = navController::navigateFromBottomBar)
+        }
+
+        composable<Settings> {
+            SettingsScreen(
+                onNavigate = navController::navigateFromBottomBar,
+                navigateToLogin = navigateToLogin
+            )
+        }
+
+    }
+}
+
+private fun NavHostController.navigateFromBottomBar(destination: NavigationBarOnClick) {
+    val route: Any = when (destination) {
+        NavigationBarOnClick.GoToHome -> Home
+        NavigationBarOnClick.GoToMyBookings -> MyBookings
+        NavigationBarOnClick.GoToMatch -> Match
+        NavigationBarOnClick.GoToSetting -> Settings
+    }
+    navigate(route) {
+        // Evita duplicados en el back stack
+        popUpTo(route) { inclusive = false }
+        launchSingleTop = true
     }
 }

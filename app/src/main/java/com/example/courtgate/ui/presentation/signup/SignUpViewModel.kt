@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.courtgate.core.extension.emailValidator
 import com.example.courtgate.core.extension.passValidator
 import com.example.courtgate.domain.models.DomainError
-import com.example.courtgate.domain.models.DomainException
+import com.example.courtgate.ui.presentation.core.toDomainError
 import com.example.courtgate.usecases.authentication.SignUpWhitEmailUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,7 +31,7 @@ class SignUpViewModel @Inject constructor(
             ).onSuccess {
                 _state.update { it.copy(isSignedUpIn = true) }
             }.onFailure { throwable ->
-                _state.update { it.copy(authError = mapError(throwable)) }
+                _state.update { it.copy(authError = throwable.toDomainError(DomainError.Auth.UnknownAuthError)) }
             }
             _state.update { it.copy(isLoading = false, isSubmitEnabled = it.isFormValid) }
         }
@@ -49,10 +49,5 @@ class SignUpViewModel @Inject constructor(
             val updated = it.copy(password = password, passwordError = password.passValidator(), authError = null)
             updated.copy(isSubmitEnabled = updated.isFormValid)
         }
-    }
-
-    private fun mapError(e: Throwable): DomainError = when (e) {
-        is DomainException -> e.error
-        else -> DomainError.Auth.UnknownAuthError
     }
 }

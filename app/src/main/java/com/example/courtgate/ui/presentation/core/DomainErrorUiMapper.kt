@@ -3,6 +3,14 @@ package com.example.courtgate.ui.presentation.core
 import androidx.annotation.StringRes
 import com.example.courtgate.R
 import com.example.courtgate.domain.models.DomainError
+import com.example.courtgate.domain.models.DomainException
+
+// Único punto de la UI que convierte un Throwable en DomainError.
+// `unknownError` es el genérico de cada pantalla: remoto, local o de autenticación.
+fun Throwable.toDomainError(unknownError: DomainError): DomainError = when (this) {
+    is DomainException -> error
+    else -> unknownError
+}
 
 @StringRes
 fun DomainError.asStringRes(): Int = when (this) {

@@ -71,7 +71,7 @@ Sin fecha de entrega; las estimaciones son orientativas.
 ## Fase 3 · Calidad y deuda técnica (~1 semana)
 
 - [ ] Mover todos los textos hardcodeados a `strings.xml` (ES + EN)
-- [ ] Extraer `mapError` (duplicado en varios ViewModels) a un único sitio
+- [x] Extraer `mapError` (duplicado en varios ViewModels) a un único sitio
 - [ ] Unificar `myBookingsCard` y `ShowCourtCard` con un UiModel común
 - [ ] Unificar estados de `BookingFlowSheetContent` y `MyBookingsFlowSheetContent` (sealed interface)
 - [ ] Extraer el helper repetido en `FirebaseFirestoreDataSource`

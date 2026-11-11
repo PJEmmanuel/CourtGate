@@ -1,5 +1,7 @@
 package com.example.courtgate.ui.presentation.home.components
 
+import androidx.compose.ui.res.stringResource
+import com.example.courtgate.R
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -17,12 +19,12 @@ fun TitleForm(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
         CourtTittle(
-            text = "Welcome Back To",//TODO: hard code
+            text = stringResource(R.string.home_welcome),
             style = MaterialTheme.typography.headlineLarge
         )
         Spacer(modifier = Modifier.padding(8.dp))
         CourtTittle(
-            text = "Padel Sport Club",//TODO: hard code
+            text = stringResource(R.string.home_club_name),
             style = MaterialTheme.typography.titleMedium
         )
     }

@@ -2,6 +2,7 @@ package com.example.courtgate.ui.presentation.core
 
 import androidx.annotation.StringRes
 import com.example.courtgate.R
+import com.example.courtgate.core.extension.FieldError
 import com.example.courtgate.domain.models.DomainError
 import com.example.courtgate.domain.models.DomainException
 
@@ -34,4 +35,15 @@ fun DomainError.asStringRes(): Int = when (this) {
     DomainError.Auth.UnknownAuthError -> R.string.error_auth_unknown
     DomainError.Booking.SlotAlreadyTaken -> R.string.error_booking_slot_taken
     DomainError.Booking.SlotInPast -> R.string.slot_in_past
+}
+
+@StringRes
+fun FieldError.asStringRes(): Int = when (this) {
+    FieldError.EmptyEmail -> R.string.field_error_empty_email
+    FieldError.InvalidEmail -> R.string.field_error_invalid_email
+    FieldError.EmptyPassword -> R.string.field_error_empty_password
+    FieldError.PasswordTooShort -> R.string.field_error_password_too_short
+    FieldError.PasswordNoLowercase -> R.string.field_error_password_no_lowercase
+    FieldError.PasswordNoUppercase -> R.string.field_error_password_no_uppercase
+    FieldError.PasswordNoDigit -> R.string.field_error_password_no_digit
 }

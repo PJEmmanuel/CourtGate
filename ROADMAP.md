@@ -62,7 +62,7 @@ Sin fecha de entrega; las estimaciones son orientativas.
 
 ## 📝 Pendientes sin fase asignada
 
-- [ ] Login y SignUp tienen su propio `mapError` y textos en inglés (encaja con la Fase 3)
+- [x] Login y SignUp tienen su propio `mapError` y textos en inglés (hecho en la Fase 3)
 - [ ] Reintento automático cuando vuelve la red
 - [ ] Find: posible problema con la sync sin conexión en el primer arranque
 - [ ] Resultados al cerrar sesión: los resultados de Room no van ligados al usuario y no se borran al cerrar sesión, así que otra cuenta en el mismo dispositivo los vería (solo se borran al borrar la cuenta)
@@ -70,7 +70,7 @@ Sin fecha de entrega; las estimaciones son orientativas.
 
 ## Fase 3 · Calidad y deuda técnica (~1 semana)
 
-- [ ] Mover todos los textos hardcodeados a `strings.xml` (ES + EN)
+- [x] Mover todos los textos hardcodeados a `strings.xml` (ES + EN)
 - [x] Extraer `mapError` (duplicado en varios ViewModels) a un único sitio
 - [ ] Unificar `myBookingsCard` y `ShowCourtCard` con un UiModel común
 - [ ] Unificar estados de `BookingFlowSheetContent` y `MyBookingsFlowSheetContent` (sealed interface)

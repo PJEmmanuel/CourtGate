@@ -1,5 +1,6 @@
 package com.example.courtgate.ui.presentation.home
 
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -44,7 +45,7 @@ fun HomeScreen(
                     {
                         Image(
                             painter = painterResource(R.drawable.court_gate_icon),
-                            contentDescription = "LogoCourtGate"
+                            contentDescription = stringResource(R.string.app_logo_description)
                         )
                     },
             )
@@ -93,7 +94,7 @@ fun HomeScreen(
                         .aspectRatio(4f)
                         .padding(16.dp),
                     shape = ShapeDefaults.Small,
-                    text = "Find a Court", //TODO: hard code
+                    text = stringResource(R.string.home_find_court),
                 )
             }
         }

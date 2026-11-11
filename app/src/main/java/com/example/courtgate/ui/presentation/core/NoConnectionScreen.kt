@@ -1,5 +1,7 @@
 package com.example.courtgate.ui.presentation.core
 
+import androidx.compose.ui.res.stringResource
+import com.example.courtgate.R
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -31,7 +33,7 @@ fun NoConnectionScreen(onRetry: () -> Unit) {
     ) {
         Icon(
             imageVector = Icons.Default.CloudOff,
-            contentDescription = "Sin conexión",
+            contentDescription = stringResource(R.string.no_connection_description),
             modifier = Modifier.size(96.dp),
             tint = Color.Gray
         )
@@ -39,7 +41,7 @@ fun NoConnectionScreen(onRetry: () -> Unit) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "No hay conexión a internet",
+            text = stringResource(R.string.no_connection_title),
             style = MaterialTheme.typography.headlineSmall,
             color = Color.Black,
             textAlign = TextAlign.Center
@@ -48,7 +50,7 @@ fun NoConnectionScreen(onRetry: () -> Unit) {
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "Verifica tu conexión y vuelve a intentarlo.",
+            text = stringResource(R.string.no_connection_message),
             style = MaterialTheme.typography.bodyMedium,
             color = Color.Gray,
             textAlign = TextAlign.Center
@@ -57,7 +59,7 @@ fun NoConnectionScreen(onRetry: () -> Unit) {
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(onClick = onRetry) {
-            Text("Reintentar")
+            Text(stringResource(R.string.message_button_error_screen))
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.example.courtgate.ui.presentation.home.components
 
+import androidx.compose.ui.res.stringResource
+import com.example.courtgate.R
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,7 +28,7 @@ fun LastResultSection(
 ) {
     Column(modifier = modifier) {
         CourtTittle(
-            text = "Last result", //TODO: Hardcode
+            text = stringResource(R.string.home_last_results),
             style = MaterialTheme.typography.labelLarge,
             modifier = Modifier.padding(16.dp)
         )
@@ -59,7 +61,7 @@ private fun EmptyState(modifier: Modifier = Modifier) {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "No hay resultados anteriores", //TODO: Hardcode
+            text = stringResource(R.string.home_no_results),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )

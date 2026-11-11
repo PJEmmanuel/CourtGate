@@ -1,5 +1,7 @@
 package com.example.courtgate.ui.presentation.core
 
+import androidx.compose.ui.res.stringResource
+import com.example.courtgate.R
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -28,7 +30,7 @@ import androidx.compose.ui.unit.dp
 fun PasswordTextField(
     value: String,
     onValueChange: (String) -> Unit,
-    placeholder: String = "Password",
+    placeholder: String = stringResource(R.string.password_placeholder),
     contentDescription: String,
     modifier: Modifier,
     errorMessage: String? = null,
@@ -85,7 +87,7 @@ fun CourtTextField(
         },
         trailingIcon = {
             if (isPassword) {
-                val textSelect = if (hidePassword) "show" else "hide"
+                val textSelect = stringResource(if (hidePassword) R.string.password_show else R.string.password_hide)
                 TextButton(
                     onClick = { hidePassword = !hidePassword },
                     enabled = isEnabled

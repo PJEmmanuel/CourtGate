@@ -1,5 +1,7 @@
 package com.example.courtgate.ui.presentation.booking.components
 
+import androidx.compose.ui.res.stringResource
+import com.example.courtgate.R
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -48,7 +50,7 @@ fun BookForm(
         ) {
             // Nombre de la pista
             Text(
-                text = court?.name ?: "N/A",
+                text = court?.name ?: stringResource(R.string.booking_info_unavailable),
                 style = MaterialTheme.typography.headlineSmall, // más grande que titleLarge
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary, // le das tu color principal
@@ -65,9 +67,9 @@ fun BookForm(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                InfoChip(text = court?.name ?: "N/A", Icons.TwoTone.ColorLens)
-                InfoChip(text = court?.located ?: "N/A", Icons.TwoTone.LocationOn)
-                InfoChip(text = court?.price.toString(), Icons.TwoTone.EuroSymbol)
+                InfoChip(text = court?.name ?: stringResource(R.string.booking_info_unavailable), Icons.TwoTone.ColorLens)
+                InfoChip(text = court?.located ?: stringResource(R.string.booking_info_unavailable), Icons.TwoTone.LocationOn)
+                InfoChip(text = court?.price?.toString() ?: stringResource(R.string.booking_info_unavailable), Icons.TwoTone.EuroSymbol)
             }
 
 
@@ -82,7 +84,7 @@ fun BookForm(
             // Botón de reservar
             CourtButton(
                 isLoading = isLoading,
-                text = "Book Now for ${court?.price}€",
+                text = stringResource(R.string.booking_book_now, court?.price?.toString() ?: stringResource(R.string.booking_info_unavailable)),
                 isEnabled = selectedHour != null,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -117,7 +119,7 @@ fun InfoChip(
             Icon(
                 modifier = Modifier.padding(start = 4.dp, top = 4.dp, bottom = 4.dp),
                 imageVector = imageVector,
-                contentDescription = "Inicio"
+                contentDescription = null // decorativo: el texto del chip ya lo describe
             )
 
             Text(

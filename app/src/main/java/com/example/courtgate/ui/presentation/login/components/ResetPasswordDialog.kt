@@ -54,7 +54,7 @@ fun ResetPasswordDialog(
                             imeAction = ImeAction.Send
                         ),
                         keyboardActions = KeyboardActions(onSend = { onSend() }),
-                        errorMessage = state.emailError,
+                        errorMessage = state.emailError?.let { stringResource(it.asStringRes()) },
                         isEnabled = !state.isLoading,
                         modifier = Modifier.fillMaxWidth()
                     )

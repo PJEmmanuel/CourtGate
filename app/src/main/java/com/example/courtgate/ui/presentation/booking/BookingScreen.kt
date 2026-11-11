@@ -1,5 +1,6 @@
 package com.example.courtgate.ui.presentation.booking
 
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -62,7 +63,7 @@ fun BookingScreen(
                 navIcon = {
                     Image(
                         imageVector = Icons.AutoMirrored.TwoTone.ArrowBack,
-                        contentDescription = "Go Back",
+                        contentDescription = stringResource(R.string.content_description_back),
                         modifier = Modifier.clickable { navigateBackToFindCourt() }
                     )
                 }

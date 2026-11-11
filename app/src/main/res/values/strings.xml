@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CourtGate</string>
+    <string name="app_name" translatable="false">CourtGate</string>
     <string name="filter_tittle">Tipo de pista</string>
 
     <!-- Errores remotos -->
@@ -122,5 +122,54 @@
     <string name="settings_password_placeholder">Contraseña</string>
     <string name="settings_wrong_password">Contraseña incorrecta</string>
     <string name="settings_action_cancel">Cancelar</string>
+
+    <!-- Validación de formularios -->
+    <string name="field_error_empty_email">Escribe el email</string>
+    <string name="field_error_invalid_email">El email no es válido</string>
+    <string name="field_error_empty_password">Escribe la contraseña</string>
+    <string name="field_error_password_too_short">La contraseña tiene que tener al menos 8 caracteres</string>
+    <string name="field_error_password_no_lowercase">La contraseña tiene que tener al menos 1 letra minúscula</string>
+    <string name="field_error_password_no_uppercase">La contraseña tiene que tener al menos 1 letra mayúscula</string>
+    <string name="field_error_password_no_digit">La contraseña tiene que tener al menos 1 número</string>
+
+    <!-- Comunes -->
+    <string name="app_logo_description">Logo de CourtGate</string>
+    <string name="avatar_description">Foto de perfil</string>
+    <string name="password_placeholder">Contraseña</string>
+    <string name="password_show">Mostrar</string>
+    <string name="password_hide">Ocultar</string>
+    <string name="email_field_description">Escribe tu email</string>
+    <string name="password_field_description">Escribe tu contraseña</string>
+
+    <!-- Login -->
+    <string name="login_title">Inicia sesión con tu email</string>
+    <string name="login_action">Iniciar sesión</string>
+    <string name="login_forgot_password">¿Has olvidado la contraseña?</string>
+    <string name="login_no_account">¿No tienes cuenta?</string>
+    <string name="login_go_to_sign_up">Regístrate</string>
+
+    <!-- SignUp -->
+    <string name="signup_title">Crea tu cuenta</string>
+    <string name="signup_action">Crear cuenta</string>
+    <string name="signup_have_account">¿Ya tienes cuenta?</string>
+    <string name="signup_go_to_login">Inicia sesión</string>
+
+    <!-- Home -->
+    <string name="home_welcome">Bienvenido de nuevo a</string>
+    <string name="home_club_name" translatable="false">Padel Sport Club</string>
+    <string name="home_find_court">Buscar pista</string>
+    <string name="home_last_results">Últimos resultados</string>
+    <string name="home_no_results">No hay resultados anteriores</string>
+
+    <!-- Booking -->
+    <string name="booking_book_now">Reservar por %1$s€</string>
+    <string name="booking_info_unavailable">N/D</string>
+    <string name="booking_image_description">Imagen de la pista</string>
+    <string name="booking_slot_busy">Hora ocupada</string>
+
+    <!-- NoConnectionScreen -->
+    <string name="no_connection_description">Sin conexión</string>
+    <string name="no_connection_title">No hay conexión a internet</string>
+    <string name="no_connection_message">Comprueba tu conexión y vuelve a intentarlo.</string>
 
 </resources>

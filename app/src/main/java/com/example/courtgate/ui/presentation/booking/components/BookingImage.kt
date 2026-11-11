@@ -1,5 +1,7 @@
 package com.example.courtgate.ui.presentation.booking.components
 
+import androidx.compose.ui.res.stringResource
+import com.example.courtgate.R
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -14,7 +16,7 @@ fun BookingImage(
 ) {
     Image(
         painter = imageUrl,
-        "default image",
+        stringResource(R.string.booking_image_description),
         modifier = modifier,
         contentScale = ContentScale.Crop // Para que no se deforme
 

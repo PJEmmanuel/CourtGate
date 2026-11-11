@@ -8,6 +8,7 @@ import com.example.courtgate.createCourtTest
 import com.example.courtgate.createFreeHoursOfCourt
 import com.example.courtgate.domain.models.DomainError
 import com.example.courtgate.domain.models.DomainException
+import com.example.courtgate.ui.presentation.core.FlowSheetState
 import com.example.courtgate.usecases.booking.GetCourtSelectedByCodeUseCase
 import com.example.courtgate.usecases.booking.GetFreeHoursOnReservedCourtsUseCase
 import com.example.courtgate.usecases.booking.SetNewBookingUseCase
@@ -96,7 +97,7 @@ class BookingViewModelTest {
 
                 val finalState = expectMostRecentItem() as ResultCourt.Success
 
-                assertEquals(NewBookingFlowState.Succeeded, finalState.data.newBookingFlowState)
+                assertEquals(FlowSheetState.Succeeded(selectedHour), finalState.data.newBookingFlowState)
                 verify(setNewBookingUseCase, times(1)).invoke(code, selectedDayMillis, selectedHour)
 
                 cancelAndIgnoreRemainingEvents()
@@ -130,8 +131,8 @@ class BookingViewModelTest {
                 val finalState = expectMostRecentItem() as ResultCourt.Success
                 val sheet = finalState.data.newBookingFlowState
 
-                assertEquals(true, sheet is NewBookingFlowState.Failed)
-                assertEquals(expectedError, (sheet as NewBookingFlowState.Failed).error)
+                assertEquals(true, sheet is FlowSheetState.Failed<*>)
+                assertEquals(expectedError, (sheet as FlowSheetState.Failed<*>).error)
 
                 cancelAndIgnoreRemainingEvents()
             }
@@ -192,7 +193,7 @@ class BookingViewModelTest {
                 runCurrent()
 
                 val state = expectMostRecentItem() as ResultCourt.Success
-                assertEquals(NewBookingFlowState.Submitting, state.data.newBookingFlowState)
+                assertEquals(FlowSheetState.Submitting(selectedHour), state.data.newBookingFlowState)
 
                 cancelAndIgnoreRemainingEvents()
             }

@@ -6,6 +6,7 @@ import com.example.courtgate.ResultManage
 import com.example.courtgate.core.CoroutinesTestRule
 import com.example.courtgate.createCourtBookingTest
 import com.example.courtgate.domain.models.DomainError
+import com.example.courtgate.ui.presentation.core.FlowSheetState
 import com.example.courtgate.domain.models.DomainException
 import com.example.courtgate.usecases.booking.DeleteMyBookingsUseCase
 import com.example.courtgate.usecases.booking.GetMyBookingsUseCase
@@ -65,7 +66,7 @@ class MyBookingsViewModelTest {
             assertEquals(ResultCourt.Loading, awaitItem())
             val success = awaitItem() as ResultCourt.Success
             assertEquals(myBookings, success.data.myBookingList)
-            assertEquals(MyBookingFlowState.Hidden, success.data.myBookingFlowState)
+            assertEquals(FlowSheetState.Hidden, success.data.myBookingFlowState)
         }
     }
 
@@ -139,7 +140,7 @@ class MyBookingsViewModelTest {
 
                 val finalState = expectMostRecentItem() as ResultCourt.Success
                 assertEquals(
-                    MyBookingFlowState.Confirming(booking),
+                    FlowSheetState.Confirming(booking),
                     finalState.data.myBookingFlowState
                 )
             }
@@ -162,7 +163,7 @@ class MyBookingsViewModelTest {
 
             val finalState = expectMostRecentItem() as ResultCourt.Success
             assertEquals(
-                MyBookingFlowState.Succeeded(booking),
+                FlowSheetState.Succeeded(booking),
                 finalState.data.myBookingFlowState
             )
             verify(deleteMyBookingsUseCase, times(1)).invoke(booking.id)
@@ -189,7 +190,7 @@ class MyBookingsViewModelTest {
 
                 val finalState = expectMostRecentItem() as ResultCourt.Success
                 assertEquals(
-                    MyBookingFlowState.Failed(booking, expectedError),
+                    FlowSheetState.Failed(booking, expectedError),
                     finalState.data.myBookingFlowState
                 )
             }
@@ -216,7 +217,7 @@ class MyBookingsViewModelTest {
 
             val finalState = expectMostRecentItem() as ResultCourt.Success
             assertEquals(
-                MyBookingFlowState.Succeeded(booking),
+                FlowSheetState.Succeeded(booking),
                 finalState.data.myBookingFlowState
             )
             verify(deleteMyBookingsUseCase, times(2)).invoke(booking.id)
@@ -239,7 +240,7 @@ class MyBookingsViewModelTest {
 
             val finalState = expectMostRecentItem() as ResultCourt.Success
             assertEquals(
-                MyBookingFlowState.Confirming(booking),
+                FlowSheetState.Confirming(booking),
                 finalState.data.myBookingFlowState
             )
             verify(deleteMyBookingsUseCase, never()).invoke(any())
@@ -265,7 +266,7 @@ class MyBookingsViewModelTest {
 
             val finalState = expectMostRecentItem() as ResultCourt.Success
             assertEquals(
-                MyBookingFlowState.Submitting(booking),
+                FlowSheetState.Submitting(booking),
                 finalState.data.myBookingFlowState
             )
         }
@@ -287,7 +288,7 @@ class MyBookingsViewModelTest {
             runCurrent()
 
             val finalState = expectMostRecentItem() as ResultCourt.Success
-            assertEquals(MyBookingFlowState.Hidden, finalState.data.myBookingFlowState)
+            assertEquals(FlowSheetState.Hidden, finalState.data.myBookingFlowState)
         }
     }
 }

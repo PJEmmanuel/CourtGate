@@ -6,6 +6,7 @@ import com.example.courtgate.ResultCourt
 import com.example.courtgate.ResultManage
 import com.example.courtgate.domain.models.CourtBooking
 import com.example.courtgate.domain.models.DomainError
+import com.example.courtgate.ui.presentation.core.FlowSheetState
 import com.example.courtgate.ui.presentation.core.loadLatest
 import com.example.courtgate.usecases.booking.DeleteMyBookingsUseCase
 import com.example.courtgate.usecases.booking.GetMyBookingsUseCase
@@ -25,7 +26,7 @@ class MyBookingsViewModel @Inject constructor(
     val deleteMyBookingsUseCase: DeleteMyBookingsUseCase
 ) : ViewModel() {
 
-    private val sheetStateFlow = MutableStateFlow<MyBookingFlowState>(MyBookingFlowState.Hidden)
+    private val sheetStateFlow = MutableStateFlow<MyBookingFlowState>(FlowSheetState.Hidden)
     private val retryAttempts = MutableStateFlow(0)
 
     val state: StateFlow<ResultCourt<MyBookingsState>> =
@@ -47,35 +48,35 @@ class MyBookingsViewModel @Inject constructor(
             )
 
     fun onBookClicked(booking: CourtBooking) {
-        if (sheetStateFlow.value !is MyBookingFlowState.Hidden) return
-        sheetStateFlow.value = MyBookingFlowState.Confirming(booking)
+        if (sheetStateFlow.value !is FlowSheetState.Hidden) return
+        sheetStateFlow.value = FlowSheetState.Confirming(booking)
     }
 
     fun onConfirmEditBook() {
         val booking = when (val s = sheetStateFlow.value) {
-            is MyBookingFlowState.Confirming -> s.booking
-            is MyBookingFlowState.Failed -> s.booking
+            is FlowSheetState.Confirming -> s.target
+            is FlowSheetState.Failed -> s.target
             else -> return
         }
 
-        sheetStateFlow.value = MyBookingFlowState.Submitting(booking)
+        sheetStateFlow.value = FlowSheetState.Submitting(booking)
 
         viewModelScope.launch {
             val result = deleteMyBookingsUseCase.invoke(booking.id)
             sheetStateFlow.value = when (result) {
-                is ResultManage.Success -> MyBookingFlowState.Succeeded(booking)
-                is ResultManage.Failure -> MyBookingFlowState.Failed(booking, result.error)
+                is ResultManage.Success -> FlowSheetState.Succeeded(booking)
+                is ResultManage.Failure -> FlowSheetState.Failed(booking, result.error)
             }
         }
     }
 
     fun onDismissSheet() {
-        if (sheetStateFlow.value is MyBookingFlowState.Submitting) return
-        sheetStateFlow.value = MyBookingFlowState.Hidden
+        if (sheetStateFlow.value is FlowSheetState.Submitting) return
+        sheetStateFlow.value = FlowSheetState.Hidden
     }
 
     fun onRetryEdit() {
-        if (sheetStateFlow.value !is MyBookingFlowState.Failed) return
+        if (sheetStateFlow.value !is FlowSheetState.Failed) return
         onConfirmEditBook()
     }
 

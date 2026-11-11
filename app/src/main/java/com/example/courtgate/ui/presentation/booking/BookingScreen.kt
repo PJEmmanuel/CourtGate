@@ -170,7 +170,6 @@ fun BookingScreen(
                 BookingFlowSheetContent(
                     state = sheet.state,
                     court = sheet.court,
-                    selectedHour = sheet.selectedHour,
                     isSelectedHourStillFree = sheet.isSelectedHourStillFree,
                     onConfirm = viewModel::onConfirmBooking,
                     onRetry = viewModel::onRetryBooking,

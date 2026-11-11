@@ -186,9 +186,8 @@ class FindViewModelTest {
     }
 
     @Test
-    fun `onRetry after error triggers new fetch and can succeed`(): Unit = runTest {
-        val expectedDate = ZonedDateTime.parse("2025-10-15T10:00:00Z")
-        val expectedError = DomainException(DomainError.Remote.NotFound)
+    fun `onRetry after error triggers new fetch with the same params and can succeed`(): Unit = runTest {
+        val expectedError = DomainException(DomainError.Remote.ServerError)
 
         whenever(getAllCourtToShowUseCase.invoke(anyOrNull(), any()))
             .thenReturn(flow { throw expectedError })
@@ -200,10 +199,12 @@ class FindViewModelTest {
             assertEquals(ResultCourt.Loading, awaitItem())
             val resultError = awaitItem() as ResultCourt.Error
 
-            vm.onRetry(expectedDate)
+            vm.onRetry()
+            assertEquals(ResultCourt.Loading, awaitItem())
             val resultCourt = awaitItem() as ResultCourt.Success
 
             assertEquals(expectedError.error, resultError.error)
+            assertEquals(1, resultError.failedAttempts)
             assertEquals(defaultCourtList, resultCourt.data.courts)
         }
     }

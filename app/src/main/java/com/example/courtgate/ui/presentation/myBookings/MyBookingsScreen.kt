@@ -19,7 +19,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.courtgate.R
 import com.example.courtgate.ResultCourt
+import com.example.courtgate.domain.models.DomainError
 import com.example.courtgate.ui.presentation.core.CourtNavigationBar
+import com.example.courtgate.ui.presentation.core.ErrorAction
 import com.example.courtgate.ui.presentation.core.CourtTopBar
 import com.example.courtgate.ui.presentation.core.ErrorScreen
 import com.example.courtgate.ui.presentation.core.LoadingScreen
@@ -36,6 +38,7 @@ fun MyBookingsScreen(
     viewModel: MyBookingsViewModel = hiltViewModel(),
     onNavigate: (NavigationBarOnClick) -> Unit,
     backToHome: () -> Unit,
+    navigateToLogin: () -> Unit,
 ) {
 
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -62,7 +65,14 @@ fun MyBookingsScreen(
                 .padding(paddingValues = paddingValues)
         ) {
             when (val s = state) {
-                is ResultCourt.Error -> ErrorScreen(s.error) { }
+                is ResultCourt.Error -> ErrorScreen(
+                    error = s.error,
+                    onRetry = viewModel::onRetryLoad,
+                    failedAttempts = s.failedAttempts,
+                    secondaryAction = if (s.error == DomainError.Auth.SessionExpired) {
+                        ErrorAction(R.string.error_action_login, navigateToLogin)
+                    } else null
+                )
                 ResultCourt.Loading -> LoadingScreen()
                 is ResultCourt.Success -> {
                     MyBookingsList(

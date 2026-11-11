@@ -10,6 +10,7 @@ sealed interface DomainError {
         data object UserNotFound : Auth              // El usuario no existe
         data object NetworkError : Auth              // Sin internet durante login/signup
         data object TooManyRequests : Auth           // Demasiados intentos seguidos
+        data object SessionExpired : Auth            // No hay usuario con sesión iniciada
         data object UnknownAuthError : Auth          // Error genérico
     }
 
@@ -44,3 +45,29 @@ sealed interface DomainError {
 
 // Dentro de un Flow no se puede emitir un tipo de error tipado directamente,
 class DomainException(val error: DomainError) : Exception()
+
+// Errores pasajeros: volver a intentarlo puede funcionar. El resto fallarán igual.
+// `when` exhaustivo: un error nuevo obliga a decidir aquí si se puede reintentar.
+val DomainError.isRetryable: Boolean
+    get() = when (this) {
+        DomainError.Auth.NetworkError,
+        DomainError.Auth.TooManyRequests,
+        DomainError.Auth.UnknownAuthError,
+        DomainError.Remote.ServerError,
+        DomainError.Remote.UnknownRemoteError,
+        DomainError.Local.UnknownLocalError,
+        DomainError.Court.NoCourtsAvailable -> true
+
+        DomainError.Auth.InvalidCredentials,
+        DomainError.Auth.UserCollision,
+        DomainError.Auth.WeakPassword,
+        DomainError.Auth.UserNotFound,
+        DomainError.Auth.SessionExpired,
+        DomainError.Remote.AccessDenied,
+        DomainError.Remote.NotFound,
+        DomainError.Local.DiskFull,
+        DomainError.Local.ConstraintViolation,
+        DomainError.Local.DatabaseCorrupted,
+        DomainError.Booking.SlotAlreadyTaken,
+        DomainError.Booking.SlotInPast -> false
+    }

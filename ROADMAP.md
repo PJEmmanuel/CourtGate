@@ -42,6 +42,11 @@ Sin fecha de entrega; las estimaciones son orientativas.
 - [x] Find: no mostrar horas pasadas como reservables
 - [x] "Forgot password" con `sendPasswordResetEmail`
 - [x] Revisar mensajes de error: nada técnico de cara al usuario
+- [x] "Reintentar" funcional en las pantallas de error (Mis reservas, Booking, Find, Home)
+  - Solo se ofrece para errores pasajeros; aviso extra tras 3 fallos seguidos
+  - Sin sesión → botón "Iniciar sesión"; en Booking, "Volver" siempre visible
+  - Find usa los datos de Room si falla la sync diaria
+- [x] Cancelar reserva sin conexión: falla con aviso en vez de quedarse en "Cancelando…"
 
 ## Fase 2 · Completar el MVP (~1–2 semanas)
 

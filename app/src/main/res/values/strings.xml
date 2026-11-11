@@ -35,8 +35,13 @@
     <string name="reset_password_cancel">Cancelar</string>
     <string name="reset_password_close">Cerrar</string>
 
+    <string name="error_session_expired">Tu sesión ha caducado. Vuelve a iniciar sesión</string>
+
     <!-- ErrorScreen -->
     <string name="message_button_error_screen">Reintentar</string>
+    <string name="error_keeps_failing">Seguimos sin poder cargar los datos. Comprueba tu conexión o inténtalo de nuevo más tarde.</string>
+    <string name="error_action_back">Volver</string>
+    <string name="error_action_login">Iniciar sesión</string>
 
     <!-- Errores de reserva -->
     <string name="error_booking_slot_taken">No se ha podido reservar, está reservada por otro usuario</string>

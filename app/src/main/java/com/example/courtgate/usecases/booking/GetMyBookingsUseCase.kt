@@ -22,7 +22,7 @@ class GetMyBookingsUseCase @Inject constructor(
     operator fun invoke(): Flow<List<CourtBooking>> = flow {
 
         val userId = authRepository.getCurrentUserId()
-            ?: throw DomainException(DomainError.Auth.NetworkError)
+            ?: throw DomainException(DomainError.Auth.SessionExpired)
 
         val startAt = Instant.now(clock)
 

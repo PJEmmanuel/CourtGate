@@ -7,7 +7,7 @@ import com.example.courtgate.ResultManage
 import com.example.courtgate.di.CourtCode
 import com.example.courtgate.di.SelectedDay
 import com.example.courtgate.domain.models.DomainError
-import com.example.courtgate.domain.models.DomainException
+import com.example.courtgate.ui.presentation.core.loadLatest
 import com.example.courtgate.usecases.booking.GetCourtSelectedByCodeUseCase
 import com.example.courtgate.usecases.booking.GetFreeHoursOnReservedCourtsUseCase
 import com.example.courtgate.usecases.booking.SetNewBookingUseCase
@@ -15,10 +15,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -33,25 +32,27 @@ class BookingViewModel @Inject constructor(
 
     private val selectedHourFlow = MutableStateFlow<String?>(null)
     private val sheetStateFlow = MutableStateFlow<NewBookingFlowState>(NewBookingFlowState.Hidden)
+    private val retryAttempts = MutableStateFlow(0)
 
     val state: StateFlow<ResultCourt<BookingState>> =
-        combine(
-            getCourtSelectedByCodeUseCase(code),
-            getFreeHoursOnReservedCourtsUseCase(code, selectedDay),
-            selectedHourFlow,
-            sheetStateFlow,
-        ) { serverCourt, serverFreeHours, uiSelectedHour, uiSheet ->
-            val steelFree =
-                serverFreeHours.firstOrNull { it.hour == uiSelectedHour }?.isFree ?: false
-            BookingState(
-                freeHoursOfCourt = serverFreeHours,
-                requestedCourt = serverCourt,
-                newBookingFlowState = uiSheet,
-                selectedHourToBook = uiSelectedHour,
-                isSelectedHourStillFree = steelFree,
-            )
-        }.map<BookingState, ResultCourt<BookingState>> { ResultCourt.Success(it) }
-            .catch { e -> emit(ResultCourt.Error(mapError(e))) }
+        retryAttempts.loadLatest(DomainError.Remote.UnknownRemoteError) {
+            combine(
+                getCourtSelectedByCodeUseCase(code),
+                getFreeHoursOnReservedCourtsUseCase(code, selectedDay),
+                selectedHourFlow,
+                sheetStateFlow,
+            ) { serverCourt, serverFreeHours, uiSelectedHour, uiSheet ->
+                val steelFree =
+                    serverFreeHours.firstOrNull { it.hour == uiSelectedHour }?.isFree ?: false
+                BookingState(
+                    freeHoursOfCourt = serverFreeHours,
+                    requestedCourt = serverCourt,
+                    newBookingFlowState = uiSheet,
+                    selectedHourToBook = uiSelectedHour,
+                    isSelectedHourStillFree = steelFree,
+                )
+            }
+        }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000),
@@ -103,10 +104,8 @@ class BookingViewModel @Inject constructor(
         onConfirmBooking()
     }
 
-    //TODO sacar de aquí
-    private fun mapError(e: Throwable): DomainError = when (e) {
-        is DomainException -> e.error
-        else -> DomainError.Remote.UnknownRemoteError
+    fun onRetryLoad() {
+        retryAttempts.update { it + 1 }
     }
 
 }

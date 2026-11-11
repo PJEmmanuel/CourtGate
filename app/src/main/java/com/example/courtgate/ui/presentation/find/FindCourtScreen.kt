@@ -73,7 +73,8 @@ fun FindCourtScreen(
                 when (val s = state) {
                     is ResultCourt.Error -> ErrorScreen(
                         error = s.error,
-                        onRetry = { viewModel.onRetry(findStateScreen.selectedDate) }
+                        onRetry = viewModel::onRetry,
+                        failedAttempts = s.failedAttempts
                     )
 
                     ResultCourt.Loading -> LoadingScreen()

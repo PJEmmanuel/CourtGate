@@ -5,6 +5,7 @@ import com.example.courtgate.data.datasources.CourtRemoteDataSource
 import com.example.courtgate.domain.models.Court
 import com.example.courtgate.domain.models.CourtBooking
 import com.example.courtgate.domain.models.DomainError
+import com.example.courtgate.domain.models.DomainException
 import com.example.courtgate.domain.models.NewCourtBooking
 import com.example.courtgate.framework.remote.BookingDTO
 import com.example.courtgate.framework.remote.CourtDTO
@@ -95,11 +96,19 @@ class FirebaseFirestoreDataSource @Inject constructor(
         }
     }
 
+    // Transacción y no delete() directo: sin conexión, delete() se queda en la cola local y su
+    // await() no termina hasta que vuelve la red. Una transacción necesita servidor y falla,
+    // así que no queda ningún borrado pendiente que se ejecute más tarde sin que el usuario lo sepa.
     override suspend fun deleteMyBookings(docId: String): ResultManage<Unit, DomainError> {
         return try {
-             fireStore.collection(BOOKINGS_COLLECTION).document(docId)
-                 .delete()
-                 .await()
+            val docRef = fireStore.collection(BOOKINGS_COLLECTION).document(docId)
+
+            fireStore.runTransaction { tx ->
+                // Si ya no existe (cancelada desde otro dispositivo), el resultado es el mismo
+                if (tx.get(docRef).exists()) tx.delete(docRef)
+                null
+            }.await()
+
             ResultManage.Success(Unit)
         }catch (e: Exception) {
             if (e is CancellationException) throw e
@@ -118,7 +127,7 @@ class FirebaseFirestoreDataSource @Inject constructor(
 
             val subscription = query.addSnapshotListener { snapshot, error ->
                 if (error != null) {
-                    close(error)
+                    close(DomainException(error.toRemoteError()))
                     return@addSnapshotListener
                 }
                 val myBookings = snapshot?.documents?.mapNotNull {doc->
@@ -143,7 +152,7 @@ class FirebaseFirestoreDataSource @Inject constructor(
 
             val subscription = query.addSnapshotListener { snapshot, error ->
                 if (error != null) {
-                    close(error)
+                    close(DomainException(error.toRemoteError()))
                     return@addSnapshotListener
                 }
 

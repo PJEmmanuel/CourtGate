@@ -64,8 +64,10 @@ class ManageCourtRepository @Inject constructor(
         minHour: String?
     ): Flow<List<Court>> = channelFlow {
 
+        // Si la sync falla pero Room ya tiene pistas y horarios (p. ej. sin red al cambiar de día),
+        // se sigue con los datos locales. No se guarda lastSyncDay: se reintenta la próxima vez.
         val syncResult = syncStaticDataIfNeeded()
-        if (syncResult is ResultManage.Failure) {
+        if (syncResult is ResultManage.Failure && !hasLocalStaticData()) {
             throw DomainException(syncResult.error)
         }
 
@@ -84,6 +86,9 @@ class ManageCourtRepository @Inject constructor(
             .distinctUntilChanged()
             .collect { courts -> send(courts) }
     }.flowOn(ioDispatcher)
+
+    private suspend fun hasLocalStaticData(): Boolean =
+        localDataSource.getCourtsCount() > 0 && localDataSource.getScheduleCount() > 0
 
     fun getFilterOption(): Flow<List<FilterOption>> =
         localDataSource.getDistinctLocatedTypes().distinctUntilChanged()

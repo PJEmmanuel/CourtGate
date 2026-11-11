@@ -261,4 +261,27 @@ class BookingViewModelTest {
                 cancelAndIgnoreRemainingEvents()
             }
         }
+
+    @Test
+    fun `onRetryLoad after error loads hours again and can succeed`(): Unit = runTest {
+        whenever(getCourtSelectedByCodeUseCase.invoke(any()))
+            .thenReturn(flowOf(expectedCourt))
+        whenever(getFreeHoursOnReservedCourtsUseCase.invoke(any(), any()))
+            .thenReturn(flow { throw DomainException(DomainError.Remote.ServerError) })
+            .thenReturn(flowOf(freeHourList))
+
+        vm = buildVm()
+
+        vm.state.test {
+            assertEquals(ResultCourt.Loading, awaitItem())
+            assertEquals(ResultCourt.Error(DomainError.Remote.ServerError, 1), awaitItem())
+
+            vm.onRetryLoad()
+            assertEquals(ResultCourt.Loading, awaitItem())
+            val success = awaitItem() as ResultCourt.Success
+            assertEquals(freeHourList, success.data.freeHoursOfCourt)
+
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
 }

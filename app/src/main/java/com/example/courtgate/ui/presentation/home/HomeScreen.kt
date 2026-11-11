@@ -71,9 +71,14 @@ fun HomeScreen(
 
                 //TODO: Optimizable con scaffold custom
                 when (val s = state) {
+                    // Error dentro de la sección: el botón "Find a Court" sigue visible
                     is ResultCourt.Error -> ErrorScreen(
-                        s.error,
-                        onRetry = {}
+                        error = s.error,
+                        onRetry = viewModel::onRetry,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 16.dp),
+                        failedAttempts = s.failedAttempts
                     )
                     ResultCourt.Loading -> LoadingScreen()
                     is ResultCourt.Success -> LastResultSection(

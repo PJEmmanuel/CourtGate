@@ -84,6 +84,46 @@ class MyBookingsViewModelTest {
     }
 
     @Test
+    fun `onRetryLoad after error loads bookings again and can succeed`(): Unit = runTest {
+        whenever(getMyBookingsUseCase.invoke())
+            .thenReturn(flow { throw DomainException(DomainError.Remote.ServerError) })
+            .thenReturn(flowOf(myBookings))
+
+        vm = buildVm()
+
+        vm.state.test {
+            assertEquals(ResultCourt.Loading, awaitItem())
+            assertEquals(ResultCourt.Error(DomainError.Remote.ServerError, 1), awaitItem())
+
+            vm.onRetryLoad()
+            assertEquals(ResultCourt.Loading, awaitItem())
+            val success = awaitItem() as ResultCourt.Success
+            assertEquals(myBookings, success.data.myBookingList)
+        }
+    }
+
+    @Test
+    fun `repeated failures increase failedAttempts`(): Unit = runTest {
+        whenever(getMyBookingsUseCase.invoke())
+            .thenReturn(flow { throw DomainException(DomainError.Remote.ServerError) })
+
+        vm = buildVm()
+
+        vm.state.test {
+            assertEquals(ResultCourt.Loading, awaitItem())
+            assertEquals(ResultCourt.Error(DomainError.Remote.ServerError, 1), awaitItem())
+
+            vm.onRetryLoad()
+            assertEquals(ResultCourt.Loading, awaitItem())
+            assertEquals(ResultCourt.Error(DomainError.Remote.ServerError, 2), awaitItem())
+
+            vm.onRetryLoad()
+            assertEquals(ResultCourt.Loading, awaitItem())
+            assertEquals(ResultCourt.Error(DomainError.Remote.ServerError, 3), awaitItem())
+        }
+    }
+
+    @Test
     fun `onBookClicked opens the sheet in Confirming with the selected booking`(): Unit =
         runTest {
             stubHappyPathFlow()

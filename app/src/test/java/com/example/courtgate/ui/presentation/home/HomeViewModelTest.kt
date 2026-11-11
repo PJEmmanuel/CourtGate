@@ -89,4 +89,22 @@ class HomeViewModelTest {
             assertEquals(com.example.courtgate.domain.models.DomainError.Local.UnknownLocalError, emittedError.error)
         }
     }
+
+    @Test
+    fun `onRetry after error loads results again and can succeed`(): Unit = runTest {
+        val listLastResult = listOf(lastResult1)
+        whenever(getLastResultUseCase.invoke())
+            .thenReturn(flow { throw RuntimeException("Fallo en Room") })
+            .thenReturn(flowOf(listLastResult))
+        vm = HomeViewModel(getLastResultUseCase)
+
+        vm.state.test {
+            assertEquals(ResultCourt.Loading, awaitItem())
+            awaitItem() as ResultCourt.Error
+
+            vm.onRetry()
+            assertEquals(ResultCourt.Loading, awaitItem())
+            assertEquals(ResultCourt.Success(listLastResult), awaitItem())
+        }
+    }
 }

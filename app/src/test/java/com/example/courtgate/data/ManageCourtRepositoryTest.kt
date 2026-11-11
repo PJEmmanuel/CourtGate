@@ -21,6 +21,7 @@ import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.any
 import org.mockito.kotlin.anyOrNull
+import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import java.time.Instant
@@ -94,6 +95,34 @@ class ManageCourtRepositoryTest {
             endSevenDaysFromNow = endSevenDaysFromNow,
             minHour = null,
         ).first()
+    }
+
+    @Test
+    fun `when sync fails but Room has courts and schedules then emits local courts`(): Unit = runTest {
+        val expectedCourtList = listOf(createCourtTest(1, "indoor"))
+
+        // Día nuevo: toca sincronizar, pero no hay red
+        whenever(syncPreferencesDS.lastSyncDay).thenReturn(flowOf("2000-01-01"))
+        whenever(localDS.getCourtsCount()).thenReturn(3)
+        whenever(localDS.getScheduleCount()).thenReturn(5)
+        whenever(remoteDS.getAllCourt()).thenReturn(ResultManage.Failure(DomainError.Remote.ServerError))
+        whenever(localDS.getAvailableCourts(anyOrNull(), any(), any(), anyOrNull()))
+            .thenReturn(flowOf(expectedCourtList))
+        whenever(remoteDS.getBookingsSevenDaysAhead(any(), any()))
+            .thenReturn(flowOf(emptyList()))
+
+        val result = repository.getAllCourtToShow(
+            null,
+            0L,
+            0L,
+            currentDayStart = currentDayStart,
+            endSevenDaysFromNow = endSevenDaysFromNow,
+            minHour = null,
+        ).first()
+
+        assertEquals(expectedCourtList, result)
+        // No se marca el día como sincronizado: se reintentará la próxima vez
+        verify(syncPreferencesDS, never()).saveLastSyncDay(any())
     }
 
     @Test

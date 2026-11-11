@@ -180,8 +180,13 @@ fun NavigationWrapper(navController: NavHostController, startDestination: Any) {
                     navController.navigate(Home) {
                         popUpTo<Login> { inclusive = true }
                     }
+                },
+                navigateToLogin = {
+                    // Sin sesión no tiene sentido volver atrás: se limpia el back stack
+                    navController.navigate(Login) {
+                        popUpTo(navController.graph.id) { inclusive = true }
+                    }
                 }
-
             )
         }
 

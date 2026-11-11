@@ -37,6 +37,7 @@ import com.example.courtgate.ui.presentation.booking.components.BookForm
 import com.example.courtgate.ui.presentation.booking.components.BookingFlowSheetContent
 import com.example.courtgate.ui.presentation.booking.components.BookingImage
 import com.example.courtgate.ui.presentation.core.CourtTopBar
+import com.example.courtgate.ui.presentation.core.ErrorAction
 import com.example.courtgate.ui.presentation.core.ErrorScreen
 import com.example.courtgate.ui.presentation.core.LoadingScreen
 import kotlinx.coroutines.delay
@@ -75,7 +76,13 @@ fun BookingScreen(
             when (val s = state) {
                 is ResultCourt.Error -> ErrorScreen(
                     error = s.error,
-                    onRetry = { }
+                    onRetry = viewModel::onRetryLoad,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
+                    failedAttempts = s.failedAttempts,
+                    // El usuario está a mitad de una reserva: siempre puede salir
+                    secondaryAction = ErrorAction(R.string.error_action_back, navigateBackToFindCourt)
                 )
 
                 ResultCourt.Loading -> {

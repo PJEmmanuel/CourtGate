@@ -11,6 +11,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.File
 
 // Los resultados de Match solo viven en el dispositivo: ninguna actualización puede perderlos.
 // Para cada versión exportada, crea una base con un resultado, la abre con la misma
@@ -32,6 +33,8 @@ class CourtMigrationTest {
     @After
     fun tearDown() {
         context.deleteDatabase(TEST_DB)
+        // Room deja un fichero de bloqueo que deleteDatabase no borra
+        File(context.getDatabasePath(TEST_DB).path + ".lck").delete()
     }
 
     @Test

@@ -67,7 +67,7 @@ Sin fecha de entrega; las estimaciones son orientativas.
 - [ ] Find: posible problema con la sync sin conexión en el primer arranque
 - [ ] Resultados al cerrar sesión: los resultados de Room no van ligados al usuario y no se borran al cerrar sesión, así que otra cuenta en el mismo dispositivo los vería (solo se borran al borrar la cuenta)
   - Decidido: la v4 añade `user_id` a `last_result` (AutoMigration; su `AutoMigrationSpec` borra en `onPostMigrate` las filas sin dueño). Hay que avisar al usuario de que esos resultados se borran
-- [ ] Copia de seguridad de Android: `court_db` entra en la copia automática (las reglas de `xml/` están vacías). Decidido que al borrar la cuenta los resultados desaparezcan también de ahí; falta elegir cómo
+- [x] Copia de seguridad de Android: `court_db` queda excluida de la copia en la nube y de la transferencia entre dispositivos (`backup_rules.xml` y `data_extraction_rules.xml`). Al borrar la cuenta no queda ninguna copia; a cambio, en v1.0 los resultados no pasan a un móvil nuevo (eso llegará con la sync de Match en Firestore)
 - [ ] Reglas de Firestore (Fase 4): deben permitir que cada usuario consulte y borre sus reservas filtrando por `userId`; si no, "Borrar cuenta" fallará
 
 ## Fase 3 · Calidad y deuda técnica (~1 semana)
@@ -93,7 +93,7 @@ Sin fecha de entrega; las estimaciones son orientativas.
   - [ ] Keystore de firma fuera del repo
 - [ ] Política de privacidad publicada (p. ej., GitHub Pages)
 - [ ] Formulario "Seguridad de los datos" en Play Console
-  - Decidido: al borrar la cuenta, los resultados también desaparecen de la copia de seguridad de Android. Falta decidir cómo (ver Pendientes)
+  - Los resultados no salen del dispositivo: `court_db` está excluida de la copia de seguridad de Android (ver Pendientes)
 - [ ] Ficha de la tienda: icono, capturas, descripción, gráfico destacado
 - [ ] Capturas en el README
 - [ ] Prueba cerrada: 12 testers durante 14 días si la cuenta de desarrollador es personal y nueva

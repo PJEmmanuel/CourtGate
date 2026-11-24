@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlinxSerialization)
     alias(libs.plugins.googleServices)
+    alias(libs.plugins.room)
 }
 
 android {
@@ -20,7 +21,8 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        // Arranca HiltTestApplication para poder sustituir módulos con @TestInstallIn
+        testInstrumentationRunner = "com.example.courtgate.HiltTestRunner"
     }
 
     buildTypes {
@@ -42,6 +44,12 @@ android {
     buildFeatures {
         compose = true
     }
+}
+
+// Esquemas exportados de Room: base de las migraciones y de MigrationTestHelper.
+// El plugin también los añade a los assets de androidTest.
+room {
+    schemaDirectory("$projectDir/schemas")
 }
 
 dependencies {
@@ -102,6 +110,9 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+    androidTestImplementation(libs.hilt.android.testing)
+    kspAndroidTest(libs.hilt.compiler)
+    androidTestImplementation(libs.androidx.room.testing)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }

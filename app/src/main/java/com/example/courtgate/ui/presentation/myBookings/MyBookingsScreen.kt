@@ -24,6 +24,9 @@ import com.example.courtgate.ui.presentation.core.CourtNavigationBar
 import com.example.courtgate.ui.presentation.core.ErrorAction
 import com.example.courtgate.ui.presentation.core.CourtTopBar
 import com.example.courtgate.ui.presentation.core.ErrorScreen
+import com.example.courtgate.ui.presentation.core.FlowSheetState
+import com.example.courtgate.ui.presentation.core.canDismiss
+import com.example.courtgate.ui.presentation.core.targetOrNull
 import com.example.courtgate.ui.presentation.core.LoadingScreen
 import com.example.courtgate.ui.presentation.core.NavigationBarOnClick
 import com.example.courtgate.ui.presentation.myBookings.components.MyBookingsFlowSheetContent
@@ -89,20 +92,20 @@ fun MyBookingsScreen(
         val sheetState = data?.myBookingFlowState
 
         LaunchedEffect(sheetState) {
-            if (sheetState is MyBookingFlowState.Succeeded) {
+            if (sheetState is FlowSheetState.Succeeded) {
                 delay(SUCCEEDED_DISMISS_DELAY_MS)
                 viewModel.onDismissSheet()
                 backToHome()
             }
         }
 
-        val booking = sheetState?.bookingOrNull
+        val booking = sheetState?.targetOrNull
 
         if (sheetState != null && booking != null) {
             val modalState = rememberModalBottomSheetState(
                 skipPartiallyExpanded = true,
                 confirmValueChange = {
-                    (sheetState !is MyBookingFlowState.Succeeded && sheetState !is MyBookingFlowState.Submitting)
+                    sheetState.canDismiss
                 }
             )
 

@@ -1,5 +1,6 @@
 package com.example.courtgate.ui.presentation.core
 
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -25,7 +26,7 @@ fun CourtTopBar(
         actions = {
             Image(
                 painter = painterResource(R.drawable.avatar),
-                contentDescription = "Avatar",
+                contentDescription = stringResource(R.string.avatar_description),
                 modifier = Modifier.clip(shape = CircleShape)
             )
         },

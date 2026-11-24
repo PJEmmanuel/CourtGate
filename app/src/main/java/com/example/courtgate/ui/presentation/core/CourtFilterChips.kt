@@ -1,5 +1,7 @@
 package com.example.courtgate.ui.presentation.core
 
+import androidx.compose.ui.res.stringResource
+import com.example.courtgate.R
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -63,7 +65,7 @@ fun CourtFilterChips(
                         .alpha(0.4f)
                         .padding(top = 4.dp, bottom = 4.dp, end = 8.dp),
                     imageVector = Icons.TwoTone.EventBusy,
-                    contentDescription = "is Free"
+                    contentDescription = stringResource(R.string.booking_slot_busy)
                 )
             } else {
                 Text(

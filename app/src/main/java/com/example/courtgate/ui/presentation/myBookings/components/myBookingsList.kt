@@ -9,6 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.courtgate.domain.models.CourtBooking
+import com.example.courtgate.ui.presentation.core.CourtCard
+import com.example.courtgate.ui.presentation.core.toCardUiModel
 
 @Composable
 fun MyBookingsList(
@@ -25,8 +27,8 @@ fun MyBookingsList(
     )
     {
         items(items = courts, key = { it.id }) { court ->
-            MyBookingsCard(
-                court = court,
+            CourtCard(
+                model = court.toCardUiModel(),
                 onClick = { onCourtClick(court) }
             )
         }

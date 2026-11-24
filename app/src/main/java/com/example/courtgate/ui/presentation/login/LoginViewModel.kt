@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.courtgate.core.extension.emailValidator
 import com.example.courtgate.core.extension.passValidator
 import com.example.courtgate.domain.models.DomainError
-import com.example.courtgate.domain.models.DomainException
+import com.example.courtgate.ui.presentation.core.toDomainError
 import com.example.courtgate.usecases.authentication.LoginWithEmailUseCase
 import com.example.courtgate.usecases.authentication.SendPasswordResetEmailUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,7 +33,7 @@ class LoginViewModel @Inject constructor(
             ).onSuccess {
                 _state.update { it.copy(isLoggedIn = true) }
             }.onFailure { throwable ->
-                _state.update { it.copy(authError = mapError(throwable)) }
+                _state.update { it.copy(authError = throwable.toDomainError(DomainError.Auth.UnknownAuthError)) }
             }
             _state.update { it.copy(isLoading = false, isSubmitEnabled = it.isFormValid) }
         }
@@ -87,7 +87,7 @@ class LoginViewModel @Inject constructor(
                 .onSuccess {
                     _state.update { it.copy(resetPassword = it.resetPassword?.copy(isLoading = false, isSent = true)) }
                 }.onFailure { throwable ->
-                    val error = mapError(throwable)
+                    val error = throwable.toDomainError(DomainError.Auth.UnknownAuthError)
                     // No revelamos si el email está registrado: se muestra el mismo mensaje que al enviarlo
                     val isSent = error == DomainError.Auth.UserNotFound
                     _state.update {
@@ -105,10 +105,5 @@ class LoginViewModel @Inject constructor(
 
     fun onDismissResetPassword() {
         _state.update { it.copy(resetPassword = null) }
-    }
-
-    private fun mapError(e: Throwable): DomainError = when (e) {
-        is DomainException -> e.error
-        else -> DomainError.Auth.UnknownAuthError
     }
 }

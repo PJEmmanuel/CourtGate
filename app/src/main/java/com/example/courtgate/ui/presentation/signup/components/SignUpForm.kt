@@ -26,6 +26,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import com.example.courtgate.R
 import com.example.courtgate.ui.presentation.core.asStringRes
 import com.example.courtgate.ui.presentation.signup.SignUpState
 import com.example.courtgate.ui.presentation.core.CourtButton
@@ -46,16 +47,16 @@ fun SignUpForm(
         modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Create your account",
+            text = stringResource(R.string.signup_title),
             style = MaterialTheme.typography.labelLarge
         )
         CourtTextField(
             value = state.email,
             onValueChange = { onEmailChange(it) },
-            placeholder = "Email",//TODO: HardCode
-            contentDescription = "Enter Email",//TODO: HardCode
+            placeholder = stringResource(R.string.email_placeholder),
+            contentDescription = stringResource(R.string.email_field_description),
             modifier = Modifier,
-            errorMessage = state.emailError,
+            errorMessage = state.emailError?.let { stringResource(it.asStringRes()) },
             leadingIcon = Icons.Default.Email,
             isPassword = false,
             isEnabled = !state.isLoading,
@@ -72,9 +73,9 @@ fun SignUpForm(
         PasswordTextField(
             value = state.password,
             onValueChange = { onPasswordChange(it) },
-            contentDescription = "Enter Password",//TODO: HardCode
+            contentDescription = stringResource(R.string.password_field_description),
             modifier = Modifier,
-            errorMessage = state.passwordError,
+            errorMessage = state.passwordError?.let { stringResource(it.asStringRes()) },
             isEnabled = !state.isLoading,
             keyboardOptions = KeyboardOptions(
                 autoCorrectEnabled = false,
@@ -98,7 +99,7 @@ fun SignUpForm(
         }
 
         CourtButton(
-            text = "Create account",//TODO: HardCode
+            text = stringResource(R.string.signup_action),
             modifier = Modifier.fillMaxWidth(),
             isEnabled = state.isSubmitEnabled,
             shape = ShapeDefaults.Small
@@ -108,10 +109,13 @@ fun SignUpForm(
         TextButton(
             onClick = { navigateToSignIn() }
         ) {
+            val haveAccount = stringResource(R.string.signup_have_account)
+            val logIn = stringResource(R.string.signup_go_to_login)
             Text(buildAnnotatedString {
-                append("Already have an account? ") //TODO: HardCode
+                append(haveAccount)
+                append(" ")
                 withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                    append("Sign in")//TODO: HardCode
+                    append(logIn)
                 }
             })
         }

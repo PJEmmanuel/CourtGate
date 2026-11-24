@@ -1,0 +1,173 @@
+<resources>
+    <string name="filter_tittle">Court type</string>
+
+    <!-- Errores remotos -->
+    <string name="error_access_denied">You don\'t have permission to see this information</string>
+    <string name="error_server">We couldn\'t connect. Check your connection and try again</string>
+    <string name="error_not_found">We couldn\'t find what you were looking for</string>
+    <string name="error_unknown_remote">Something went wrong. Check your connection and try again</string>
+
+    <!-- Errores locales (Room) -->
+    <string name="error_disk_full">There\'s no space left on the device. Free up some space and try again</string>
+    <string name="error_db_corrupted">We couldn\'t load your saved data. If the problem persists, reinstall the app</string>
+    <string name="error_db_constraint">It couldn\'t be saved. Try again</string>
+    <string name="error_db_unknown">Something went wrong. Try again</string>
+
+    <!-- Errores de dominio (Court) -->
+    <string name="error_no_courts">We couldn\'t load the courts. Try again later</string>
+
+    <!-- Errores de autenticación -->
+    <string name="error_invalid_credentials">Wrong email or password</string>
+    <string name="error_user_collision">An account with that email already exists</string>
+    <string name="error_weak_password">The password is too weak. Try another one</string>
+    <string name="error_user_not_found">Wrong email or password</string>
+    <string name="error_network">No internet connection. Check your connection and try again</string>
+    <string name="error_too_many_requests">Too many attempts. Wait a few minutes and try again</string>
+    <string name="error_auth_unknown">The operation couldn\'t be completed. Try again</string>
+
+    <!-- Login · Restablecer contraseña -->
+    <string name="email_placeholder">Email</string>
+    <string name="reset_password_title">Reset password</string>
+    <string name="reset_password_description">Enter your email and we\'ll send you a link to create a new password.</string>
+    <string name="reset_password_sent">If there\'s an account with that email, you\'ll get a link in a few minutes. Check your spam folder too.</string>
+    <string name="reset_password_send">Send</string>
+    <string name="reset_password_cancel">Cancel</string>
+    <string name="reset_password_close">Close</string>
+
+    <string name="error_session_expired">Your session has expired. Log in again</string>
+    <string name="error_recent_login_required">For security, log out and log back in before continuing</string>
+
+    <!-- ErrorScreen -->
+    <string name="message_button_error_screen">Retry</string>
+    <string name="error_keeps_failing">We still can\'t load the data. Check your connection or try again later.</string>
+    <string name="error_action_back">Back</string>
+    <string name="error_action_login">Log in</string>
+
+    <!-- Errores de reserva -->
+    <string name="error_booking_slot_taken">It couldn\'t be booked, another user has already booked it</string>
+
+    <!-- ShowCourtCard -->
+    <string name="court_color_label">Colour: %1$s</string>
+    <string name="court_price_format">%1$s€</string>
+    <string name="court_image_description">Image of court %1$s</string>
+
+    <!-- FindCourtScreen -->
+    <string name="content_description_back">Back</string>
+    <string name="find_court_title">Find a Court</string>
+
+    <!-- Navigation Bar -->
+    <string name="nav_home">Home</string>
+    <string name="nav_booking">Bookings</string>
+    <string name="nav_match">Matches</string>
+    <string name="nav_settings">Settings</string>
+    <string name="slot_in_past">That time has already passed</string>
+
+    <!-- BookingFlowSheetContent -->
+    <string name="booking_confirm_title">Confirm booking</string>
+    <string name="booking_hour_unavailable">This slot is no longer available, another user has booked it</string>
+    <string name="booking_court_label">Court: %1$s</string>
+    <string name="booking_hour_label">Time: %1$s</string>
+    <string name="booking_price_label">Price: %1$s€</string>
+    <string name="booking_action_cancel">Cancel</string>
+    <string name="booking_action_confirm">Confirm</string>
+    <string name="booking_action_back">Back</string>
+    <string name="booking_action_retry">Retry</string>
+    <string name="booking_submitting">Booking…</string>
+    <string name="booking_failed_title">The booking couldn\'t be made</string>
+    <string name="booking_succeeded_title">Booking confirmed</string>
+    <string name="booking_date_label">Date: %1$s</string>
+
+    <!-- MyBookingsFlowSheetContent -->
+    <string name="my_booking_cancel_title">Cancel this booking?</string>
+    <string name="my_booking_action_cancel_booking">Cancel booking</string>
+    <string name="my_booking_submitting">Cancelling…</string>
+    <string name="my_booking_failed_title">The booking couldn\'t be cancelled</string>
+    <string name="my_booking_succeeded_title">Booking cancelled</string>
+
+    <!-- Match -->
+    <string name="match_title">My matches</string>
+    <string name="match_empty">You haven\'t saved any results yet. Tap + to add the first one.</string>
+    <string name="match_add_result">Add result</string>
+    <string name="match_edit_result">Edit result</string>
+    <string name="match_delete_result">Delete result</string>
+    <string name="match_form_title_new">New result</string>
+    <string name="match_form_title_edit">Edit result</string>
+    <string name="match_set_label">Set %1$d</string>
+    <string name="match_set_optional_label">Set %1$d (optional)</string>
+    <string name="match_team_1">Team 1</string>
+    <string name="match_team_2">Team 2</string>
+    <string name="match_action_save">Save</string>
+    <string name="match_action_cancel">Cancel</string>
+    <string name="match_error_missing_sets">Fill in the first two sets. If a third set was played, fill it in completely too</string>
+    <string name="match_error_invalid_games">A set can\'t have more than 7 games</string>
+    <string name="match_error_tied_set">A set can\'t end in a tie</string>
+    <string name="match_error_third_set">If a team wins the first two sets, there\'s no third set</string>
+    <string name="match_delete_title">Delete this result?</string>
+    <string name="match_delete_message">Results are only saved on this device: it can\'t be recovered.</string>
+    <string name="match_delete_confirm">Delete</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_account_section">Your account</string>
+    <string name="settings_email_label">Email</string>
+    <string name="settings_member_since_label">Member since</string>
+    <string name="settings_logout">Log out</string>
+    <string name="settings_logout_title">Log out?</string>
+    <string name="settings_logout_message">You\'ll need to log in again to book courts.</string>
+    <string name="settings_delete_account">Delete account</string>
+    <string name="settings_delete_account_title">Delete your account?</string>
+    <string name="settings_delete_account_message">Your account, all your bookings and the results saved on this device will be deleted. This can\'t be undone. Enter your password to confirm.</string>
+    <string name="settings_delete_account_confirm">Delete account</string>
+    <string name="settings_password_placeholder">Password</string>
+    <string name="settings_wrong_password">Wrong password</string>
+    <string name="settings_action_cancel">Cancel</string>
+
+    <!-- Validación de formularios -->
+    <string name="field_error_empty_email">Enter your email</string>
+    <string name="field_error_invalid_email">The email isn\'t valid</string>
+    <string name="field_error_empty_password">Enter your password</string>
+    <string name="field_error_password_too_short">The password must have at least 8 characters</string>
+    <string name="field_error_password_no_lowercase">The password must have at least 1 lowercase letter</string>
+    <string name="field_error_password_no_uppercase">The password must have at least 1 uppercase letter</string>
+    <string name="field_error_password_no_digit">The password must have at least 1 number</string>
+
+    <!-- Comunes -->
+    <string name="app_logo_description">CourtGate logo</string>
+    <string name="avatar_description">Profile picture</string>
+    <string name="password_placeholder">Password</string>
+    <string name="password_show">Show</string>
+    <string name="password_hide">Hide</string>
+    <string name="email_field_description">Enter your email</string>
+    <string name="password_field_description">Enter your password</string>
+
+    <!-- Login -->
+    <string name="login_title">Log in with email</string>
+    <string name="login_action">Log in</string>
+    <string name="login_forgot_password">Forgot your password?</string>
+    <string name="login_no_account">Don\'t have an account?</string>
+    <string name="login_go_to_sign_up">Sign up</string>
+
+    <!-- SignUp -->
+    <string name="signup_title">Create your account</string>
+    <string name="signup_action">Create account</string>
+    <string name="signup_have_account">Already have an account?</string>
+    <string name="signup_go_to_login">Log in</string>
+
+    <!-- Home -->
+    <string name="home_welcome">Welcome back to</string>
+    <string name="home_find_court">Find a Court</string>
+    <string name="home_last_results">Latest results</string>
+    <string name="home_no_results">No previous results</string>
+
+    <!-- Booking -->
+    <string name="booking_book_now">Book now for %1$s€</string>
+    <string name="booking_info_unavailable">N/A</string>
+    <string name="booking_image_description">Court image</string>
+    <string name="booking_slot_busy">Slot taken</string>
+
+    <!-- NoConnectionScreen -->
+    <string name="no_connection_description">No connection</string>
+    <string name="no_connection_title">No internet connection</string>
+    <string name="no_connection_message">Check your connection and try again.</string>
+
+</resources>

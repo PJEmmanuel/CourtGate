@@ -11,6 +11,8 @@ import androidx.compose.ui.unit.dp
 import com.example.courtgate.domain.models.Court
 import com.example.courtgate.domain.models.DomainError
 import com.example.courtgate.ui.presentation.core.ErrorScreen
+import com.example.courtgate.ui.presentation.core.CourtCard
+import com.example.courtgate.ui.presentation.core.toCardUiModel
 
 @Composable
 fun ShowCourt(
@@ -27,9 +29,8 @@ fun ShowCourt(
     )
     {
         items(items = courts, key = { it.id }) { court ->
-            ShowCourtCard(
-                modifier = Modifier,
-                court = court,
+            CourtCard(
+                model = court.toCardUiModel(),
                 onClick = { onCourtClick(court) }
             )
         }

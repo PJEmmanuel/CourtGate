@@ -2,7 +2,6 @@ package com.example.courtgate.ui.presentation.core
 
 import com.example.courtgate.ResultCourt
 import com.example.courtgate.domain.models.DomainError
-import com.example.courtgate.domain.models.DomainException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -37,9 +36,4 @@ fun <P, T> Flow<P>.loadLatest(
                 emit(ResultCourt.Error(e.toDomainError(unknownError), failedAttempts))
             }
     }
-}
-
-fun Throwable.toDomainError(unknownError: DomainError): DomainError = when (this) {
-    is DomainException -> error
-    else -> unknownError
 }

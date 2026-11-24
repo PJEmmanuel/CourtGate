@@ -1,6 +1,7 @@
 package com.example.courtgate.ui.presentation.login
 
 import com.example.courtgate.core.CoroutinesTestRule
+import com.example.courtgate.core.extension.FieldError
 import com.example.courtgate.domain.models.DomainError
 import com.example.courtgate.domain.models.DomainException
 import com.example.courtgate.domain.models.User
@@ -64,7 +65,7 @@ class LoginViewModelTest {
     fun `check incorrect email format when email is empty`() {
         vm.onEmailChange("")
 
-        assertEquals("Escribe el email", vm.state.value.emailError)
+        assertEquals(FieldError.EmptyEmail, vm.state.value.emailError)
         assertNotNull(vm.state.value.emailError)
 
     }
@@ -81,7 +82,7 @@ class LoginViewModelTest {
 
         vm.onEmailChange(wrongEmail)
 
-        assertEquals("El email no es válido", vm.state.value.emailError)
+        assertEquals(FieldError.InvalidEmail, vm.state.value.emailError)
         assertNotNull(vm.state.value.emailError)
 
         vm.onEmailChange(correctEmail)
@@ -94,7 +95,7 @@ class LoginViewModelTest {
     fun `check incorrect password format when password is empty`() {
         vm.onPasswordChange("")
 
-        assertEquals("Escribe la contraseña", vm.state.value.passwordError)
+        assertEquals(FieldError.EmptyPassword, vm.state.value.passwordError)
         assertNotNull(vm.state.value.passwordError)
 
     }
@@ -111,7 +112,7 @@ class LoginViewModelTest {
 
         vm.onPasswordChange(wrongPass)
 
-        assertNotEquals("Escribe la contraseña", vm.state.value.passwordError)
+        assertNotEquals(FieldError.EmptyPassword, vm.state.value.passwordError)
         assertNotNull(vm.state.value.passwordError)
 
         vm.onPasswordChange(correctPass)

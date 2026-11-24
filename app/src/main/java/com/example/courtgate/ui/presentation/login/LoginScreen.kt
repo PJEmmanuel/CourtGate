@@ -1,5 +1,6 @@
 package com.example.courtgate.ui.presentation.login
 
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -54,7 +55,7 @@ fun LoginScreen(
         ) {
             Image(
                 painter = painterResource(R.drawable.court_gate_icon),
-                contentDescription = "LogoCourtGate",
+                contentDescription = stringResource(R.string.app_logo_description),
                 modifier = Modifier,
             )
             LoginForm(

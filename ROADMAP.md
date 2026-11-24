@@ -62,24 +62,26 @@ Sin fecha de entrega; las estimaciones son orientativas.
 
 ## 📝 Pendientes sin fase asignada
 
-- [ ] Login y SignUp tienen su propio `mapError` y textos en inglés (encaja con la Fase 3)
+- [x] Login y SignUp tienen su propio `mapError` y textos en inglés (hecho en la Fase 3)
 - [ ] Reintento automático cuando vuelve la red
 - [ ] Find: posible problema con la sync sin conexión en el primer arranque
 - [ ] Resultados al cerrar sesión: los resultados de Room no van ligados al usuario y no se borran al cerrar sesión, así que otra cuenta en el mismo dispositivo los vería (solo se borran al borrar la cuenta)
+  - Decidido: la v4 añade `user_id` a `last_result` (AutoMigration; su `AutoMigrationSpec` borra en `onPostMigrate` las filas sin dueño). Hay que avisar al usuario de que esos resultados se borran
+- [x] Copia de seguridad de Android: `court_db` queda excluida de la copia en la nube y de la transferencia entre dispositivos (`backup_rules.xml` y `data_extraction_rules.xml`). Al borrar la cuenta no queda ninguna copia; a cambio, en v1.0 los resultados no pasan a un móvil nuevo (eso llegará con la sync de Match en Firestore)
 - [ ] Reglas de Firestore (Fase 4): deben permitir que cada usuario consulte y borre sus reservas filtrando por `userId`; si no, "Borrar cuenta" fallará
 
 ## Fase 3 · Calidad y deuda técnica (~1 semana)
 
-- [ ] Mover todos los textos hardcodeados a `strings.xml` (ES + EN)
-- [ ] Extraer `mapError` (duplicado en varios ViewModels) a un único sitio
-- [ ] Unificar `myBookingsCard` y `ShowCourtCard` con un UiModel común
-- [ ] Unificar estados de `BookingFlowSheetContent` y `MyBookingsFlowSheetContent` (sealed interface)
-- [ ] Extraer el helper repetido en `FirebaseFirestoreDataSource`
-- [ ] Room:
-  - [ ] Quitar `fallbackToDestructiveMigration`
-  - [ ] Configurar la carpeta de esquemas
-  - [ ] Definir migraciones (los resultados de Match solo viven en el dispositivo y no se pueden perder)
-- [ ] Tests de UI con Compose: login, reserva, cancelación, alta de resultado
+- [x] Mover todos los textos hardcodeados a `strings.xml` (ES + EN)
+- [x] Extraer `mapError` (duplicado en varios ViewModels) a un único sitio
+- [x] Unificar `myBookingsCard` y `ShowCourtCard` con un UiModel común
+- [x] Unificar estados de `BookingFlowSheetContent` y `MyBookingsFlowSheetContent` (sealed interface)
+- [x] Extraer el helper repetido en `FirebaseFirestoreDataSource`
+- [x] Room:
+  - [x] Quitar `fallbackToDestructiveMigration`
+  - [x] Configurar la carpeta de esquemas
+  - [x] Definir migraciones (los resultados de Match solo viven en el dispositivo y no se pueden perder)
+- [x] Tests de UI con Compose: login, reserva, cancelación, alta de resultado
 
 ## Fase 4 · Preparar la publicación (~1 semana + ~2 semanas de espera)
 
@@ -91,6 +93,7 @@ Sin fecha de entrega; las estimaciones son orientativas.
   - [ ] Keystore de firma fuera del repo
 - [ ] Política de privacidad publicada (p. ej., GitHub Pages)
 - [ ] Formulario "Seguridad de los datos" en Play Console
+  - Los resultados no salen del dispositivo: `court_db` está excluida de la copia de seguridad de Android (ver Pendientes)
 - [ ] Ficha de la tienda: icono, capturas, descripción, gráfico destacado
 - [ ] Capturas en el README
 - [ ] Prueba cerrada: 12 testers durante 14 días si la cuenta de desarrollador es personal y nueva
@@ -104,6 +107,7 @@ Sin fecha de entrega; las estimaciones son orientativas.
   - Gestionar reservas manualmente
   - Cambiar precios desde la app
 - [ ] Sincronizar resultados de Match con Firestore
+- [ ] Estudiar separar en dos bases la caché de Firestore (se puede recrear) y los resultados (no)
 - [ ] Recordatorios de reserva (WorkManager / notificaciones push)
 - [ ] Offline-first para reservas
 - [ ] Pagos (Retrofit u otro SDK), si compensa

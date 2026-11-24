@@ -66,6 +66,8 @@ Sin fecha de entrega; las estimaciones son orientativas.
 - [ ] Reintento automático cuando vuelve la red
 - [ ] Find: posible problema con la sync sin conexión en el primer arranque
 - [ ] Resultados al cerrar sesión: los resultados de Room no van ligados al usuario y no se borran al cerrar sesión, así que otra cuenta en el mismo dispositivo los vería (solo se borran al borrar la cuenta)
+  - Decidido: la v4 añade `user_id` a `last_result` (AutoMigration; su `AutoMigrationSpec` borra en `onPostMigrate` las filas sin dueño). Hay que avisar al usuario de que esos resultados se borran
+- [ ] Copia de seguridad de Android: `court_db` entra en la copia automática (las reglas de `xml/` están vacías). Decidido que al borrar la cuenta los resultados desaparezcan también de ahí; falta elegir cómo
 - [ ] Reglas de Firestore (Fase 4): deben permitir que cada usuario consulte y borre sus reservas filtrando por `userId`; si no, "Borrar cuenta" fallará
 
 ## Fase 3 · Calidad y deuda técnica (~1 semana)
@@ -91,6 +93,7 @@ Sin fecha de entrega; las estimaciones son orientativas.
   - [ ] Keystore de firma fuera del repo
 - [ ] Política de privacidad publicada (p. ej., GitHub Pages)
 - [ ] Formulario "Seguridad de los datos" en Play Console
+  - Decidido: al borrar la cuenta, los resultados también desaparecen de la copia de seguridad de Android. Falta decidir cómo (ver Pendientes)
 - [ ] Ficha de la tienda: icono, capturas, descripción, gráfico destacado
 - [ ] Capturas en el README
 - [ ] Prueba cerrada: 12 testers durante 14 días si la cuenta de desarrollador es personal y nueva
@@ -104,6 +107,7 @@ Sin fecha de entrega; las estimaciones son orientativas.
   - Gestionar reservas manualmente
   - Cambiar precios desde la app
 - [ ] Sincronizar resultados de Match con Firestore
+- [ ] Estudiar separar en dos bases la caché de Firestore (se puede recrear) y los resultados (no)
 - [ ] Recordatorios de reserva (WorkManager / notificaciones push)
 - [ ] Offline-first para reservas
 - [ ] Pagos (Retrofit u otro SDK), si compensa

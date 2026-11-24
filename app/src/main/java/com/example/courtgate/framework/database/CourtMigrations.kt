@@ -11,12 +11,14 @@ const val FIRST_EXPORTED_DB_VERSION = 3
 // migrar con fiabilidad ni tienen datos del usuario, así que se recrean. Solo afecta a estas dos.
 private val PRE_EXPORT_DB_VERSIONS = intArrayOf(1, 2)
 
-// Una Migration(n, n + 1) por cada cambio de esquema a partir de la 3. Nunca destructivas:
-// los resultados de Match solo existen en el dispositivo.
+// Cada cambio de esquema a partir de la 3 va, por defecto, como AutoMigration(from = n, to = n + 1)
+// en @Database (CourtDatabase.kt); Room la genera comparando los JSON exportados. Para renombrar
+// o borrar columnas hace falta un AutoMigrationSpec. Aquí solo van las migraciones manuales:
+// las que tengan que transformar datos. Nunca destructivas para last_result.
 val COURT_MIGRATIONS: Array<Migration> = arrayOf()
 
-// Sin fallbackToDestructiveMigration: si falta una migración, Room falla al abrir la base
-// en vez de borrarla. CourtMigrationTest comprueba que estén todas.
+// Sin fallbackToDestructiveMigration: si falta una migración (automática o manual), Room falla
+// al abrir la base en vez de borrarla. CourtMigrationTest lo comprueba para cada versión.
 fun RoomDatabase.Builder<CourtDatabase>.withCourtMigrations(): RoomDatabase.Builder<CourtDatabase> =
     addMigrations(*COURT_MIGRATIONS)
         .fallbackToDestructiveMigrationFrom(true, *PRE_EXPORT_DB_VERSIONS)

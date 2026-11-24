@@ -15,6 +15,9 @@ import org.junit.runner.RunWith
 // Los resultados de Match solo viven en el dispositivo: ninguna actualización puede perderlos.
 // Para cada versión exportada, crea una base con un resultado, la abre con la misma
 // configuración que la app (withCourtMigrations) y comprueba que el resultado sigue ahí.
+// Si falta una migración, automática o manual, Room no puede abrir la base y el test falla.
+// Excepción ya decidida: la v4 (resultados ligados al usuario) borra los resultados sin dueño
+// avisando antes; ese paso tendrá que comprobar el borrado en vez de la conservación.
 @RunWith(AndroidJUnit4::class)
 class CourtMigrationTest {
 
@@ -59,15 +62,6 @@ class CourtMigrationTest {
             } finally {
                 db.close()
             }
-        }
-    }
-
-    // Cada paso n → n+1 desde la primera versión exportada necesita su Migration
-    @Test
-    fun everyVersionStepHasAMigration() {
-        for (from in FIRST_EXPORTED_DB_VERSION until CourtDatabase.VERSION) {
-            val found = COURT_MIGRATIONS.any { it.startVersion == from && it.endVersion == from + 1 }
-            assertEquals("falta la migración $from → ${from + 1}", true, found)
         }
     }
 
